@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 OpSec Standard - Risk-Requirement-Control Mapping</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            line-height: 1.4;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #d32f2f;
+            background: #ffebee;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .domain-section {
+            margin-bottom: 50px;
+        }
+        
+        .domain-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: 0 0 20px 0;
+            border-radius: 6px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .mapping-table th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }
+        
+        .mapping-table td {
+            padding: 10px 8px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        .risk-cell {
+            background-color: #ffebee;
+            border-left: 4px solid #e74c3c;
+            font-weight: 600;
+            color: #c62828;
+        }
+        
+        .requirement-cell {
+            background-color: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            font-weight: 500;
+            color: #1b5e20;
+        }
+        
+        .control-cell {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            color: #0d47a1;
+        }
+        
+        .risk-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            background: #c62828;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .req-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            background: #27ae60;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .control-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            background: #2196f3;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .description {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .priority-critical {
+            background: #ffcdd2;
+            border-left-color: #d32f2f;
+        }
+        
+        .priority-high {
+            background: #ffe0b2;
+            border-left-color: #f57c00;
+        }
+        
+        .priority-medium {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+        
+        @media (max-width: 1200px) {
+            .mapping-table {
+                font-size: 0.8em;
+            }
+            
+            .mapping-table th,
+            .mapping-table td {
+                padding: 8px 6px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .mapping-table {
+                font-size: 0.75em;
+            }
+            
+            .mapping-table th,
+            .mapping-table td {
+                padding: 6px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web3 OpSec Standard<br>Risk-Requirement-Control Mapping</h1>
+        
+        <div id="loading" class="loading">
+            Loading risk-requirement-control mappings...
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            Error loading content. Please check your internet connection and try again.
+        </div>
+        
+        <div id="content"></div>
+    </div>
+
+    <script>
+        class OpSecMappingGenerator {
+            constructor() {
+                this.baseUrl = 'https://raw.githubusercontent.com/joevanloon/web3-opsec-standard/main';
+                this.domains = [
+                    { id: '01', name: 'Wallet & Multi-Sig Management', slug: 'wallet-multisig' },
+                    { id: '02', name: 'Endpoint Security', slug: 'endpoints' },
+                    { id: '03', name: 'Communications & Social Media', slug: 'communications-socials' },
+                    { id: '04', name: 'DevOps & Infrastructure', slug: 'devops-infrastructure' },
+                    { id: '05', name: 'Incident Readiness', slug: 'incident-readiness' }
+                ];
+                this.data = {
+                    risks: {},
+                    requirements: {},
+                    controls: {}
+                };
+            }
+
+            async loadAllData() {
+                try {
+                    await Promise.all([
+                        this.loadRisks(),
+                        this.loadRequirements(),
+                        this.loadControls()
+                    ]);
+                    this.generateMapping();
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                }
+            }
+
+            async loadRisks() {
+                for (const domain of this.domains) {
+                    const url = `${this.baseUrl}/risks/${domain.id}-${domain.slug}.md`;
+                    const response = await fetch(url);
+                    const content = await response.text();
+                    this.parseRisks(content, domain);
+                }
+            }
+
+            async loadRequirements() {
+                for (const domain of this.domains) {
+                    const url = `${this.baseUrl}/requirements/${domain.id}-${domain.slug}.md`;
+                    const response = await fetch(url);
+                    const content = await response.text();
+                    this.parseRequirements(content, domain);
+                }
+            }
+
+            async loadControls() {
+                for (const domain of this.domains) {
+                    const url = `${this.baseUrl}/controls/${domain.id}-${domain.slug}.md`;
+                    const response = await fetch(url);
+                    const content = await response.text();
+                    this.parseControls(content, domain);
+                }
+            }
+
+            parseRisks(content, domain) {
+                const riskPattern = /### \*\*([R-\w+-\d+]): ([^*]+)\*\*\s*\n- \*\*Attack Vectors\*\*: ([^\n]+)\s*\n- \*\*Impact\*\*: ([^\n]+)\s*\n- \*\*Likelihood\*\*: ([^\n]+)\s*\n- \*\*Addressed by Requirements\*\*:\s*((?:\s*- \[[^\]]+\]\([^)]+\)\s*)*)/g;
+                
+                let match;
+                while ((match = riskPattern.exec(content)) !== null) {
+                    const [, id, name, attackVectors, impact, likelihood, requirementsText] = match;
+                    
+                    // Extract priority from likelihood
+                    let priority = 'medium';
+                    if (likelihood.toLowerCase().includes('high')) {
+                        priority = impact.toLowerCase().includes('high') ? 'critical' : 'high';
+                    } else if (likelihood.toLowerCase().includes('medium')) {
+                        priority = impact.toLowerCase().includes('high') ? 'high' : 'medium';
+                    }
+
+                    // Parse requirements links
+                    const reqPattern = /\[([^\]]+)\]\([^)]+\)/g;
+                    const requirements = [];
+                    let reqMatch;
+                    while ((reqMatch = reqPattern.exec(requirementsText)) !== null) {
+                        const reqId = reqMatch[1].match(/SP-\w+-\d+/);
+                        if (reqId) {
+                            requirements.push(reqId[0]);
+                        }
+                    }
+
+                    this.data.risks[id] = {
+                        id,
+                        name: name.trim(),
+                        attackVectors: attackVectors.trim(),
+                        impact: impact.trim(),
+                        likelihood: likelihood.trim(),
+                        priority,
+                        requirements,
+                        domain: domain.name
+                    };
+                }
+            }
+
+            parseRequirements(content, domain) {
+                const reqPattern = /\*\*([SP-\w+-\d+]): ([^*]+)\*\*\s*\n((?:- [^\n]+\s*\n)*)\s*- \*Addresses risks: ([^\n]+)\s*\n- \*Implementation guidance: ([^\n]+)/g;
+                
+                let match;
+                while ((match = reqPattern.exec(content)) !== null) {
+                    const [, id, name, descriptionText, risksText, controlsText] = match;
+                    
+                    // Extract description from bullet points - take first meaningful bullet point
+                    const bulletPoints = descriptionText.split('\n').filter(line => line.trim().startsWith('- '));
+                    const description = bulletPoints.length > 0 
+                        ? bulletPoints[0].replace(/^- /, '').trim()
+                        : name.trim();
+
+                    // Parse risk links
+                    const riskPattern = /R-\w+-\d+/g;
+                    const risks = [];
+                    let riskMatch;
+                    while ((riskMatch = riskPattern.exec(risksText)) !== null) {
+                        risks.push(riskMatch[0]);
+                    }
+
+                    // Parse control links
+                    const controlPattern = /C-\w+-\d+/g;
+                    const controls = [];
+                    let controlMatch;
+                    while ((controlMatch = controlPattern.exec(controlsText)) !== null) {
+                        controls.push(controlMatch[0]);
+                    }
+
+                    this.data.requirements[id] = {
+                        id,
+                        name: name.trim(),
+                        description: description,
+                        risks,
+                        controls,
+                        domain: domain.name
+                    };
+                }
+            }
+
+            parseControls(content, domain) {
+                const controlPattern = /### \*\*([C-\w+-\d+]): ([^*]+)\*\*\s*\n\*Implements: \[[^\]]+\]\([^)]+\)\*\s*\n\n\*\*([^*]+)\*\*\s*\n((?:[^#]+(?=###|$))?)/g;
+                
+                let match;
+                while ((match = controlPattern.exec(content)) !== null) {
+                    const [, id, name, category, descriptionText] = match;
+                    
+                    // Extract first meaningful line as description, skip bullet points
+                    const lines = descriptionText.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line && !line.startsWith('-') && !line.startsWith('*'));
+                    
+                    let description = category.trim();
+                    if (lines.length > 0) {
+                        // Look for the first substantial line of text
+                        for (const line of lines) {
+                            if (line.length > 20) { // Skip very short lines
+                                description = line;
+                                break;
+                            }
+                        }
+                    }
+
+                    this.data.controls[id] = {
+                        id,
+                        name: name.trim(),
+                        category: category.trim(),
+                        description: description.length > 120 ? description.substring(0, 120) + '...' : description,
+                        domain: domain.name
+                    };
+                }
+            }
+
+            generateMapping() {
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = '';
+
+                for (const domain of this.domains) {
+                    const domainRisks = Object.values(this.data.risks).filter(risk => risk.domain === domain.name);
+                    if (domainRisks.length === 0) continue;
+
+                    const domainSection = document.createElement('div');
+                    domainSection.className = 'domain-section';
+
+                    const domainTitle = document.createElement('h2');
+                    domainTitle.className = 'domain-title';
+                    domainTitle.textContent = `Domain ${domain.id}: ${domain.name}`;
+                    domainSection.appendChild(domainTitle);
+
+                    const table = document.createElement('table');
+                    table.className = 'mapping-table';
+
+                    // Table header
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = `
+                        <tr>
+                            <th style="width: 25%;">Risk</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 45%;">Control</th>
+                        </tr>
+                    `;
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+                    
+                    // Sort risks by priority
+                    const priorityOrder = { critical: 0, high: 1, medium: 2 };
+                    domainRisks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+
+                    for (const risk of domainRisks) {
+                        this.generateRiskRows(tbody, risk);
+                    }
+
+                    table.appendChild(tbody);
+                    domainSection.appendChild(table);
+                    contentDiv.appendChild(domainSection);
+                }
+
+                document.getElementById('loading').style.display = 'none';
+            }
+
+            generateRiskRows(tbody, risk) {
+                const requirements = risk.requirements.map(reqId => this.data.requirements[reqId]).filter(Boolean);
+                
+                let totalRows = 0;
+                for (const req of requirements) {
+                    const controls = req.controls.map(controlId => this.data.controls[controlId]).filter(Boolean);
+                    totalRows += Math.max(1, controls.length);
+                }
+
+                let rowIndex = 0;
+                for (let reqIndex = 0; reqIndex < requirements.length; reqIndex++) {
+                    const req = requirements[reqIndex];
+                    const controls = req.controls.map(controlId => this.data.controls[controlId]).filter(Boolean);
+                    const controlCount = Math.max(1, controls.length);
+
+                    for (let controlIndex = 0; controlIndex < controlCount; controlIndex++) {
+                        const row = document.createElement('tr');
+
+                        // Risk cell (only on first row)
+                        if (rowIndex === 0) {
+                            const riskCell = document.createElement('td');
+                            riskCell.className = `risk-cell priority-${risk.priority}`;
+                            riskCell.rowSpan = totalRows;
+                            riskCell.innerHTML = `
+                                <span class="risk-id">${risk.id}</span>${risk.name}
+                                <div class="description">${risk.attackVectors}</div>
+                            `;
+                            row.appendChild(riskCell);
+                        }
+
+                        // Requirement cell (only on first control of each requirement)
+                        if (controlIndex === 0) {
+                            const reqCell = document.createElement('td');
+                            reqCell.className = 'requirement-cell';
+                            reqCell.rowSpan = controlCount;
+                            reqCell.innerHTML = `
+                                <span class="req-id">${req.id}</span>${req.name}
+                                <div class="description">${req.description}</div>
+                            `;
+                            row.appendChild(reqCell);
+                        }
+
+                        // Control cell
+                        const controlCell = document.createElement('td');
+                        controlCell.className = 'control-cell';
+                        
+                        if (controls[controlIndex]) {
+                            const control = controls[controlIndex];
+                            controlCell.innerHTML = `
+                                <span class="control-id">${control.id}</span>${control.name}
+                                <div class="description">${control.description}</div>
+                            `;
+                        } else {
+                            controlCell.innerHTML = `
+                                <span class="control-id">N/A</span>No specific control defined
+                                <div class="description">Implementation guidance needed</div>
+                            `;
+                        }
+                        
+                        row.appendChild(controlCell);
+                        tbody.appendChild(row);
+                        rowIndex++;
+                    }
+                }
+            }
+        }
+
+        // Initialize and load data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const generator = new OpSecMappingGenerator();
+            generator.loadAllData();
+        });
+    </script>
+</body>
+</html>

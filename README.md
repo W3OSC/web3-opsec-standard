@@ -1,6 +1,6 @@
 # Web3 Operational Security Standard (W3OSS)
 
-[![Version](https://img.shields.io/badge/version-1.0.0--draft-orange.svg)](https://github.com/web3-opsec-standard/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0--draft-orange.svg)](https://github.com/W3OSC/web3-opsec-standard/releases)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 > **📢 Contributing to W3OSS**
@@ -76,6 +76,6 @@ W3OSS is organized into five core domains, each containing specific risks, secur
 
 View the complete hierarchical mapping of all risks, requirements, and controls across all domains:
 
-**🔗 [Interactive Risk-Requirement-Control Mapping](https://joevanloon.github.io/web3-opsec-standard/risk-requirement-control-mapping.html)**
+**🔗 [Interactive Risk-Requirement-Control Mapping](https://w3osc.github.io/web3-opsec-standard/risk-requirement-control-mapping.html)**
 
 This interactive table shows how each risk is addressed by specific requirements, and how those requirements are implemented through detailed controls. The mapping is automatically generated from the source files and provides a comprehensive view of the entire security framework.

@@ -517,7 +517,8 @@
 
             parseRisks(content, domain) {
                 console.log(`🔍 parseRisks() for ${domain.name} - content length: ${content.length}`);
-                const riskPattern = /### \*\*([R-\w+-\d+]): ([^*]+)\*\*\s*\n- \*\*Attack Vectors\*\*: ([^\n]+)\s*\n- \*\*Impact\*\*: ([^\n]+)\s*\n- \*\*Likelihood\*\*: ([^\n]+)\s*\n- \*\*Addressed by Requirements\*\*:\s*((?:\s*- \[[^\]]+\]\([^)]+\)\s*)*)/g;
+                // Updated pattern based on actual content structure
+                const riskPattern = /### \*\*([R-\w+-\d+]): ([^*]+)\*\*\s*\n- \*\*Attack Vectors\*\*: ([^\n]+)\s*\n- \*\*Impact\*\*: ([^\n]+)\s*\n- \*\*Likelihood\*\*: ([^\n]+)\s*\n- \*\*Addressed by Requirements\*\*:\s*\n((?:\s*- \[[^\]]+\]\([^)]+\)\s*\n?)*)/g;
                 
                 console.log(`🔍 Risk pattern: ${riskPattern}`);
                 
@@ -567,7 +568,8 @@
 
             parseRequirements(content, domain) {
                 console.log(`🔍 parseRequirements() for ${domain.name} - content length: ${content.length}`);
-                const reqPattern = /\*\*([SP-\w+-\d+]): ([^*]+)\*\*\s*\n((?:- [^\n]+\s*\n)*)\s*- \*Addresses risks: ([^\n]+)\s*\n- \*Implementation guidance: ([^\n]+)/g;
+                // Updated pattern based on actual content structure - the format uses *Addresses risks:* and *Implementation guidance:*
+                const reqPattern = /\*\*([SP-\w+-\d+]): ([^*]+)\*\*\s*\n((?:- [^\n]+\s*\n)*)\s*- \*Addresses risks: ([^\n]+)\*\s*\n- \*Implementation guidance: ([^\n]+)\*/g;
                 
                 let match;
                 let matchCount = 0;
@@ -616,25 +618,26 @@
 
             parseControls(content, domain) {
                 console.log(`🔍 parseControls() for ${domain.name} - content length: ${content.length}`);
-                const controlPattern = /### \*\*([C-\w+-\d+]): ([^*]+)\*\*\s*\n\*Implements: \[[^\]]+\]\([^)]+\)\*\s*\n\n\*\*([^*]+)\*\*\s*\n((?:[^#]+(?=###|$))?)/g;
+                // Updated pattern based on actual content structure - simpler pattern without expecting specific sections
+                const controlPattern = /### \*\*([C-\w+-\d+]): ([^*]+)\*\*\s*\n\*Implements: \[[^\]]+\]\([^)]+\)\*\s*\n\n((?:[^#]+(?=###|$))?)/g;
                 
                 let match;
                 let matchCount = 0;
                 while ((match = controlPattern.exec(content)) !== null) {
                     matchCount++;
-                    const [, id, name, category, descriptionText] = match;
+                    const [, id, name, descriptionText] = match;
                     console.log(`✅ Found control match ${matchCount}:`, { id, name: name.trim() });
                     
-                    // Extract first meaningful line as description, skip bullet points
+                    // Extract first meaningful line as description, skip bullet points and formatting
                     const lines = descriptionText.split('\n')
                         .map(line => line.trim())
-                        .filter(line => line && !line.startsWith('-') && !line.startsWith('*'));
+                        .filter(line => line && !line.startsWith('-') && !line.startsWith('*') && !line.startsWith('#'));
                     
-                    let description = category.trim();
+                    let description = name.trim(); // Default to the name
                     if (lines.length > 0) {
                         // Look for the first substantial line of text
                         for (const line of lines) {
-                            if (line.length > 20) { // Skip very short lines
+                            if (line.length > 20 && !line.includes('**')) { // Skip very short lines and markdown formatting
                                 description = line;
                                 break;
                             }
@@ -644,7 +647,7 @@
                     this.data.controls[id] = {
                         id,
                         name: name.trim(),
-                        category: category.trim(),
+                        category: 'Implementation Control', // Generic category since structure varies
                         description: description.length > 120 ? description.substring(0, 120) + '...' : description,
                         domain: domain.name
                     };

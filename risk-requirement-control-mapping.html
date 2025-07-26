@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web3 OpSec Standard - Risk-Requirement-Control Mapping</title>
+    <title>Web3 OpSec Standard Overview</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -187,7 +187,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Web3 OpSec Standard<br>Risk-Requirement-Control Mapping</h1>
+        <h1>Web3 OpSec Standard (W3OSS) Overview</h1>
         
         <div id="status-banner" class="status-banner loading">
             <strong>Loading live data from GitHub...</strong><br>
@@ -368,16 +368,10 @@
             }
 
             async loadAllData() {
-                console.log('📊 loadAllData() started');
                 const statusBanner = document.getElementById('status-banner');
                 
                 try {
-                    console.log('🔄 Updating status banner to loading state');
                     statusBanner.innerHTML = '<strong>Loading risks, requirements, and controls...</strong>';
-                    
-                    console.log('🚀 Starting parallel data loading...');
-                    console.log('📋 Base URL:', this.baseUrl);
-                    console.log('📋 Domains to load:', this.domains.map(d => d.name));
                     
                     await Promise.all([
                         this.loadRisks(),
@@ -385,27 +379,11 @@
                         this.loadControls()
                     ]);
                     
-                    console.log('✅ All data loaded successfully');
-                    console.log('📊 Data summary:');
-                    console.log('  - Risks:', Object.keys(this.data.risks).length);
-                    console.log('  - Requirements:', Object.keys(this.data.requirements).length);
-                    console.log('  - Controls:', Object.keys(this.data.controls).length);
-                    
                     statusBanner.innerHTML = '<strong>Generating mapping...</strong>';
-                    console.log('🔄 Generating mapping...');
                     this.generateMapping();
-                    
-                    // Hide status banner on success
-                    console.log('✅ Mapping generated successfully, hiding status banner');
                     statusBanner.style.display = 'none';
                     
                 } catch (error) {
-                    console.error('❌ loadAllData() failed:', error);
-                    console.error('❌ Error details:', {
-                        message: error.message,
-                        stack: error.stack,
-                        name: error.name
-                    });
                     statusBanner.className = 'status-banner error';
                     statusBanner.innerHTML = `
                         <strong>Unable to Load Live Data</strong><br>
@@ -417,275 +395,215 @@
             }
 
             async loadRisks() {
-                console.log('🔴 loadRisks() started');
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/risks/${domain.id}-${domain.slug}.md`;
-                    console.log(`📥 Fetching risks for ${domain.name}: ${url}`);
                     
                     try {
                         const response = await fetch(url);
-                        console.log(`📊 Response for ${domain.name} risks:`, {
-                            status: response.status,
-                            statusText: response.statusText,
-                            ok: response.ok,
-                            headers: Object.fromEntries(response.headers.entries())
-                        });
                         
                         if (!response.ok) {
                             throw new Error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
                         }
                         
                         const content = await response.text();
-                        console.log(`📄 Content length for ${domain.name} risks: ${content.length} characters`);
-                        console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
-                        
                         this.parseRisks(content, domain);
-                        console.log(`✅ Parsed risks for ${domain.name}`);
                     } catch (error) {
-                        console.error(`❌ Failed to load risks for ${domain.name}:`, error);
                         throw error;
                     }
                 }
-                console.log('✅ loadRisks() completed');
             }
 
             async loadRequirements() {
-                console.log('🟢 loadRequirements() started');
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/requirements/${domain.id}-${domain.slug}.md`;
-                    console.log(`📥 Fetching requirements for ${domain.name}: ${url}`);
                     
                     try {
                         const response = await fetch(url);
-                        console.log(`📊 Response for ${domain.name} requirements:`, {
-                            status: response.status,
-                            statusText: response.statusText,
-                            ok: response.ok,
-                            headers: Object.fromEntries(response.headers.entries())
-                        });
                         
                         if (!response.ok) {
                             throw new Error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
                         }
                         
                         const content = await response.text();
-                        console.log(`📄 Content length for ${domain.name} requirements: ${content.length} characters`);
-                        console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
-                        
                         this.parseRequirements(content, domain);
-                        console.log(`✅ Parsed requirements for ${domain.name}`);
                     } catch (error) {
-                        console.error(`❌ Failed to load requirements for ${domain.name}:`, error);
                         throw error;
                     }
                 }
-                console.log('✅ loadRequirements() completed');
             }
 
             async loadControls() {
-                console.log('🔵 loadControls() started');
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/controls/${domain.id}-${domain.slug}.md`;
-                    console.log(`📥 Fetching controls for ${domain.name}: ${url}`);
                     
                     try {
                         const response = await fetch(url);
-                        console.log(`📊 Response for ${domain.name} controls:`, {
-                            status: response.status,
-                            statusText: response.statusText,
-                            ok: response.ok,
-                            headers: Object.fromEntries(response.headers.entries())
-                        });
                         
                         if (!response.ok) {
                             throw new Error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
                         }
                         
                         const content = await response.text();
-                        console.log(`📄 Content length for ${domain.name} controls: ${content.length} characters`);
-                        console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
-                        
                         this.parseControls(content, domain);
-                        console.log(`✅ Parsed controls for ${domain.name}`);
                     } catch (error) {
-                        console.error(`❌ Failed to load controls for ${domain.name}:`, error);
                         throw error;
                     }
                 }
-                console.log('✅ loadControls() completed');
             }
 
             parseRisks(content, domain) {
-                console.log(`🔍 parseRisks() for ${domain.name} - content length: ${content.length}`);
-                // Updated pattern based on actual content structure
-                const riskPattern = /### \*\*([R-\w+-\d+]): ([^*]+)\*\*\s*\n- \*\*Attack Vectors\*\*: ([^\n]+)\s*\n- \*\*Impact\*\*: ([^\n]+)\s*\n- \*\*Likelihood\*\*: ([^\n]+)\s*\n- \*\*Addressed by Requirements\*\*:\s*\n((?:\s*- \[[^\]]+\]\([^)]+\)\s*\n?)*)/g;
+                const sections = content.split(/(?=### \*\*R-)/);
                 
-                console.log(`🔍 Risk pattern: ${riskPattern}`);
-                
-                let match;
-                let matchCount = 0;
-                while ((match = riskPattern.exec(content)) !== null) {
-                    matchCount++;
-                    const [, id, name, attackVectors, impact, likelihood, requirementsText] = match;
-                    console.log(`✅ Found risk match ${matchCount}:`, { id, name: name.trim() });
+                for (const section of sections) {
+                    if (!section.trim() || !section.includes('R-')) continue;
                     
-                    // Extract priority from likelihood and impact
-                    let priority = 'medium';
-                    if (likelihood.toLowerCase().includes('high')) {
-                        priority = impact.toLowerCase().includes('high') ? 'critical' : 'high';
-                    } else if (likelihood.toLowerCase().includes('medium')) {
-                        priority = impact.toLowerCase().includes('high') ? 'high' : 'medium';
-                    }
-
-                    // Parse requirements links
-                    const reqPattern = /\[([^\]]+)\]\([^)]+\)/g;
-                    const requirements = [];
-                    let reqMatch;
-                    while ((reqMatch = reqPattern.exec(requirementsText)) !== null) {
-                        const reqId = reqMatch[1].match(/SP-\w+-\d+/);
-                        if (reqId) {
-                            requirements.push(reqId[0]);
+                    const idMatch = section.match(/### \*\*(R-[A-Z]{2}-\d{3}):/);
+                    const nameMatch = section.match(/### \*\*R-[A-Z]{2}-\d{3}: ([^*]+)\*\*/);
+                    const attackVectorsMatch = section.match(/- \*\*Attack Vectors\*\*: ([^\n]+)/);
+                    const impactMatch = section.match(/- \*\*Impact\*\*: ([^\n]+)/);
+                    const likelihoodMatch = section.match(/- \*\*Likelihood\*\*: ([^\n]+)/);
+                    
+                    if (idMatch && nameMatch && attackVectorsMatch && impactMatch && likelihoodMatch) {
+                        const id = idMatch[1];
+                        const name = nameMatch[1].trim();
+                        const attackVectors = attackVectorsMatch[1].trim();
+                        const impact = impactMatch[1].trim();
+                        const likelihood = likelihoodMatch[1].trim();
+                        
+                        let priority = 'medium';
+                        if (likelihood.toLowerCase().includes('high')) {
+                            priority = impact.toLowerCase().includes('high') ? 'critical' : 'high';
+                        } else if (likelihood.toLowerCase().includes('medium')) {
+                            priority = impact.toLowerCase().includes('high') ? 'high' : 'medium';
                         }
-                    }
 
-                    this.data.risks[id] = {
-                        id,
-                        name: name.trim(),
-                        attackVectors: attackVectors.trim(),
-                        impact: impact.trim(),
-                        likelihood: likelihood.trim(),
-                        priority,
-                        requirements,
-                        domain: domain.name
-                    };
-                }
-                
-                console.log(`📊 parseRisks() for ${domain.name} found ${matchCount} matches`);
-                if (matchCount === 0) {
-                    console.log(`❌ No risk matches found. First 500 chars of content:`, content.substring(0, 500));
+                        const reqPattern = /SP-\w+-\d{3}/g;
+                        const requirements = [];
+                        let reqMatch;
+                        while ((reqMatch = reqPattern.exec(section)) !== null) {
+                            if (!requirements.includes(reqMatch[0])) {
+                                requirements.push(reqMatch[0]);
+                            }
+                        }
+
+                        this.data.risks[id] = {
+                            id,
+                            name,
+                            attackVectors,
+                            impact,
+                            likelihood,
+                            priority,
+                            requirements,
+                            domain: domain.name
+                        };
+                    }
                 }
             }
 
             parseRequirements(content, domain) {
-                console.log(`🔍 parseRequirements() for ${domain.name} - content length: ${content.length}`);
-                // Updated pattern based on actual content structure - the format uses *Addresses risks:* and *Implementation guidance:*
-                const reqPattern = /\*\*([SP-\w+-\d+]): ([^*]+)\*\*\s*\n((?:- [^\n]+\s*\n)*)\s*- \*Addresses risks: ([^\n]+)\*\s*\n- \*Implementation guidance: ([^\n]+)\*/g;
+                const sections = content.split(/(?=\*\*SP-)/);
                 
-                let match;
-                let matchCount = 0;
-                while ((match = reqPattern.exec(content)) !== null) {
-                    matchCount++;
-                    const [, id, name, descriptionText, risksText, controlsText] = match;
-                    console.log(`✅ Found requirement match ${matchCount}:`, { id, name: name.trim() });
+                for (const section of sections) {
+                    if (!section.trim() || !section.includes('SP-')) continue;
                     
-                    // Extract description from bullet points - take first meaningful bullet point
-                    const bulletPoints = descriptionText.split('\n').filter(line => line.trim().startsWith('- '));
-                    const description = bulletPoints.length > 0 
-                        ? bulletPoints[0].replace(/^- /, '').trim()
-                        : name.trim();
+                    const idMatch = section.match(/\*\*(SP-[A-Z]{2}-\d{3}):/);
+                    const nameMatch = section.match(/\*\*SP-[A-Z]{2}-\d{3}: ([^*]+)\*\*/);
+                    
+                    if (idMatch && nameMatch) {
+                        const id = idMatch[1];
+                        const name = nameMatch[1].trim();
+                        
+                        const bulletPoints = section.split('\n').filter(line => line.trim().startsWith('- ') && !line.includes('*Addresses') && !line.includes('*Implementation'));
+                        const description = bulletPoints.length > 0 
+                            ? bulletPoints[0].replace(/^- /, '').trim()
+                            : name;
 
-                    // Parse risk links
-                    const riskPattern = /R-\w+-\d+/g;
-                    const risks = [];
-                    let riskMatch;
-                    while ((riskMatch = riskPattern.exec(risksText)) !== null) {
-                        risks.push(riskMatch[0]);
+                        const riskPattern = /R-\w+-\d{3}/g;
+                        const risks = [];
+                        let riskMatch;
+                        while ((riskMatch = riskPattern.exec(section)) !== null) {
+                            if (!risks.includes(riskMatch[0])) {
+                                risks.push(riskMatch[0]);
+                            }
+                        }
+
+                        const controlPattern = /C-\w+-\d{3}/g;
+                        const controls = [];
+                        let controlMatch;
+                        while ((controlMatch = controlPattern.exec(section)) !== null) {
+                            if (!controls.includes(controlMatch[0])) {
+                                controls.push(controlMatch[0]);
+                            }
+                        }
+
+                        this.data.requirements[id] = {
+                            id,
+                            name,
+                            description,
+                            risks,
+                            controls,
+                            domain: domain.name
+                        };
                     }
-
-                    // Parse control links
-                    const controlPattern = /C-\w+-\d+/g;
-                    const controls = [];
-                    let controlMatch;
-                    while ((controlMatch = controlPattern.exec(controlsText)) !== null) {
-                        controls.push(controlMatch[0]);
-                    }
-
-                    this.data.requirements[id] = {
-                        id,
-                        name: name.trim(),
-                        description: description,
-                        risks,
-                        controls,
-                        domain: domain.name
-                    };
-                }
-                
-                console.log(`📊 parseRequirements() for ${domain.name} found ${matchCount} matches`);
-                if (matchCount === 0) {
-                    console.log(`❌ No requirement matches found. First 500 chars of content:`, content.substring(0, 500));
                 }
             }
 
             parseControls(content, domain) {
-                console.log(`🔍 parseControls() for ${domain.name} - content length: ${content.length}`);
-                // Updated pattern based on actual content structure - simpler pattern without expecting specific sections
-                const controlPattern = /### \*\*([C-\w+-\d+]): ([^*]+)\*\*\s*\n\*Implements: \[[^\]]+\]\([^)]+\)\*\s*\n\n((?:[^#]+(?=###|$))?)/g;
+                const sections = content.split(/(?=### \*\*C-)/);
                 
-                let match;
-                let matchCount = 0;
-                while ((match = controlPattern.exec(content)) !== null) {
-                    matchCount++;
-                    const [, id, name, descriptionText] = match;
-                    console.log(`✅ Found control match ${matchCount}:`, { id, name: name.trim() });
+                for (const section of sections) {
+                    if (!section.trim() || !section.includes('C-')) continue;
                     
-                    // Extract first meaningful line as description, skip bullet points and formatting
-                    const lines = descriptionText.split('\n')
-                        .map(line => line.trim())
-                        .filter(line => line && !line.startsWith('-') && !line.startsWith('*') && !line.startsWith('#'));
+                    const idMatch = section.match(/### \*\*(C-[A-Z]{2}-\d{3}):/);
+                    const nameMatch = section.match(/### \*\*C-[A-Z]{2}-\d{3}: ([^*]+)\*\*/);
                     
-                    let description = name.trim(); // Default to the name
-                    if (lines.length > 0) {
-                        // Look for the first substantial line of text
-                        for (const line of lines) {
-                            if (line.length > 20 && !line.includes('**')) { // Skip very short lines and markdown formatting
-                                description = line;
-                                break;
+                    if (idMatch && nameMatch) {
+                        const id = idMatch[1];
+                        const name = nameMatch[1].trim();
+                        
+                        const lines = section.split('\n')
+                            .map(line => line.trim())
+                            .filter(line => line && !line.startsWith('-') && !line.startsWith('*') && !line.startsWith('#') && !line.startsWith('**') && line.length > 20);
+                        
+                        let description = name;
+                        if (lines.length > 0) {
+                            for (const line of lines) {
+                                if (!line.includes('**') && !line.includes('Implements:')) {
+                                    description = line;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    this.data.controls[id] = {
-                        id,
-                        name: name.trim(),
-                        category: 'Implementation Control', // Generic category since structure varies
-                        description: description.length > 120 ? description.substring(0, 120) + '...' : description,
-                        domain: domain.name
-                    };
-                }
-                
-                console.log(`📊 parseControls() for ${domain.name} found ${matchCount} matches`);
-                if (matchCount === 0) {
-                    console.log(`❌ No control matches found. First 500 chars of content:`, content.substring(0, 500));
+                        this.data.controls[id] = {
+                            id,
+                            name,
+                            category: 'Implementation Control',
+                            description: description.length > 120 ? description.substring(0, 120) + '...' : description,
+                            domain: domain.name
+                        };
+                    }
                 }
             }
 
             generateMapping() {
-                console.log('🔄 generateMapping() started');
                 const contentDiv = document.getElementById('content');
                 
-                // Check if we have any parsed data
                 const totalRisks = Object.keys(this.data.risks).length;
                 const totalRequirements = Object.keys(this.data.requirements).length;
                 const totalControls = Object.keys(this.data.controls).length;
                 
-                console.log('📊 Data available for mapping:', { totalRisks, totalRequirements, totalControls });
-                
-                // Only clear and regenerate if we have actual data
                 if (totalRisks === 0 && totalRequirements === 0 && totalControls === 0) {
-                    console.log('⚠️ No parsed data available, keeping placeholder content');
                     return;
                 }
                 
-                console.log('✅ Live data available, generating new mapping');
                 contentDiv.innerHTML = '';
 
                 let domainsWithContent = 0;
                 for (const domain of this.domains) {
                     const domainRisks = Object.values(this.data.risks).filter(risk => risk.domain === domain.name);
-                    console.log(`📋 Domain ${domain.name}: ${domainRisks.length} risks found`);
                     
                     if (domainRisks.length === 0) {
-                        console.log(`⚠️ No risks found for ${domain.name}, skipping`);
                         continue;
                     }
                     
@@ -702,7 +620,6 @@
                     const table = document.createElement('table');
                     table.className = 'mapping-table';
 
-                    // Table header
                     const thead = document.createElement('thead');
                     thead.innerHTML = `
                         <tr>
@@ -715,7 +632,6 @@
 
                     const tbody = document.createElement('tbody');
                     
-                    // Sort risks by priority
                     const priorityOrder = { critical: 0, high: 1, medium: 2 };
                     domainRisks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 
@@ -727,36 +643,64 @@
                     domainSection.appendChild(table);
                     contentDiv.appendChild(domainSection);
                 }
-                
-                console.log(`✅ Generated mapping for ${domainsWithContent} domains`);
-                
-                // If no domains had content, restore placeholder
-                if (domainsWithContent === 0) {
-                    console.log('⚠️ No domains had content, this should not happen if data was parsed');
-                    // Don't clear content in this case, keep whatever was there
-                }
             }
 
             generateRiskRows(tbody, risk) {
                 const requirements = risk.requirements.map(reqId => this.data.requirements[reqId]).filter(Boolean);
                 
+                // If no requirements found, create a single row with placeholder
+                if (requirements.length === 0) {
+                    const row = document.createElement('tr');
+                    
+                    const riskCell = document.createElement('td');
+                    riskCell.className = `risk-cell priority-${risk.priority}`;
+                    riskCell.innerHTML = `
+                        <span class="risk-id">${risk.id}</span>${risk.name}
+                        <div class="description">${risk.attackVectors}</div>
+                    `;
+                    row.appendChild(riskCell);
+                    
+                    const reqCell = document.createElement('td');
+                    reqCell.className = 'requirement-cell';
+                    reqCell.innerHTML = `
+                        <span class="req-id">N/A</span>No requirements defined
+                        <div class="description">Requirements mapping needed</div>
+                    `;
+                    row.appendChild(reqCell);
+                    
+                    const controlCell = document.createElement('td');
+                    controlCell.className = 'control-cell';
+                    controlCell.innerHTML = `
+                        <span class="control-id">N/A</span>No controls defined
+                        <div class="description">Control implementation needed</div>
+                    `;
+                    row.appendChild(controlCell);
+                    
+                    tbody.appendChild(row);
+                    return;
+                }
+
+                // Calculate total rows needed for this risk
                 let totalRows = 0;
                 for (const req of requirements) {
                     const controls = req.controls.map(controlId => this.data.controls[controlId]).filter(Boolean);
-                    totalRows += Math.max(1, controls.length);
+                    totalRows += Math.max(1, controls.length); // At least 1 row per requirement
                 }
 
-                let rowIndex = 0;
+                let currentRow = 0;
+                
+                // Generate rows for each requirement
                 for (let reqIndex = 0; reqIndex < requirements.length; reqIndex++) {
                     const req = requirements[reqIndex];
                     const controls = req.controls.map(controlId => this.data.controls[controlId]).filter(Boolean);
-                    const controlCount = Math.max(1, controls.length);
+                    const controlsToShow = controls.length > 0 ? controls : [null]; // Show at least one row per requirement
 
-                    for (let controlIndex = 0; controlIndex < controlCount; controlIndex++) {
+                    // Generate rows for each control (or one row if no controls)
+                    for (let controlIndex = 0; controlIndex < controlsToShow.length; controlIndex++) {
                         const row = document.createElement('tr');
 
-                        // Risk cell (only on first row)
-                        if (rowIndex === 0) {
+                        // Risk cell (only on the very first row for this risk)
+                        if (currentRow === 0) {
                             const riskCell = document.createElement('td');
                             riskCell.className = `risk-cell priority-${risk.priority}`;
                             riskCell.rowSpan = totalRows;
@@ -767,11 +711,11 @@
                             row.appendChild(riskCell);
                         }
 
-                        // Requirement cell (only on first control of each requirement)
+                        // Requirement cell (only on first control row for each requirement)
                         if (controlIndex === 0) {
                             const reqCell = document.createElement('td');
                             reqCell.className = 'requirement-cell';
-                            reqCell.rowSpan = controlCount;
+                            reqCell.rowSpan = controlsToShow.length;
                             reqCell.innerHTML = `
                                 <span class="req-id">${req.id}</span>${req.name}
                                 <div class="description">${req.description}</div>
@@ -779,12 +723,12 @@
                             row.appendChild(reqCell);
                         }
 
-                        // Control cell
+                        // Control cell (one per row)
                         const controlCell = document.createElement('td');
                         controlCell.className = 'control-cell';
                         
-                        if (controls[controlIndex]) {
-                            const control = controls[controlIndex];
+                        const control = controlsToShow[controlIndex];
+                        if (control) {
                             controlCell.innerHTML = `
                                 <span class="control-id">${control.id}</span>${control.name}
                                 <div class="description">${control.description}</div>
@@ -798,35 +742,22 @@
                         
                         row.appendChild(controlCell);
                         tbody.appendChild(row);
-                        rowIndex++;
+                        currentRow++;
                     }
                 }
             }
         }
 
-        // Initialize and load data when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 DOM Content Loaded - Starting initialization');
-            console.log('📍 Current URL:', window.location.href);
-            console.log('📍 User Agent:', navigator.userAgent);
-            
             const generator = new OpSecMappingGenerator();
-            console.log('✅ OpSecMappingGenerator created');
-            
-            // Check if elements exist
             const statusBanner = document.getElementById('status-banner');
             const content = document.getElementById('content');
-            console.log('🔍 Status banner element:', statusBanner ? 'Found' : 'NOT FOUND');
-            console.log('🔍 Content element:', content ? 'Found' : 'NOT FOUND');
             
             if (!statusBanner || !content) {
-                console.error('❌ Critical DOM elements missing!');
                 return;
             }
             
-            // Set a timeout to show error message if loading takes too long
             const loadingTimeout = setTimeout(() => {
-                console.warn('⏰ Loading timeout reached (8 seconds) - showing placeholder content');
                 statusBanner.className = 'status-banner error';
                 statusBanner.innerHTML = `
                     <strong>Loading Timeout</strong><br>
@@ -834,20 +765,13 @@
                     Showing placeholder content below. For the most up-to-date information, please visit the 
                     <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
                 `;
-            }, 8000); // 8 second timeout
+            }, 8000);
             
-            console.log('⏱️ Loading timeout set for 8 seconds');
-            
-            // Try to load live data, but gracefully fall back to placeholder
-            console.log('🔄 Starting loadAllData()...');
             generator.loadAllData()
                 .then(() => {
-                    console.log('✅ loadAllData() completed successfully');
                     clearTimeout(loadingTimeout);
                 })
                 .catch((error) => {
-                    console.error('❌ loadAllData() failed:', error);
-                    console.error('❌ Error stack:', error.stack);
                     clearTimeout(loadingTimeout);
                     statusBanner.className = 'status-banner error';
                     statusBanner.innerHTML = `

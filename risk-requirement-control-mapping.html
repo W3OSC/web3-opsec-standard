@@ -85,6 +85,20 @@
             vertical-align: top;
         }
         
+        .mapping-table td[rowspan] {
+            vertical-align: middle;
+        }
+        
+        .risk-id, .req-id, .control-id {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .risk-id:hover, .req-id:hover, .control-id:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        
         .risk-cell {
             background-color: #ffebee;
             border-left: 4px solid #e74c3c;
@@ -209,21 +223,21 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-critical" rowspan="2">
-                                <span class="risk-id">R-WM-01</span>Private Key Compromise
+                                <a href="risks/01-wallet-multisig.md" class="risk-id">R-WM-01</a>Private Key Compromise
                                 <div class="description">Unauthorized access to private keys through various attack vectors</div>
                             </td>
                             <td class="requirement-cell" rowspan="2">
-                                <span class="req-id">SP-WM-01</span>Multi-Signature Implementation
+                                <a href="requirements/01-wallet-multisig.md" class="req-id">SP-WM-01</a>Multi-Signature Implementation
                                 <div class="description">Implement multi-signature wallets for critical operations</div>
                             </td>
                             <td class="control-cell">
-                                <span class="control-id">C-WM-01</span>Hardware Security Module Integration
+                                <a href="controls/01-wallet-multisig.md" class="control-id">C-WM-01</a>Hardware Security Module Integration
                                 <div class="description">Use HSMs for secure key generation and storage</div>
                             </td>
                         </tr>
                         <tr>
                             <td class="control-cell">
-                                <span class="control-id">C-WM-02</span>Multi-Party Computation
+                                <a href="controls/01-wallet-multisig.md" class="control-id">C-WM-02</a>Multi-Party Computation
                                 <div class="description">Implement MPC protocols for distributed key management</div>
                             </td>
                         </tr>
@@ -244,15 +258,15 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-high">
-                                <span class="risk-id">R-EP-01</span>Malware Infection
+                                <a href="risks/02-endpoints.md" class="risk-id">R-EP-01</a>Malware Infection
                                 <div class="description">Malicious software compromising endpoint security</div>
                             </td>
                             <td class="requirement-cell">
-                                <span class="req-id">SP-EP-01</span>Endpoint Protection
+                                <a href="requirements/02-endpoints.md" class="req-id">SP-EP-01</a>Endpoint Protection
                                 <div class="description">Deploy comprehensive endpoint security solutions</div>
                             </td>
                             <td class="control-cell">
-                                <span class="control-id">C-EP-01</span>Anti-Malware Implementation
+                                <a href="controls/02-endpoints.md" class="control-id">C-EP-01</a>Anti-Malware Implementation
                                 <div class="description">Deploy and maintain enterprise-grade anti-malware solutions</div>
                             </td>
                         </tr>
@@ -273,15 +287,15 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-medium">
-                                <span class="risk-id">R-CS-01</span>Social Engineering
+                                <a href="risks/03-communications-socials.md" class="risk-id">R-CS-01</a>Social Engineering
                                 <div class="description">Manipulation through social media and communication channels</div>
                             </td>
                             <td class="requirement-cell">
-                                <span class="req-id">SP-CS-01</span>Communication Security
+                                <a href="requirements/03-communications-socials.md" class="req-id">SP-CS-01</a>Communication Security
                                 <div class="description">Secure all communication channels and social media presence</div>
                             </td>
                             <td class="control-cell">
-                                <span class="control-id">C-CS-01</span>Secure Communication Protocols
+                                <a href="controls/03-communications-socials.md" class="control-id">C-CS-01</a>Secure Communication Protocols
                                 <div class="description">Implement end-to-end encryption for all communications</div>
                             </td>
                         </tr>
@@ -302,15 +316,15 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-high">
-                                <span class="risk-id">R-DI-01</span>Infrastructure Compromise
+                                <a href="risks/04-devops-infrastructure.md" class="risk-id">R-DI-01</a>Infrastructure Compromise
                                 <div class="description">Unauthorized access to development and production infrastructure</div>
                             </td>
                             <td class="requirement-cell">
-                                <span class="req-id">SP-DI-01</span>Infrastructure Security
+                                <a href="requirements/04-devops-infrastructure.md" class="req-id">SP-DI-01</a>Infrastructure Security
                                 <div class="description">Secure all infrastructure components and access points</div>
                             </td>
                             <td class="control-cell">
-                                <span class="control-id">C-DI-01</span>Zero Trust Architecture
+                                <a href="controls/04-devops-infrastructure.md" class="control-id">C-DI-01</a>Zero Trust Architecture
                                 <div class="description">Implement zero trust principles across all infrastructure</div>
                             </td>
                         </tr>
@@ -331,15 +345,15 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-critical">
-                                <span class="risk-id">R-IR-01</span>Inadequate Incident Response
+                                <a href="risks/05-incident-readiness.md" class="risk-id">R-IR-01</a>Inadequate Incident Response
                                 <div class="description">Delayed or ineffective response to security incidents</div>
                             </td>
                             <td class="requirement-cell">
-                                <span class="req-id">SP-IR-01</span>Incident Response Plan
+                                <a href="requirements/05-incident-readiness.md" class="req-id">SP-IR-01</a>Incident Response Plan
                                 <div class="description">Maintain comprehensive incident response procedures</div>
                             </td>
                             <td class="control-cell">
-                                <span class="control-id">C-IR-01</span>24/7 Security Operations Center
+                                <a href="controls/05-incident-readiness.md" class="control-id">C-IR-01</a>24/7 Security Operations Center
                                 <div class="description">Establish continuous monitoring and response capabilities</div>
                             </td>
                         </tr>
@@ -645,6 +659,28 @@
                 }
             }
 
+            getFilePathForId(id, type) {
+                // Extract domain slug from ID (e.g., R-WM-01 -> wallet-multisig)
+                const domainMap = {
+                    'WM': 'wallet-multisig',
+                    'EP': 'endpoints', 
+                    'CS': 'communications-socials',
+                    'DI': 'devops-infrastructure',
+                    'IR': 'incident-readiness'
+                };
+                
+                const domainCode = id.split('-')[1];
+                const domainSlug = domainMap[domainCode];
+                
+                if (!domainSlug) return '#';
+                
+                // Get domain number from the domains array
+                const domain = this.domains.find(d => d.slug === domainSlug);
+                const domainId = domain ? domain.id : '01';
+                
+                return `${type}/${domainId}-${domainSlug}.md`;
+            }
+
             generateRiskRows(tbody, risk) {
                 const requirements = risk.requirements.map(reqId => this.data.requirements[reqId]).filter(Boolean);
                 
@@ -654,8 +690,9 @@
                     
                     const riskCell = document.createElement('td');
                     riskCell.className = `risk-cell priority-${risk.priority}`;
+                    const riskPath = this.getFilePathForId(risk.id, 'risks');
                     riskCell.innerHTML = `
-                        <span class="risk-id">${risk.id}</span>${risk.name}
+                        <a href="${riskPath}" class="risk-id">${risk.id}</a>${risk.name}
                         <div class="description">${risk.attackVectors}</div>
                     `;
                     row.appendChild(riskCell);
@@ -703,9 +740,12 @@
                         if (currentRow === 0) {
                             const riskCell = document.createElement('td');
                             riskCell.className = `risk-cell priority-${risk.priority}`;
-                            riskCell.rowSpan = totalRows;
+                            if (totalRows > 1) {
+                                riskCell.rowSpan = totalRows;
+                            }
+                            const riskPath = this.getFilePathForId(risk.id, 'risks');
                             riskCell.innerHTML = `
-                                <span class="risk-id">${risk.id}</span>${risk.name}
+                                <a href="${riskPath}" class="risk-id">${risk.id}</a>${risk.name}
                                 <div class="description">${risk.attackVectors}</div>
                             `;
                             row.appendChild(riskCell);
@@ -715,9 +755,12 @@
                         if (controlIndex === 0) {
                             const reqCell = document.createElement('td');
                             reqCell.className = 'requirement-cell';
-                            reqCell.rowSpan = controlsToShow.length;
+                            if (controlsToShow.length > 1) {
+                                reqCell.rowSpan = controlsToShow.length;
+                            }
+                            const reqPath = this.getFilePathForId(req.id, 'requirements');
                             reqCell.innerHTML = `
-                                <span class="req-id">${req.id}</span>${req.name}
+                                <a href="${reqPath}" class="req-id">${req.id}</a>${req.name}
                                 <div class="description">${req.description}</div>
                             `;
                             row.appendChild(reqCell);
@@ -729,8 +772,9 @@
                         
                         const control = controlsToShow[controlIndex];
                         if (control) {
+                            const controlPath = this.getFilePathForId(control.id, 'controls');
                             controlCell.innerHTML = `
-                                <span class="control-id">${control.id}</span>${control.name}
+                                <a href="${controlPath}" class="control-id">${control.id}</a>${control.name}
                                 <div class="description">${control.description}</div>
                             `;
                         } else {

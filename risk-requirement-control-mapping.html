@@ -94,10 +94,6 @@
             color: inherit;
         }
         
-        .risk-id:hover, .req-id:hover, .control-id:hover {
-            opacity: 0.8;
-            cursor: pointer;
-        }
         
         .cell-link {
             text-decoration: none;
@@ -722,7 +718,74 @@
                 const domain = this.domains.find(d => d.slug === domainSlug);
                 const domainId = domain ? domain.id : '01';
                 
-                return `https://github.com/W3OSC/web3-opsec-standard/blob/main/${type}/${domainId}-${domainSlug}.md`;
+                const baseUrl = `https://github.com/W3OSC/web3-opsec-standard/blob/main/${type}/${domainId}-${domainSlug}.md`;
+                const anchor = this.getSectionAnchor(id, type);
+                
+                return anchor ? `${baseUrl}${anchor}` : baseUrl;
+            }
+
+            getSectionAnchor(id, type) {
+                // For risks, use individual risk anchors
+                if (type === 'risks') {
+                    const riskName = this.data.risks[id]?.name;
+                    if (riskName) {
+                        return `#${id.toLowerCase()}-${riskName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
+                    }
+                    return '';
+                }
+                
+                // For requirements and controls, map to section anchors
+                const sectionMap = {
+                    // Wallet & Multi-Sig Management sections
+                    'SP-WM-001': '#hardware-security',
+                    'SP-WM-002': '#hardware-security',
+                    'SP-WM-003': '#key-generation-and-storage',
+                    'SP-WM-004': '#key-generation-and-storage',
+                    'SP-WM-005': '#key-generation-and-storage',
+                    'SP-WM-006': '#multi-signature-configuration',
+                    'SP-WM-007': '#multi-signature-configuration',
+                    'SP-WM-008': '#multi-signature-configuration',
+                    'SP-WM-009': '#transaction-security',
+                    'SP-WM-010': '#transaction-security',
+                    'SP-WM-011': '#transaction-security',
+                    'SP-WM-012': '#operational-security',
+                    'SP-WM-013': '#operational-security',
+                    'SP-WM-014': '#operational-security',
+                    'SP-WM-015': '#access-control',
+                    'SP-WM-016': '#access-control',
+                    
+                    'C-WM-001': '#hardware-security-controls',
+                    'C-WM-002': '#hardware-security-controls',
+                    'C-WM-003': '#key-generation-and-storage-controls',
+                    'C-WM-004': '#key-generation-and-storage-controls',
+                    'C-WM-005': '#multi-signature-configuration-controls',
+                    'C-WM-006': '#multi-signature-configuration-controls',
+                    'C-WM-007': '#multi-signature-configuration-controls',
+                    'C-WM-008': '#transaction-security-controls',
+                    'C-WM-009': '#transaction-security-controls',
+                    'C-WM-010': '#transaction-security-controls',
+                    'C-WM-011': '#operational-security-controls',
+                    'C-WM-012': '#operational-security-controls',
+                    'C-WM-013': '#operational-security-controls',
+                    'C-WM-014': '#access-control-and-physical-security-controls',
+                    'C-WM-015': '#access-control-and-physical-security-controls',
+                    'C-WM-016': '#testing-and-validation-controls',
+                    
+                    // Add other domains as needed - for now using generic patterns
+                    'SP-EP-001': '#endpoint-protection',
+                    'C-EP-001': '#anti-malware-controls',
+                    
+                    'SP-CS-001': '#communication-security',
+                    'C-CS-001': '#secure-communication-controls',
+                    
+                    'SP-DI-001': '#infrastructure-security',
+                    'C-DI-001': '#zero-trust-controls',
+                    
+                    'SP-IR-001': '#incident-response-planning',
+                    'C-IR-001': '#security-operations-controls'
+                };
+                
+                return sectionMap[id] || '';
             }
 
             generateRiskRows(tbody, risk) {

@@ -368,10 +368,16 @@
             }
 
             async loadAllData() {
+                console.log('📊 loadAllData() started');
                 const statusBanner = document.getElementById('status-banner');
                 
                 try {
+                    console.log('🔄 Updating status banner to loading state');
                     statusBanner.innerHTML = '<strong>Loading risks, requirements, and controls...</strong>';
+                    
+                    console.log('🚀 Starting parallel data loading...');
+                    console.log('📋 Base URL:', this.baseUrl);
+                    console.log('📋 Domains to load:', this.domains.map(d => d.name));
                     
                     await Promise.all([
                         this.loadRisks(),
@@ -379,14 +385,27 @@
                         this.loadControls()
                     ]);
                     
+                    console.log('✅ All data loaded successfully');
+                    console.log('📊 Data summary:');
+                    console.log('  - Risks:', Object.keys(this.data.risks).length);
+                    console.log('  - Requirements:', Object.keys(this.data.requirements).length);
+                    console.log('  - Controls:', Object.keys(this.data.controls).length);
+                    
                     statusBanner.innerHTML = '<strong>Generating mapping...</strong>';
+                    console.log('🔄 Generating mapping...');
                     this.generateMapping();
                     
                     // Hide status banner on success
+                    console.log('✅ Mapping generated successfully, hiding status banner');
                     statusBanner.style.display = 'none';
                     
                 } catch (error) {
-                    console.error('Error loading data:', error);
+                    console.error('❌ loadAllData() failed:', error);
+                    console.error('❌ Error details:', {
+                        message: error.message,
+                        stack: error.stack,
+                        name: error.name
+                    });
                     statusBanner.className = 'status-banner error';
                     statusBanner.innerHTML = `
                         <strong>Unable to Load Live Data</strong><br>
@@ -398,33 +417,102 @@
             }
 
             async loadRisks() {
+                console.log('🔴 loadRisks() started');
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/risks/${domain.id}-${domain.slug}.md`;
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`Failed to load risks for ${domain.name}`);
-                    const content = await response.text();
-                    this.parseRisks(content, domain);
+                    console.log(`📥 Fetching risks for ${domain.name}: ${url}`);
+                    
+                    try {
+                        const response = await fetch(url);
+                        console.log(`📊 Response for ${domain.name} risks:`, {
+                            status: response.status,
+                            statusText: response.statusText,
+                            ok: response.ok,
+                            headers: Object.fromEntries(response.headers.entries())
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
+                        }
+                        
+                        const content = await response.text();
+                        console.log(`📄 Content length for ${domain.name} risks: ${content.length} characters`);
+                        console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
+                        
+                        this.parseRisks(content, domain);
+                        console.log(`✅ Parsed risks for ${domain.name}`);
+                    } catch (error) {
+                        console.error(`❌ Failed to load risks for ${domain.name}:`, error);
+                        throw error;
+                    }
                 }
+                console.log('✅ loadRisks() completed');
             }
 
             async loadRequirements() {
+                console.log('🟢 loadRequirements() started');
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/requirements/${domain.id}-${domain.slug}.md`;
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`Failed to load requirements for ${domain.name}`);
-                    const content = await response.text();
-                    this.parseRequirements(content, domain);
+                    console.log(`📥 Fetching requirements for ${domain.name}: ${url}`);
+                    
+                    try {
+                        const response = await fetch(url);
+                        console.log(`📊 Response for ${domain.name} requirements:`, {
+                            status: response.status,
+                            statusText: response.statusText,
+                            ok: response.ok,
+                            headers: Object.fromEntries(response.headers.entries())
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
+                        }
+                        
+                        const content = await response.text();
+                        console.log(`📄 Content length for ${domain.name} requirements: ${content.length} characters`);
+                        console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
+                        
+                        this.parseRequirements(content, domain);
+                        console.log(`✅ Parsed requirements for ${domain.name}`);
+                    } catch (error) {
+                        console.error(`❌ Failed to load requirements for ${domain.name}:`, error);
+                        throw error;
+                    }
                 }
+                console.log('✅ loadRequirements() completed');
             }
 
             async loadControls() {
+                console.log('🔵 loadControls() started');
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/controls/${domain.id}-${domain.slug}.md`;
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`Failed to load controls for ${domain.name}`);
-                    const content = await response.text();
-                    this.parseControls(content, domain);
+                    console.log(`📥 Fetching controls for ${domain.name}: ${url}`);
+                    
+                    try {
+                        const response = await fetch(url);
+                        console.log(`📊 Response for ${domain.name} controls:`, {
+                            status: response.status,
+                            statusText: response.statusText,
+                            ok: response.ok,
+                            headers: Object.fromEntries(response.headers.entries())
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
+                        }
+                        
+                        const content = await response.text();
+                        console.log(`📄 Content length for ${domain.name} controls: ${content.length} characters`);
+                        console.log(`📄 Content preview: ${content.substring(0, 200)}...`);
+                        
+                        this.parseControls(content, domain);
+                        console.log(`✅ Parsed controls for ${domain.name}`);
+                    } catch (error) {
+                        console.error(`❌ Failed to load controls for ${domain.name}:`, error);
+                        throw error;
+                    }
                 }
+                console.log('✅ loadControls() completed');
             }
 
             parseRisks(content, domain) {
@@ -654,12 +742,27 @@
 
         // Initialize and load data when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 DOM Content Loaded - Starting initialization');
+            console.log('📍 Current URL:', window.location.href);
+            console.log('📍 User Agent:', navigator.userAgent);
+            
             const generator = new OpSecMappingGenerator();
+            console.log('✅ OpSecMappingGenerator created');
+            
+            // Check if elements exist
+            const statusBanner = document.getElementById('status-banner');
+            const content = document.getElementById('content');
+            console.log('🔍 Status banner element:', statusBanner ? 'Found' : 'NOT FOUND');
+            console.log('🔍 Content element:', content ? 'Found' : 'NOT FOUND');
+            
+            if (!statusBanner || !content) {
+                console.error('❌ Critical DOM elements missing!');
+                return;
+            }
             
             // Set a timeout to show error message if loading takes too long
             const loadingTimeout = setTimeout(() => {
-                console.warn('Loading timeout - showing placeholder content');
-                const statusBanner = document.getElementById('status-banner');
+                console.warn('⏰ Loading timeout reached (8 seconds) - showing placeholder content');
                 statusBanner.className = 'status-banner error';
                 statusBanner.innerHTML = `
                     <strong>Loading Timeout</strong><br>
@@ -669,19 +772,24 @@
                 `;
             }, 8000); // 8 second timeout
             
+            console.log('⏱️ Loading timeout set for 8 seconds');
+            
             // Try to load live data, but gracefully fall back to placeholder
+            console.log('🔄 Starting loadAllData()...');
             generator.loadAllData()
                 .then(() => {
+                    console.log('✅ loadAllData() completed successfully');
                     clearTimeout(loadingTimeout);
                 })
                 .catch((error) => {
+                    console.error('❌ loadAllData() failed:', error);
+                    console.error('❌ Error stack:', error.stack);
                     clearTimeout(loadingTimeout);
-                    console.error('Failed to load live data:', error);
-                    const statusBanner = document.getElementById('status-banner');
                     statusBanner.className = 'status-banner error';
                     statusBanner.innerHTML = `
                         <strong>Unable to Load Live Data</strong><br>
                         <small>The live data couldn't be loaded from GitHub (likely due to CORS restrictions when served from GitHub Pages). 
+                        Error: ${error.message}<br>
                         Showing placeholder content below. For the most up-to-date information, please visit the 
                         <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
                     `;

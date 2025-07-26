@@ -516,11 +516,17 @@
             }
 
             parseRisks(content, domain) {
+                console.log(`🔍 parseRisks() for ${domain.name} - content length: ${content.length}`);
                 const riskPattern = /### \*\*([R-\w+-\d+]): ([^*]+)\*\*\s*\n- \*\*Attack Vectors\*\*: ([^\n]+)\s*\n- \*\*Impact\*\*: ([^\n]+)\s*\n- \*\*Likelihood\*\*: ([^\n]+)\s*\n- \*\*Addressed by Requirements\*\*:\s*((?:\s*- \[[^\]]+\]\([^)]+\)\s*)*)/g;
                 
+                console.log(`🔍 Risk pattern: ${riskPattern}`);
+                
                 let match;
+                let matchCount = 0;
                 while ((match = riskPattern.exec(content)) !== null) {
+                    matchCount++;
                     const [, id, name, attackVectors, impact, likelihood, requirementsText] = match;
+                    console.log(`✅ Found risk match ${matchCount}:`, { id, name: name.trim() });
                     
                     // Extract priority from likelihood and impact
                     let priority = 'medium';
@@ -552,14 +558,23 @@
                         domain: domain.name
                     };
                 }
+                
+                console.log(`📊 parseRisks() for ${domain.name} found ${matchCount} matches`);
+                if (matchCount === 0) {
+                    console.log(`❌ No risk matches found. First 500 chars of content:`, content.substring(0, 500));
+                }
             }
 
             parseRequirements(content, domain) {
+                console.log(`🔍 parseRequirements() for ${domain.name} - content length: ${content.length}`);
                 const reqPattern = /\*\*([SP-\w+-\d+]): ([^*]+)\*\*\s*\n((?:- [^\n]+\s*\n)*)\s*- \*Addresses risks: ([^\n]+)\s*\n- \*Implementation guidance: ([^\n]+)/g;
                 
                 let match;
+                let matchCount = 0;
                 while ((match = reqPattern.exec(content)) !== null) {
+                    matchCount++;
                     const [, id, name, descriptionText, risksText, controlsText] = match;
+                    console.log(`✅ Found requirement match ${matchCount}:`, { id, name: name.trim() });
                     
                     // Extract description from bullet points - take first meaningful bullet point
                     const bulletPoints = descriptionText.split('\n').filter(line => line.trim().startsWith('- '));
@@ -592,14 +607,23 @@
                         domain: domain.name
                     };
                 }
+                
+                console.log(`📊 parseRequirements() for ${domain.name} found ${matchCount} matches`);
+                if (matchCount === 0) {
+                    console.log(`❌ No requirement matches found. First 500 chars of content:`, content.substring(0, 500));
+                }
             }
 
             parseControls(content, domain) {
+                console.log(`🔍 parseControls() for ${domain.name} - content length: ${content.length}`);
                 const controlPattern = /### \*\*([C-\w+-\d+]): ([^*]+)\*\*\s*\n\*Implements: \[[^\]]+\]\([^)]+\)\*\s*\n\n\*\*([^*]+)\*\*\s*\n((?:[^#]+(?=###|$))?)/g;
                 
                 let match;
+                let matchCount = 0;
                 while ((match = controlPattern.exec(content)) !== null) {
+                    matchCount++;
                     const [, id, name, category, descriptionText] = match;
+                    console.log(`✅ Found control match ${matchCount}:`, { id, name: name.trim() });
                     
                     // Extract first meaningful line as description, skip bullet points
                     const lines = descriptionText.split('\n')
@@ -624,6 +648,11 @@
                         description: description.length > 120 ? description.substring(0, 120) + '...' : description,
                         domain: domain.name
                     };
+                }
+                
+                console.log(`📊 parseControls() for ${domain.name} found ${matchCount} matches`);
+                if (matchCount === 0) {
+                    console.log(`❌ No control matches found. First 500 chars of content:`, content.substring(0, 500));
                 }
             }
 

@@ -10,6 +10,7 @@
             margin: 20px;
             background-color: #f8f9fa;
             line-height: 1.4;
+            overflow-y: scroll;
         }
         
         .container {
@@ -28,27 +29,6 @@
             font-size: 2.2em;
         }
         
-        .status-banner {
-            background: #e3f2fd;
-            border: 1px solid #2196f3;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .status-banner.loading {
-            background: #fff3e0;
-            border-color: #ff9800;
-            color: #e65100;
-        }
-        
-        .status-banner.error {
-            background: #ffebee;
-            border-color: #f44336;
-            color: #c62828;
-        }
-        
         .domain-section {
             margin-bottom: 50px;
         }
@@ -61,6 +41,25 @@
             border-radius: 6px;
             font-size: 1.4em;
             font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .collapse-toggle {
+            font-size: 1.2em;
+            transition: transform 0.15s ease;
+            margin-left: 10px;
+        }
+        
+        .collapse-toggle.collapsed {
+            transform: rotate(90deg);
+        }
+        
+        .domain-title:hover {
+            opacity: 0.95;
         }
         
         .mapping-table {
@@ -81,7 +80,7 @@
         
         .mapping-table td {
             padding: 10px 8px;
-            border: 1px solid #ddd;
+            border: 1px solid #999;
             vertical-align: top;
         }
         
@@ -108,10 +107,10 @@
         }
         
         .risk-cell {
-            background-color: #ffebee;
-            border-left: 4px solid #e74c3c;
-            font-weight: 600;
-            color: #c62828;
+            background-color: #ffe8c5;
+            border-left: 4px solid #ff6f00;
+            font-weight: 500;
+            color: #bf360c;
         }
         
         .requirement-cell {
@@ -124,13 +123,14 @@
         .control-cell {
             background-color: #e3f2fd;
             border-left: 4px solid #2196f3;
+            font-weight: 500;
             color: #0d47a1;
         }
         
         .risk-id {
             font-family: 'Courier New', monospace;
             font-size: 0.85em;
-            background: #c62828;
+            background: #ff6f00;
             color: white;
             padding: 2px 6px;
             border-radius: 3px;
@@ -164,20 +164,6 @@
             font-style: italic;
         }
         
-        .priority-critical {
-            background: #ffcdd2;
-            border-left-color: #d32f2f;
-        }
-        
-        .priority-high {
-            background: #ffe0b2;
-            border-left-color: #f57c00;
-        }
-        
-        .priority-medium {
-            background: #fff3e0;
-            border-left-color: #ff9800;
-        }
         
         @media (max-width: 1200px) {
             .mapping-table {
@@ -205,201 +191,18 @@
                 padding: 6px 4px;
             }
         }
+        
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Web3 OpSec Standard (W3OSS)</h1>
         
-        <div id="status-banner" class="status-banner loading">
-            <strong>Loading live data from GitHub...</strong><br>
-            <small>This may take a few moments. If loading fails, placeholder content will be shown below.</small>
-        </div>
-        
         <div id="content">
-            <!-- Placeholder content that shows immediately -->
-            <div class="domain-section">
-                <h2 class="domain-title">Domain 01: Wallet & Multi-Sig Management</h2>
-                <table class="mapping-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Risk</th>
-                            <th style="width: 30%;">Requirement</th>
-                            <th style="width: 45%;">Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="risk-cell priority-critical" rowspan="2">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/01-wallet-multisig.md" class="cell-link">
-                                    <span class="risk-id">R-WM-01</span>Private Key Compromise
-                                    <div class="description">Unauthorized access to private keys through various attack vectors</div>
-                                </a>
-                            </td>
-                            <td class="requirement-cell" rowspan="2">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/01-wallet-multisig.md" class="cell-link">
-                                    <span class="req-id">SP-WM-01</span>Multi-Signature Implementation
-                                    <div class="description">Implement multi-signature wallets for critical operations</div>
-                                </a>
-                            </td>
-                            <td class="control-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/01-wallet-multisig.md" class="cell-link">
-                                    <span class="control-id">C-WM-01</span>Hardware Security Module Integration
-                                    <div class="description">Use HSMs for secure key generation and storage</div>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="control-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/01-wallet-multisig.md" class="cell-link">
-                                    <span class="control-id">C-WM-02</span>Multi-Party Computation
-                                    <div class="description">Implement MPC protocols for distributed key management</div>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="domain-section">
-                <h2 class="domain-title">Domain 02: Endpoint Security</h2>
-                <table class="mapping-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Risk</th>
-                            <th style="width: 30%;">Requirement</th>
-                            <th style="width: 45%;">Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="risk-cell priority-high">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/02-endpoints.md" class="cell-link">
-                                    <span class="risk-id">R-EP-01</span>Malware Infection
-                                    <div class="description">Malicious software compromising endpoint security</div>
-                                </a>
-                            </td>
-                            <td class="requirement-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/02-endpoints.md" class="cell-link">
-                                    <span class="req-id">SP-EP-01</span>Endpoint Protection
-                                    <div class="description">Deploy comprehensive endpoint security solutions</div>
-                                </a>
-                            </td>
-                            <td class="control-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/02-endpoints.md" class="cell-link">
-                                    <span class="control-id">C-EP-01</span>Anti-Malware Implementation
-                                    <div class="description">Deploy and maintain enterprise-grade anti-malware solutions</div>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="domain-section">
-                <h2 class="domain-title">Domain 03: Communications & Social Media</h2>
-                <table class="mapping-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Risk</th>
-                            <th style="width: 30%;">Requirement</th>
-                            <th style="width: 45%;">Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="risk-cell priority-medium">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/03-communications-socials.md" class="cell-link">
-                                    <span class="risk-id">R-CS-01</span>Social Engineering
-                                    <div class="description">Manipulation through social media and communication channels</div>
-                                </a>
-                            </td>
-                            <td class="requirement-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/03-communications-socials.md" class="cell-link">
-                                    <span class="req-id">SP-CS-01</span>Communication Security
-                                    <div class="description">Secure all communication channels and social media presence</div>
-                                </a>
-                            </td>
-                            <td class="control-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/03-communications-socials.md" class="cell-link">
-                                    <span class="control-id">C-CS-01</span>Secure Communication Protocols
-                                    <div class="description">Implement end-to-end encryption for all communications</div>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="domain-section">
-                <h2 class="domain-title">Domain 04: DevOps & Infrastructure</h2>
-                <table class="mapping-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Risk</th>
-                            <th style="width: 30%;">Requirement</th>
-                            <th style="width: 45%;">Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="risk-cell priority-high">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/04-devops-infrastructure.md" class="cell-link">
-                                    <span class="risk-id">R-DI-01</span>Infrastructure Compromise
-                                    <div class="description">Unauthorized access to development and production infrastructure</div>
-                                </a>
-                            </td>
-                            <td class="requirement-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/04-devops-infrastructure.md" class="cell-link">
-                                    <span class="req-id">SP-DI-01</span>Infrastructure Security
-                                    <div class="description">Secure all infrastructure components and access points</div>
-                                </a>
-                            </td>
-                            <td class="control-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/04-devops-infrastructure.md" class="cell-link">
-                                    <span class="control-id">C-DI-01</span>Zero Trust Architecture
-                                    <div class="description">Implement zero trust principles across all infrastructure</div>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="domain-section">
-                <h2 class="domain-title">Domain 05: Incident Readiness</h2>
-                <table class="mapping-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Risk</th>
-                            <th style="width: 30%;">Requirement</th>
-                            <th style="width: 45%;">Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="risk-cell priority-critical">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/05-incident-readiness.md" class="cell-link">
-                                    <span class="risk-id">R-IR-01</span>Inadequate Incident Response
-                                    <div class="description">Delayed or ineffective response to security incidents</div>
-                                </a>
-                            </td>
-                            <td class="requirement-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/05-incident-readiness.md" class="cell-link">
-                                    <span class="req-id">SP-IR-01</span>Incident Response Plan
-                                    <div class="description">Maintain comprehensive incident response procedures</div>
-                                </a>
-                            </td>
-                            <td class="control-cell">
-                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/05-incident-readiness.md" class="cell-link">
-                                    <span class="control-id">C-IR-01</span>24/7 Security Operations Center
-                                    <div class="description">Establish continuous monitoring and response capabilities</div>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- Empty initially until content loads -->
         </div>
     </div>
 
@@ -422,29 +225,16 @@
             }
 
             async loadAllData() {
-                const statusBanner = document.getElementById('status-banner');
-                
                 try {
-                    statusBanner.innerHTML = '<strong>Loading risks, requirements, and controls...</strong>';
-                    
                     await Promise.all([
                         this.loadRisks(),
                         this.loadRequirements(),
                         this.loadControls()
                     ]);
                     
-                    statusBanner.innerHTML = '<strong>Generating mapping...</strong>';
                     this.generateMapping();
-                    statusBanner.style.display = 'none';
                     
                 } catch (error) {
-                    statusBanner.className = 'status-banner error';
-                    statusBanner.innerHTML = `
-                        <strong>Unable to Load Live Data</strong><br>
-                        <small>The live data couldn't be loaded from GitHub (likely due to CORS restrictions when served from GitHub Pages). 
-                        Showing placeholder content below. For the most up-to-date information, please visit the 
-                        <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
-                    `;
                 }
             }
 
@@ -668,7 +458,25 @@
 
                     const domainTitle = document.createElement('h2');
                     domainTitle.className = 'domain-title';
-                    domainTitle.textContent = `Domain ${domain.id}: ${domain.name}`;
+                    domainTitle.innerHTML = `
+                        <span>Domain ${domain.id}: ${domain.name}</span>
+                        <span class="collapse-toggle">▼</span>
+                    `;
+                    
+                    // Add click handler for collapse/expand
+                    domainTitle.addEventListener('click', () => {
+                        const toggle = domainTitle.querySelector('.collapse-toggle');
+                        const table = domainSection.querySelector('.mapping-table');
+                        
+                        if (table.style.display === 'none') {
+                            table.style.display = 'table';
+                            toggle.classList.remove('collapsed');
+                        } else {
+                            table.style.display = 'none';
+                            toggle.classList.add('collapsed');
+                        }
+                    });
+                    
                     domainSection.appendChild(domainTitle);
 
                     const table = document.createElement('table');
@@ -914,22 +722,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const generator = new OpSecMappingGenerator();
-            const statusBanner = document.getElementById('status-banner');
             const content = document.getElementById('content');
             
-            if (!statusBanner || !content) {
+            if (!content) {
                 return;
             }
-            
-            const loadingTimeout = setTimeout(() => {
-                statusBanner.className = 'status-banner error';
-                statusBanner.innerHTML = `
-                    <strong>Loading Timeout</strong><br>
-                    <small>Unable to load live data from GitHub (this is common when served from GitHub Pages due to CORS restrictions). 
-                    Showing placeholder content below. For the most up-to-date information, please visit the 
-                    <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
-                `;
-            }, 8000);
             
             generator.loadAllData()
                 .then(() => {
@@ -937,14 +734,6 @@
                 })
                 .catch((error) => {
                     clearTimeout(loadingTimeout);
-                    statusBanner.className = 'status-banner error';
-                    statusBanner.innerHTML = `
-                        <strong>Unable to Load Live Data</strong><br>
-                        <small>The live data couldn't be loaded from GitHub (likely due to CORS restrictions when served from GitHub Pages). 
-                        Error: ${error.message}<br>
-                        Showing placeholder content below. For the most up-to-date information, please visit the 
-                        <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
-                    `;
                 });
         });
     </script>

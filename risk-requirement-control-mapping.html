@@ -660,12 +660,36 @@
             }
 
             generateMapping() {
+                console.log('🔄 generateMapping() started');
                 const contentDiv = document.getElementById('content');
+                
+                // Check if we have any parsed data
+                const totalRisks = Object.keys(this.data.risks).length;
+                const totalRequirements = Object.keys(this.data.requirements).length;
+                const totalControls = Object.keys(this.data.controls).length;
+                
+                console.log('📊 Data available for mapping:', { totalRisks, totalRequirements, totalControls });
+                
+                // Only clear and regenerate if we have actual data
+                if (totalRisks === 0 && totalRequirements === 0 && totalControls === 0) {
+                    console.log('⚠️ No parsed data available, keeping placeholder content');
+                    return;
+                }
+                
+                console.log('✅ Live data available, generating new mapping');
                 contentDiv.innerHTML = '';
 
+                let domainsWithContent = 0;
                 for (const domain of this.domains) {
                     const domainRisks = Object.values(this.data.risks).filter(risk => risk.domain === domain.name);
-                    if (domainRisks.length === 0) continue;
+                    console.log(`📋 Domain ${domain.name}: ${domainRisks.length} risks found`);
+                    
+                    if (domainRisks.length === 0) {
+                        console.log(`⚠️ No risks found for ${domain.name}, skipping`);
+                        continue;
+                    }
+                    
+                    domainsWithContent++;
 
                     const domainSection = document.createElement('div');
                     domainSection.className = 'domain-section';
@@ -702,6 +726,14 @@
                     table.appendChild(tbody);
                     domainSection.appendChild(table);
                     contentDiv.appendChild(domainSection);
+                }
+                
+                console.log(`✅ Generated mapping for ${domainsWithContent} domains`);
+                
+                // If no domains had content, restore placeholder
+                if (domainsWithContent === 0) {
+                    console.log('⚠️ No domains had content, this should not happen if data was parsed');
+                    // Don't clear content in this case, keep whatever was there
                 }
             }
 

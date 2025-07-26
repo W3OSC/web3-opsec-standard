@@ -28,20 +28,25 @@
             font-size: 2.2em;
         }
         
-        .loading {
+        .status-banner {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 30px;
             text-align: center;
-            padding: 50px;
-            color: #666;
-            font-size: 1.1em;
         }
         
-        .error {
-            text-align: center;
-            padding: 50px;
-            color: #d32f2f;
+        .status-banner.loading {
+            background: #fff3e0;
+            border-color: #ff9800;
+            color: #e65100;
+        }
+        
+        .status-banner.error {
             background: #ffebee;
-            border-radius: 6px;
-            margin: 20px 0;
+            border-color: #f44336;
+            color: #c62828;
         }
         
         .domain-section {
@@ -184,15 +189,164 @@
     <div class="container">
         <h1>Web3 OpSec Standard<br>Risk-Requirement-Control Mapping</h1>
         
-        <div id="loading" class="loading">
-            Loading risk-requirement-control mappings...
+        <div id="status-banner" class="status-banner loading">
+            <strong>Loading live data from GitHub...</strong><br>
+            <small>This may take a few moments. If loading fails, placeholder content will be shown below.</small>
         </div>
         
-        <div id="error" class="error" style="display: none;">
-            Error loading content. Please check your internet connection and try again.
+        <div id="content">
+            <!-- Placeholder content that shows immediately -->
+            <div class="domain-section">
+                <h2 class="domain-title">Domain 01: Wallet & Multi-Sig Management</h2>
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Risk</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 45%;">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="risk-cell priority-critical" rowspan="2">
+                                <span class="risk-id">R-WM-01</span>Private Key Compromise
+                                <div class="description">Unauthorized access to private keys through various attack vectors</div>
+                            </td>
+                            <td class="requirement-cell" rowspan="2">
+                                <span class="req-id">SP-WM-01</span>Multi-Signature Implementation
+                                <div class="description">Implement multi-signature wallets for critical operations</div>
+                            </td>
+                            <td class="control-cell">
+                                <span class="control-id">C-WM-01</span>Hardware Security Module Integration
+                                <div class="description">Use HSMs for secure key generation and storage</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="control-cell">
+                                <span class="control-id">C-WM-02</span>Multi-Party Computation
+                                <div class="description">Implement MPC protocols for distributed key management</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="domain-section">
+                <h2 class="domain-title">Domain 02: Endpoint Security</h2>
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Risk</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 45%;">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="risk-cell priority-high">
+                                <span class="risk-id">R-EP-01</span>Malware Infection
+                                <div class="description">Malicious software compromising endpoint security</div>
+                            </td>
+                            <td class="requirement-cell">
+                                <span class="req-id">SP-EP-01</span>Endpoint Protection
+                                <div class="description">Deploy comprehensive endpoint security solutions</div>
+                            </td>
+                            <td class="control-cell">
+                                <span class="control-id">C-EP-01</span>Anti-Malware Implementation
+                                <div class="description">Deploy and maintain enterprise-grade anti-malware solutions</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="domain-section">
+                <h2 class="domain-title">Domain 03: Communications & Social Media</h2>
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Risk</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 45%;">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="risk-cell priority-medium">
+                                <span class="risk-id">R-CS-01</span>Social Engineering
+                                <div class="description">Manipulation through social media and communication channels</div>
+                            </td>
+                            <td class="requirement-cell">
+                                <span class="req-id">SP-CS-01</span>Communication Security
+                                <div class="description">Secure all communication channels and social media presence</div>
+                            </td>
+                            <td class="control-cell">
+                                <span class="control-id">C-CS-01</span>Secure Communication Protocols
+                                <div class="description">Implement end-to-end encryption for all communications</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="domain-section">
+                <h2 class="domain-title">Domain 04: DevOps & Infrastructure</h2>
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Risk</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 45%;">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="risk-cell priority-high">
+                                <span class="risk-id">R-DI-01</span>Infrastructure Compromise
+                                <div class="description">Unauthorized access to development and production infrastructure</div>
+                            </td>
+                            <td class="requirement-cell">
+                                <span class="req-id">SP-DI-01</span>Infrastructure Security
+                                <div class="description">Secure all infrastructure components and access points</div>
+                            </td>
+                            <td class="control-cell">
+                                <span class="control-id">C-DI-01</span>Zero Trust Architecture
+                                <div class="description">Implement zero trust principles across all infrastructure</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="domain-section">
+                <h2 class="domain-title">Domain 05: Incident Readiness</h2>
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Risk</th>
+                            <th style="width: 30%;">Requirement</th>
+                            <th style="width: 45%;">Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="risk-cell priority-critical">
+                                <span class="risk-id">R-IR-01</span>Inadequate Incident Response
+                                <div class="description">Delayed or ineffective response to security incidents</div>
+                            </td>
+                            <td class="requirement-cell">
+                                <span class="req-id">SP-IR-01</span>Incident Response Plan
+                                <div class="description">Maintain comprehensive incident response procedures</div>
+                            </td>
+                            <td class="control-cell">
+                                <span class="control-id">C-IR-01</span>24/7 Security Operations Center
+                                <div class="description">Establish continuous monitoring and response capabilities</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
-        <div id="content"></div>
     </div>
 
     <script>
@@ -214,17 +368,32 @@
             }
 
             async loadAllData() {
+                const statusBanner = document.getElementById('status-banner');
+                
                 try {
+                    statusBanner.innerHTML = '<strong>Loading risks, requirements, and controls...</strong>';
+                    
                     await Promise.all([
                         this.loadRisks(),
                         this.loadRequirements(),
                         this.loadControls()
                     ]);
+                    
+                    statusBanner.innerHTML = '<strong>Generating mapping...</strong>';
                     this.generateMapping();
+                    
+                    // Hide status banner on success
+                    statusBanner.style.display = 'none';
+                    
                 } catch (error) {
                     console.error('Error loading data:', error);
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('error').style.display = 'block';
+                    statusBanner.className = 'status-banner error';
+                    statusBanner.innerHTML = `
+                        <strong>Unable to Load Live Data</strong><br>
+                        <small>The live data couldn't be loaded from GitHub (likely due to CORS restrictions when served from GitHub Pages). 
+                        Showing placeholder content below. For the most up-to-date information, please visit the 
+                        <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
+                    `;
                 }
             }
 
@@ -232,6 +401,7 @@
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/risks/${domain.id}-${domain.slug}.md`;
                     const response = await fetch(url);
+                    if (!response.ok) throw new Error(`Failed to load risks for ${domain.name}`);
                     const content = await response.text();
                     this.parseRisks(content, domain);
                 }
@@ -241,6 +411,7 @@
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/requirements/${domain.id}-${domain.slug}.md`;
                     const response = await fetch(url);
+                    if (!response.ok) throw new Error(`Failed to load requirements for ${domain.name}`);
                     const content = await response.text();
                     this.parseRequirements(content, domain);
                 }
@@ -250,6 +421,7 @@
                 for (const domain of this.domains) {
                     const url = `${this.baseUrl}/controls/${domain.id}-${domain.slug}.md`;
                     const response = await fetch(url);
+                    if (!response.ok) throw new Error(`Failed to load controls for ${domain.name}`);
                     const content = await response.text();
                     this.parseControls(content, domain);
                 }
@@ -262,7 +434,7 @@
                 while ((match = riskPattern.exec(content)) !== null) {
                     const [, id, name, attackVectors, impact, likelihood, requirementsText] = match;
                     
-                    // Extract priority from likelihood
+                    // Extract priority from likelihood and impact
                     let priority = 'medium';
                     if (likelihood.toLowerCase().includes('high')) {
                         priority = impact.toLowerCase().includes('high') ? 'critical' : 'high';
@@ -411,8 +583,6 @@
                     domainSection.appendChild(table);
                     contentDiv.appendChild(domainSection);
                 }
-
-                document.getElementById('loading').style.display = 'none';
             }
 
             generateRiskRows(tbody, risk) {
@@ -485,7 +655,37 @@
         // Initialize and load data when page loads
         document.addEventListener('DOMContentLoaded', () => {
             const generator = new OpSecMappingGenerator();
-            generator.loadAllData();
+            
+            // Set a timeout to show error message if loading takes too long
+            const loadingTimeout = setTimeout(() => {
+                console.warn('Loading timeout - showing placeholder content');
+                const statusBanner = document.getElementById('status-banner');
+                statusBanner.className = 'status-banner error';
+                statusBanner.innerHTML = `
+                    <strong>Loading Timeout</strong><br>
+                    <small>Unable to load live data from GitHub (this is common when served from GitHub Pages due to CORS restrictions). 
+                    Showing placeholder content below. For the most up-to-date information, please visit the 
+                    <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
+                `;
+            }, 8000); // 8 second timeout
+            
+            // Try to load live data, but gracefully fall back to placeholder
+            generator.loadAllData()
+                .then(() => {
+                    clearTimeout(loadingTimeout);
+                })
+                .catch((error) => {
+                    clearTimeout(loadingTimeout);
+                    console.error('Failed to load live data:', error);
+                    const statusBanner = document.getElementById('status-banner');
+                    statusBanner.className = 'status-banner error';
+                    statusBanner.innerHTML = `
+                        <strong>Unable to Load Live Data</strong><br>
+                        <small>The live data couldn't be loaded from GitHub (likely due to CORS restrictions when served from GitHub Pages). 
+                        Showing placeholder content below. For the most up-to-date information, please visit the 
+                        <a href="https://github.com/W3OSC/web3-opsec-standard" target="_blank">GitHub repository</a>.</small>
+                    `;
+                });
         });
     </script>
 </body>

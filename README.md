@@ -12,6 +12,7 @@
 > 
 > *Help build the complete operational security standard for Web3 organizations.*
 
+View W3OSS [here](https://w3osc.github.io/web3-opsec-standard/risk-requirement-control-mapping.html).
 ## Overview
 
 The Web3 Operational Security Standard (W3OSS) is an open standard that defines comprehensive security requirements for organizations operating in Web3. W3OSS provides a framework for:
@@ -71,11 +72,3 @@ W3OSS is organized into five core domains, each containing specific risks, secur
 **Risks**: Delayed incident detection, inadequate response procedures, lack of security awareness  
 **Focus**: Incident response capabilities, security training, and anti-phishing measures  
 🎯 [Risks](risks/05-incident-readiness.md) | 📋 [Requirements](requirements/05-incident-readiness.md) | ⚙️ [Controls](controls/05-incident-readiness.md)
-
-## 📊 Risk-Requirement-Control Mapping
-
-View the complete hierarchical mapping of all risks, requirements, and controls across all domains:
-
-**🔗 [Interactive Risk-Requirement-Control Mapping](https://w3osc.github.io/web3-opsec-standard/risk-requirement-control-mapping.html)**
-
-This interactive table shows how each risk is addressed by specific requirements, and how those requirements are implemented through detailed controls. The mapping is automatically generated from the source files and provides a comprehensive view of the entire security framework.

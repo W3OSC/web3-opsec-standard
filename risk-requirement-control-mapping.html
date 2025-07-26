@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web3 OpSec Standard Overview</title>
+    <title>Web3 OpSec Standard</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -97,6 +97,18 @@
         .risk-id:hover, .req-id:hover, .control-id:hover {
             opacity: 0.8;
             cursor: pointer;
+        }
+        
+        .cell-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .cell-link:hover {
+            opacity: 0.9;
         }
         
         .risk-cell {
@@ -201,7 +213,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Web3 OpSec Standard (W3OSS) Overview</h1>
+        <h1>Web3 OpSec Standard (W3OSS)</h1>
         
         <div id="status-banner" class="status-banner loading">
             <strong>Loading live data from GitHub...</strong><br>
@@ -223,22 +235,30 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-critical" rowspan="2">
-                                <a href="risks/01-wallet-multisig.md" class="risk-id">R-WM-01</a>Private Key Compromise
-                                <div class="description">Unauthorized access to private keys through various attack vectors</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/01-wallet-multisig.md" class="cell-link">
+                                    <span class="risk-id">R-WM-01</span>Private Key Compromise
+                                    <div class="description">Unauthorized access to private keys through various attack vectors</div>
+                                </a>
                             </td>
                             <td class="requirement-cell" rowspan="2">
-                                <a href="requirements/01-wallet-multisig.md" class="req-id">SP-WM-01</a>Multi-Signature Implementation
-                                <div class="description">Implement multi-signature wallets for critical operations</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/01-wallet-multisig.md" class="cell-link">
+                                    <span class="req-id">SP-WM-01</span>Multi-Signature Implementation
+                                    <div class="description">Implement multi-signature wallets for critical operations</div>
+                                </a>
                             </td>
                             <td class="control-cell">
-                                <a href="controls/01-wallet-multisig.md" class="control-id">C-WM-01</a>Hardware Security Module Integration
-                                <div class="description">Use HSMs for secure key generation and storage</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/01-wallet-multisig.md" class="cell-link">
+                                    <span class="control-id">C-WM-01</span>Hardware Security Module Integration
+                                    <div class="description">Use HSMs for secure key generation and storage</div>
+                                </a>
                             </td>
                         </tr>
                         <tr>
                             <td class="control-cell">
-                                <a href="controls/01-wallet-multisig.md" class="control-id">C-WM-02</a>Multi-Party Computation
-                                <div class="description">Implement MPC protocols for distributed key management</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/01-wallet-multisig.md" class="cell-link">
+                                    <span class="control-id">C-WM-02</span>Multi-Party Computation
+                                    <div class="description">Implement MPC protocols for distributed key management</div>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -258,16 +278,22 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-high">
-                                <a href="risks/02-endpoints.md" class="risk-id">R-EP-01</a>Malware Infection
-                                <div class="description">Malicious software compromising endpoint security</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/02-endpoints.md" class="cell-link">
+                                    <span class="risk-id">R-EP-01</span>Malware Infection
+                                    <div class="description">Malicious software compromising endpoint security</div>
+                                </a>
                             </td>
                             <td class="requirement-cell">
-                                <a href="requirements/02-endpoints.md" class="req-id">SP-EP-01</a>Endpoint Protection
-                                <div class="description">Deploy comprehensive endpoint security solutions</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/02-endpoints.md" class="cell-link">
+                                    <span class="req-id">SP-EP-01</span>Endpoint Protection
+                                    <div class="description">Deploy comprehensive endpoint security solutions</div>
+                                </a>
                             </td>
                             <td class="control-cell">
-                                <a href="controls/02-endpoints.md" class="control-id">C-EP-01</a>Anti-Malware Implementation
-                                <div class="description">Deploy and maintain enterprise-grade anti-malware solutions</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/02-endpoints.md" class="cell-link">
+                                    <span class="control-id">C-EP-01</span>Anti-Malware Implementation
+                                    <div class="description">Deploy and maintain enterprise-grade anti-malware solutions</div>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -287,16 +313,22 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-medium">
-                                <a href="risks/03-communications-socials.md" class="risk-id">R-CS-01</a>Social Engineering
-                                <div class="description">Manipulation through social media and communication channels</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/03-communications-socials.md" class="cell-link">
+                                    <span class="risk-id">R-CS-01</span>Social Engineering
+                                    <div class="description">Manipulation through social media and communication channels</div>
+                                </a>
                             </td>
                             <td class="requirement-cell">
-                                <a href="requirements/03-communications-socials.md" class="req-id">SP-CS-01</a>Communication Security
-                                <div class="description">Secure all communication channels and social media presence</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/03-communications-socials.md" class="cell-link">
+                                    <span class="req-id">SP-CS-01</span>Communication Security
+                                    <div class="description">Secure all communication channels and social media presence</div>
+                                </a>
                             </td>
                             <td class="control-cell">
-                                <a href="controls/03-communications-socials.md" class="control-id">C-CS-01</a>Secure Communication Protocols
-                                <div class="description">Implement end-to-end encryption for all communications</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/03-communications-socials.md" class="cell-link">
+                                    <span class="control-id">C-CS-01</span>Secure Communication Protocols
+                                    <div class="description">Implement end-to-end encryption for all communications</div>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -316,16 +348,22 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-high">
-                                <a href="risks/04-devops-infrastructure.md" class="risk-id">R-DI-01</a>Infrastructure Compromise
-                                <div class="description">Unauthorized access to development and production infrastructure</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/04-devops-infrastructure.md" class="cell-link">
+                                    <span class="risk-id">R-DI-01</span>Infrastructure Compromise
+                                    <div class="description">Unauthorized access to development and production infrastructure</div>
+                                </a>
                             </td>
                             <td class="requirement-cell">
-                                <a href="requirements/04-devops-infrastructure.md" class="req-id">SP-DI-01</a>Infrastructure Security
-                                <div class="description">Secure all infrastructure components and access points</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/04-devops-infrastructure.md" class="cell-link">
+                                    <span class="req-id">SP-DI-01</span>Infrastructure Security
+                                    <div class="description">Secure all infrastructure components and access points</div>
+                                </a>
                             </td>
                             <td class="control-cell">
-                                <a href="controls/04-devops-infrastructure.md" class="control-id">C-DI-01</a>Zero Trust Architecture
-                                <div class="description">Implement zero trust principles across all infrastructure</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/04-devops-infrastructure.md" class="cell-link">
+                                    <span class="control-id">C-DI-01</span>Zero Trust Architecture
+                                    <div class="description">Implement zero trust principles across all infrastructure</div>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -345,16 +383,22 @@
                     <tbody>
                         <tr>
                             <td class="risk-cell priority-critical">
-                                <a href="risks/05-incident-readiness.md" class="risk-id">R-IR-01</a>Inadequate Incident Response
-                                <div class="description">Delayed or ineffective response to security incidents</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/risks/05-incident-readiness.md" class="cell-link">
+                                    <span class="risk-id">R-IR-01</span>Inadequate Incident Response
+                                    <div class="description">Delayed or ineffective response to security incidents</div>
+                                </a>
                             </td>
                             <td class="requirement-cell">
-                                <a href="requirements/05-incident-readiness.md" class="req-id">SP-IR-01</a>Incident Response Plan
-                                <div class="description">Maintain comprehensive incident response procedures</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/requirements/05-incident-readiness.md" class="cell-link">
+                                    <span class="req-id">SP-IR-01</span>Incident Response Plan
+                                    <div class="description">Maintain comprehensive incident response procedures</div>
+                                </a>
                             </td>
                             <td class="control-cell">
-                                <a href="controls/05-incident-readiness.md" class="control-id">C-IR-01</a>24/7 Security Operations Center
-                                <div class="description">Establish continuous monitoring and response capabilities</div>
+                                <a href="https://github.com/W3OSC/web3-opsec-standard/blob/main/controls/05-incident-readiness.md" class="cell-link">
+                                    <span class="control-id">C-IR-01</span>24/7 Security Operations Center
+                                    <div class="description">Establish continuous monitoring and response capabilities</div>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -646,8 +690,8 @@
 
                     const tbody = document.createElement('tbody');
                     
-                    const priorityOrder = { critical: 0, high: 1, medium: 2 };
-                    domainRisks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+                    // Sort risks alphabetically by ID (R-WM-001, R-WM-002, etc.)
+                    domainRisks.sort((a, b) => a.id.localeCompare(b.id));
 
                     for (const risk of domainRisks) {
                         this.generateRiskRows(tbody, risk);
@@ -678,7 +722,7 @@
                 const domain = this.domains.find(d => d.slug === domainSlug);
                 const domainId = domain ? domain.id : '01';
                 
-                return `${type}/${domainId}-${domainSlug}.md`;
+                return `https://github.com/W3OSC/web3-opsec-standard/blob/main/${type}/${domainId}-${domainSlug}.md`;
             }
 
             generateRiskRows(tbody, risk) {
@@ -692,8 +736,10 @@
                     riskCell.className = `risk-cell priority-${risk.priority}`;
                     const riskPath = this.getFilePathForId(risk.id, 'risks');
                     riskCell.innerHTML = `
-                        <a href="${riskPath}" class="risk-id">${risk.id}</a>${risk.name}
-                        <div class="description">${risk.attackVectors}</div>
+                        <a href="${riskPath}" class="cell-link">
+                            <span class="risk-id">${risk.id}</span>${risk.name}
+                            <div class="description">${risk.attackVectors}</div>
+                        </a>
                     `;
                     row.appendChild(riskCell);
                     
@@ -726,10 +772,15 @@
 
                 let currentRow = 0;
                 
+                // Sort requirements by ID alphabetically
+                requirements.sort((a, b) => a.id.localeCompare(b.id));
+                
                 // Generate rows for each requirement
                 for (let reqIndex = 0; reqIndex < requirements.length; reqIndex++) {
                     const req = requirements[reqIndex];
                     const controls = req.controls.map(controlId => this.data.controls[controlId]).filter(Boolean);
+                    // Sort controls by ID alphabetically
+                    controls.sort((a, b) => a.id.localeCompare(b.id));
                     const controlsToShow = controls.length > 0 ? controls : [null]; // Show at least one row per requirement
 
                     // Generate rows for each control (or one row if no controls)
@@ -745,8 +796,10 @@
                             }
                             const riskPath = this.getFilePathForId(risk.id, 'risks');
                             riskCell.innerHTML = `
-                                <a href="${riskPath}" class="risk-id">${risk.id}</a>${risk.name}
-                                <div class="description">${risk.attackVectors}</div>
+                                <a href="${riskPath}" class="cell-link">
+                                    <span class="risk-id">${risk.id}</span>${risk.name}
+                                    <div class="description">${risk.attackVectors}</div>
+                                </a>
                             `;
                             row.appendChild(riskCell);
                         }
@@ -760,8 +813,10 @@
                             }
                             const reqPath = this.getFilePathForId(req.id, 'requirements');
                             reqCell.innerHTML = `
-                                <a href="${reqPath}" class="req-id">${req.id}</a>${req.name}
-                                <div class="description">${req.description}</div>
+                                <a href="${reqPath}" class="cell-link">
+                                    <span class="req-id">${req.id}</span>${req.name}
+                                    <div class="description">${req.description}</div>
+                                </a>
                             `;
                             row.appendChild(reqCell);
                         }
@@ -774,8 +829,10 @@
                         if (control) {
                             const controlPath = this.getFilePathForId(control.id, 'controls');
                             controlCell.innerHTML = `
-                                <a href="${controlPath}" class="control-id">${control.id}</a>${control.name}
-                                <div class="description">${control.description}</div>
+                                <a href="${controlPath}" class="cell-link">
+                                    <span class="control-id">${control.id}</span>${control.name}
+                                    <div class="description">${control.description}</div>
+                                </a>
                             `;
                         } else {
                             controlCell.innerHTML = `

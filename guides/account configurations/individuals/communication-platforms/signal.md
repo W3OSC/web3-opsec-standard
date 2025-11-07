@@ -2,8 +2,6 @@
 
 ## Individual Account Settings
 
-**All organization members must configure their personal Signal accounts with the following settings:**
-
 > **Important**: Use Signal! Chats on Signal are secured with the gold standard of end-to-end encryption and privacy features. Signal is the best place to have truly anonymous chats.
 > 
 > If you don't use Signal, you should at least create an account with your phone number and lock it so that you cannot be impersonated to others via SIM swap attacks.

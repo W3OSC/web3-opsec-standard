@@ -2,14 +2,8 @@
   <img src="../../../images/guides/vercel.svg" alt="Vercel Logo" width="64" height="64"> <h2><a href="https://vercel.com/" target="_blank">Vercel</a> Account Settings</h2>
 </div>
 
-#### User Settings
-- Account Settings >
-	- Authentication >
-		- [ ] Two-factor Authentication > **Enabled (TOPT or Passkey, store recovery codes safely)**
-	- Sign in with Vercel > **Review and remove any unnecessary or unrecognized**
-	- Tokens > **Remove all but current token**
+## Team Settings
 
-#### Team Settings
 - Team Settings >
     - Members >
         - [ ] Team Members > **Review and remove any unnecessary or unrecognized**
@@ -29,7 +23,8 @@
 		- [ ] Access > **Review and remove any unnecessary or unrecognized**
 	- [ ] Environment Variables > **Review and ensure all secrets are marked as Sensitive**
 
-#### Project Settings
+## Project Settings
+
 - Project Settings > Security >
     - [ ]  Build Logs and Source Protection > **Enabled**
     - [ ] Git Fork Protection > **Enabled**

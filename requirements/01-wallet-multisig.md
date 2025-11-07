@@ -35,7 +35,7 @@
 
 **SP-WM-003: Mnemonic Seed Phrase Protection**
 - Seed phrases must be stored on disaster-resistant, physical media
-- Seed phrases must not be stored in plain text - they must be encrypted with a randomly generated word order permutation, with the permutation key stored in a password manager
+- Seed phrases must not be stored in plain text - importing them must require a passphrase, additional word, or be scrambled with a random word order; with the secret stored in a password manager
 - Private keys and seed phrases must be generated on wallet devices and must never be exported
 - Alternatively, seed phrases can be sharded using Shamir's Secret Sharing algorithm, with each shard recommended to be shared with a trusted guardian (3rd party custodian service, family members, password manager, personal physical media, etc.)
 
@@ -102,7 +102,7 @@
 **SP-WM-015: Dedicated Signing Machines**
 - Multi-sig operations must be performed on devices dedicated only to these transactions and verification tools
 - All network access should be default blocked, with only the minimum necessary IPs to execute these transaction signatures allowed
-- Signing devices must be operated on private, authenticated networks
+- Signing devices must be operated on private, authenticated networks or over trusted VPNs
 - Organizations must implement active network monitoring on signing devices
 
 **SP-WM-016: Continuous Monitoring**

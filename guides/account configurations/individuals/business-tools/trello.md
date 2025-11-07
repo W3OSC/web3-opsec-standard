@@ -2,8 +2,6 @@
 
 ## Individual Account Settings
 
-**All organization members must configure their personal Trello accounts with the following settings:**
-
 - Account Settings:
     - [ ]  Applications > Review and remove any unnecessary
     - [ ]  Sessions > Manage your recent devices > Review and remove any unnecessary

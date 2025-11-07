@@ -2,8 +2,6 @@
 
 ## Individual Account Settings
 
-**All organization members must configure their personal X/Twitter accounts with the following settings:**
-
 - Account Settings:
     - Settings >
         - Security and account access >
@@ -20,29 +18,6 @@
                 - [ ]  Allow others to invite you to their account > **Disabled** (if not necessary)
                 - [ ]  Members you've delegated > Confirm delegate list, remove any unnecessary
         - [ ]  Your account > Account information > Phone > **Delete number** [[1]](#email-security)
-
----
-
-## Organization Account Settings (Admin Configuration)
-
-#### Security and Account Access
-- Settings > Security and account access >
-    - **Security >**
-        - Two-factor authentication >
-            - [ ]  Text message > **Disabled**
-            - [ ]  Backup codes > Save a code in a password manager (recommended)
-        - [ ]  Password reset protect > **Enabled**
-    - **Apps and sessions >**
-        - [ ]  Connected apps > Remove all unnecessary
-        - [ ]  Sessions > Log out of all other sessions
-    - [ ]  Connected accounts > Confirm and disconnect any unnecessary
-    - **Delegate >**
-        - [ ]  Allow others to invite you to their account > **Disabled** (if not necessary)
-        - [ ]  Members you've delegated > Confirm delegate list, remove any unnecessary
-- [ ]  Your account > Account information > Phone > **Delete number** [[1]](#email-security)
-
-#### Typefully Integration
-- Ensure that team members in Typefully [have only the Write permission](https://support.typefully.com/en/articles/8717333-collaboration-in-typefully#h_0d94ada9a9), with a minimum amount of Publishers and Admins.
 
 ---
 

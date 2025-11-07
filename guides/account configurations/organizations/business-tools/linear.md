@@ -3,13 +3,8 @@
   <h2><a href="https://linear.app/" target="_blank" rel="noopener noreferrer">Linear</a> Configuration Guide</h2>
 </div>
 
-#### Personal Settings
-- Settings >
-    - [ ]  Sessions, Personal API keys, & Authorized Applications > **Review and remove any unnecessary or unrecognized**
-    - [ ]  Passkeys > Add a passkey (recommended)
-- [ ]  Connected Accounts > **Review and remove any unnecessary or unrecognized**
+## Admin Settings
 
-#### Administration Settings
 - [ ]  Administration >
     - [ ]  Members > **Review and remove any unnecessary or unrecognized**
     - **Security >**

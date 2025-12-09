@@ -60,6 +60,8 @@
 - All dependencies must be scanned for known vulnerabilities before deployment
 - Dependency version pinning must be used to prevent automatic updates to compromised versions
 - Regular dependency audits must be used to identify outdated or vulnerable components
+- Package versions should be at least 6 months old and have balanced usage metrics
+- The changelog of individual dependencies and versions should be reviewed for alignment to expected functionality
 
 **SP-DI-008: Enhanced Code Review for External Contributors**
 - Require additional approvers for all code contributions from external collaborators

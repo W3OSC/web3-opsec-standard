@@ -23,29 +23,6 @@ Strong authentication requires **at least 2** of these factors. For **high-sensi
 
 ---
 
-## Quick Decision Matrix
-
-Choose the strongest authentication option that can be maintained.
-
-| Method / Setup | Phishing Resistant? | Portability | Recovery Burden | Best Fit | Notes |
-|---|---|---|---|---|---|
-| **Password only** | ❌ | ✅ | ✅ | Never recommended | Baseline only; easiest to phish |
-| **Password + SMS (2FA)** | ❌ | ✅ | ✅ | Last resort | Prefer carrier protections if unavoidable |
-| **Password + TOTP (2FA)** | ❌ | ✅ | ✅ | Low → Medium sensitivity | Good fallback when passkeys/keys are not supported |
-| **Passkey (PIN or biometric) (2FA)** | ✅ | ✅ | ⚠️ | Medium → High sensitivity | Strong default when supported; ensure multiple passkey devices |
-| **Password + Passkey (2FA/3FA)** | ✅ | ✅ | ⚠️ | High sensitivity | Adds a knowledge factor on top of phishing-resistant auth when supported |
-| **Hardware key + PIN/biometric (2FA)** | ✅ | ⚠️ | ⚠️ | High sensitivity | Strong security; portability, loss, and breakage are the tradeoffs |
-| **Hardware key + PIN/biometric + Password (3FA)** | ✅ | ⚠️ | ⚠️ | High → Critical sensitivity | Strongest common setup when operationally supportable |
-
-### Decision Guidelines
-- Prefer **passkeys** or **hardware keys** for **high-sensitivity** accounts
-- Use **TOTP** when stronger methods are not supported or do not fit your workflow, but treat it as **phishable**
-- Treat your account as only as strong as its **weakest recovery path** (email/SMS/support)
-- Avoid collapsing factors: if password + TOTP seed live in the same place, treat it as a **single failure domain**
-- "Remember this device" and long-lived sessions can silently downgrade security for high-sensitivity accounts
-
----
-
 ## Recommended Setups by Risk Level
 
 ### Low Sensitivity
@@ -76,6 +53,29 @@ Examples: treasury, multisig signer accounts, domain registrar, root/admin ident
 - [ ] **Phishing-resistant authentication everywhere** (hardware key / passkey)
 - [ ] **Two independent phishing-resistant factors** where supported (primary + backup)
 - [ ] Recovery paths must be hardened (see Recovery Hardening section below)
+
+---
+
+## Quick Decision Matrix
+
+Choose the strongest authentication option that can be maintained.
+
+| Method / Setup | Phishing Resistant? | Portability | Recovery Burden | Best Fit | Notes |
+|---|---|---|---|---|---|
+| **Hardware key + PIN/biometric + Password (3FA)** | ✅ | ⚠️ | ⚠️ | High → Critical sensitivity | Strongest common setup when operationally supportable |
+| **Hardware key + PIN/biometric (2FA)** | ✅ | ⚠️ | ⚠️ | High sensitivity | Strong security; portability, loss, and breakage are the tradeoffs |
+| **Password + Passkey (2FA/3FA)** | ✅ | ✅ | ⚠️ | High sensitivity | Adds a knowledge factor on top of phishing-resistant auth when supported |
+| **Passkey (PIN or biometric) (2FA)** | ✅ | ✅ | ⚠️ | Medium → High sensitivity | Strong default when supported; ensure multiple passkey devices |
+| **Password + TOTP (2FA)** | ❌ | ✅ | ✅ | Low → Medium sensitivity | Good fallback when passkeys/keys are not supported |
+| **Password + SMS (2FA)** | ❌ | ✅ | ✅ | Last resort | Prefer carrier protections if unavoidable |
+| **Password only** | ❌ | ✅ | ✅ | Never recommended | Baseline only; easiest to phish |
+
+### Decision Guidelines
+- Prefer **passkeys** or **hardware keys** for **high-sensitivity** accounts
+- Use **TOTP** when stronger methods are not supported or do not fit your workflow, but treat it as **phishable**
+- Treat your account as only as strong as its **weakest recovery path** (email/SMS/support)
+- Avoid collapsing factors: if password + TOTP seed live in the same place, treat it as a **single failure domain**
+- "Remember this device" and long-lived sessions can silently downgrade security for high-sensitivity accounts
 
 ---
 

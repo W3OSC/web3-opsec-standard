@@ -3,9 +3,10 @@
 ## Individual Account Settings
 
 - Account Settings:
-    - [ ]  My Account > Ensure **2FA** is enabled (authenticator app and/or security key)
-    - [ ]  My Account > Ensure **SMS Backup Authentication** is disabled
-    - [ ]  Privacy & Safety > Allow direct messages from server members > **Disabled**
-    - [ ]  Authorized Apps > Review and **Deauthorize** any unnecessary apps
-    - [ ]  Devices > Review and remove unnecessary devices or **Log Out All Known Devices**
-    - [ ]  Connections > Review and remove any unnecessary connections
+    - [ ]  User Settings > My Account > Password and Authentication > Ensure **Multi-Factor Authentication** is enabled (authenticator app and/or security key)
+    - [ ]  User Settings > My Account > Password and Authentication >  Ensure **Enable SMS Authentication** is disabled
+    - [ ]  User Settings > Content & Social > Content > Direct Message Spam > Enable **Filter from non-friends**
+    - [ ]  User Settings > Content & Social > Social permissions > Disable **Direct Messages**
+    - [ ]  User Settings > Authorized Apps > Review and **Deauthorize** any unnecessary apps
+    - [ ]  User Settings > Devices > Review and remove unnecessary devices or **Log Out All Known Devices**
+    - [ ]  User Settings > Connections > Review and remove any unnecessary connections

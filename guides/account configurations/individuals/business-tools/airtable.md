@@ -12,16 +12,16 @@
         - [ ]  Ensure none of the tokens grant access to "ALL RESOURCES"
 
 - Workspace Settings:
-    - [ ]  Workspace settings > Workspace > Restrict adding new collaborators to this workspace, its bases, and its interfaces > **Enabled**
-    - [ ]  Workspace settings > Workspace > Prevent the creation of new share links within this workspace's bases and interfaces > **Enabled**
-
-- Workspace Share Settings:
-    - [ ]  Workspace settings > Share > People with access > Review list of collaborators and remove any unauthorized users
-    - [ ]  Workspace settings > Share > People with access > Review list of collaborators and ensure appropriate permission levels (limited amount of owners)
-    - [ ]  Workspace settings > Share > People with access > Review list of pending invites and remove any unauthorized users
-
-- Workspace App Settings:
-    - [ ]  Workspaces > App > Manage fields > Edit field permissions > Ensure fine grain field permission settings on sensitive fields
-    - Workspaces > App > Share > if "Share to web" is on > Manage link settings >
-        - [ ]  Enable **Anyone on an admin-approved domain**
-        - [ ]  Enable **Require a password**
+    - Workspace settings > Workspace >
+        - [ ]  Restrict adding new collaborators to this workspace, its bases, and its interfaces > **Enabled**
+        - [ ]  Prevent the creation of new share links within this workspace's bases and interfaces > **Enabled**
+    - Workspace >
+        - Share > Manage access >
+            - [ ]  Review list of collaborators and remove any unauthorized users
+            - [ ]  Review list of collaborators and ensure appropriate permission levels (limited amount of owners)
+            - [ ]  Review list of pending invites and remove any unauthorized users
+        - App >
+            - [ ]  Manage fields > Edit field permissions > Ensure fine grain field permission settings on sensitive fields
+            - Share > if "Share to web" is on > Manage link settings >
+                - [ ]  Enable **Anyone on an admin-approved domain**
+                - [ ]  Enable **Require a password**

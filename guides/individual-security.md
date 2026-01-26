@@ -1,3 +1,9 @@
+---
+id: individual-security-individual-guide
+type: GUIDE
+scope: INDIVIDUAL
+---
+
 <div align="center">
   <h1>Personal Security Checklist</h1>
   <p><em>A checklist guide for individuals to maximize their OpSec as part of an organization</em></p>

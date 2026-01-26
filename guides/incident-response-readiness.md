@@ -1,3 +1,9 @@
+---
+id: incident-response-readiness-organization-guide
+type: GUIDE
+scope: ORGANIZATION
+---
+
 <div align="center">
   <h1>Incident Response Readiness Guide</h1>
   <p><em>Comprehensive incident response planning and disaster recovery procedures</em></p>

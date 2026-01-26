@@ -1,3 +1,9 @@
+---
+id: multisig-ideal-setup-organization-guide
+type: GUIDE
+scope: ORGANIZATION
+---
+
 <div align="center">
   <h1>Multi-Sig Operations and Ideal Setup Guide</h1>
   <p><em>A comprehensive implementation of security best practices for multi-signature wallet management</em></p>

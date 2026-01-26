@@ -1,3 +1,9 @@
+---
+id: render-individual-configuration
+type: CONFIGURATION
+scope: INDIVIDUAL
+---
+
 <div align="center"> <img src="../../../images/guides/render.svg" alt="Render Logo" width="64" height="64"> <h2><a href="https://render.com/" target="_blank" rel="noopener noreferrer">Render</a> Configuration Guide</h2> </div>
 
 ## Individual Account Settings

@@ -1,3 +1,9 @@
+---
+id: twitter-x-organization-configuration
+type: CONFIGURATION
+scope: ORGANIZATION
+---
+
 <div align="center"> <img src="../../../images/guides/twitter-x.svg" alt="X Logo" width="64" height="64"> <h2><a href="https://x.com/" target="_blank" rel="noopener noreferrer">X</a> Configuration Guide</h2> </div>
 
 ## Organization Account Settings

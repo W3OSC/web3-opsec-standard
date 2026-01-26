@@ -1,3 +1,9 @@
+---
+id: authentication-and-mfa-individual-guide
+type: GUIDE
+scope: INDIVIDUAL
+---
+
 <div align="center">
   <h1>Authentication & MFA Guide</h1>
   <p><em>Passwords, Passkeys, TOTP, and Hardware Keys</em></p>

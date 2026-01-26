@@ -1,3 +1,9 @@
+---
+id: deployments-infra-access-control-organization-guide
+type: GUIDE
+scope: ORGANIZATION
+---
+
 <div align="center">
   <h1>Secure Deployments & Infrastructure Guide</h1>
   <p><em>Secure CI/CD pipelines and cloud access control management </em></p>

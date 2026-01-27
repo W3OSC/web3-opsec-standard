@@ -1,10 +1,10 @@
----
+<!--
 id: render-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
-<div align="center"> <img src="../../../images/guides/render.svg" alt="Render Logo" width="64" height="64"> <h2><a href="https://render.com/" target="_blank" rel="noopener noreferrer">Render</a> Configuration Guide</h2> </div>
+<div align="center"> <img src="../../../../images/guides/render.svg" alt="Render Logo" width="64" height="64"> <h2><a href="https://render.com/" target="_blank" rel="noopener noreferrer">Render</a> Configuration Guide</h2> </div>
 
 ## Workspace Settings
 

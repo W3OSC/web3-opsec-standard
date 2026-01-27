@@ -1,8 +1,8 @@
----
+<!--
 id: authentication-and-mfa-individual-guide
 type: GUIDE
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <h1>Authentication & MFA Guide</h1>

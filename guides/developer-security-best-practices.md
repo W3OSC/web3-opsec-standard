@@ -1,8 +1,8 @@
----
+<!--
 id: developer-security-best-practices-individual-guide
 type: GUIDE
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <h1>Developer Security Guide</h1>

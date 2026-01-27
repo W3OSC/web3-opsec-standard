@@ -1,11 +1,11 @@
----
+<!--
 id: vercel-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
-  <img src="../../../images/guides/vercel.svg" alt="Vercel Logo" width="64" height="64"> <h2><a href="https://vercel.com/" target="_blank">Vercel</a> Account Settings</h2>
+  <img src="../../../../images/guides/vercel.svg" alt="Vercel Logo" width="64" height="64"> <h2><a href="https://vercel.com/" target="_blank">Vercel</a> Account Settings</h2>
 </div>
 
 ## Team Settings

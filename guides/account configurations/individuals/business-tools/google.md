@@ -1,11 +1,11 @@
----
+<!--
 id: google-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
-  <img src="../../../images/guides/google.svg" alt="Google Logo" width="64" height="64">
+  <img src="../../../../images/guides/google.svg" alt="Google Logo" width="64" height="64">
   <h2><a href="https://workspace.google.com/" target="_blank" rel="noopener noreferrer">Google</a> Configuration Guide</h2>
 </div>
 

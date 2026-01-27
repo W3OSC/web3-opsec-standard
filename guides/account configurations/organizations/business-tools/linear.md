@@ -1,11 +1,11 @@
----
+<!--
 id: linear-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
-  <img src="../../../images/guides/linear.svg" alt="Linear Logo" width="64" height="64">
+  <img src="../../../../images/guides/linear.svg" alt="Linear Logo" width="64" height="64">
   <h2><a href="https://linear.app/" target="_blank" rel="noopener noreferrer">Linear</a> Configuration Guide</h2>
 </div>
 

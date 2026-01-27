@@ -1,8 +1,8 @@
----
+<!--
 id: multisig-ideal-setup-organization-guide
 type: GUIDE
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
   <h1>Multi-Sig Operations and Ideal Setup Guide</h1>

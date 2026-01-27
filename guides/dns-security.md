@@ -79,8 +79,7 @@ Starting with `p=reject` might block legitimate email if your SPF/DKIM isn't con
 Prevents rogue certificate authorities from issuing certificates for your domain. Without CAA, any CA can issue a cert for your domain.
 
 **Implementation Steps**
-- [ ] Add CAA record(s) at your root domain listing which CAs can issue certificates - format varies by DNS provider (tag: issue, value: letsencrypt.org or full  
-  format 0 issue "letsencrypt.org")
+- [ ] Add CAA record(s) at your root domain listing which CAs can issue certificates - format varies by DNS provider (tag: issue, value: letsencrypt.org or full format 0 issue "letsencrypt.org")
 - [ ] If using multiple CAs or want flexibility, add multiple CAA records (one per CA)
 - [ ] If using wildcard certificates (*.yourdomain.com), also add issuewild records with the same CA values 
 

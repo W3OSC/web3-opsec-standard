@@ -67,6 +67,8 @@ Tells other email servers what to do when someone fails SPF or DKIM checks. This
 **Why the Progression Matters**
 Starting with `p=reject` might block legitimate email if your SPF/DKIM isn't configured perfectly. The gradual approach lets you fix issues before enforcing.
 
+**Privacy Note:** Avoid using `ruf=` (forensic reports) in your DMARC record - it can expose private email content and may violate privacy regulations. Use only `rua=` for aggregate reports.                                                                                                                           
+
 **Status:** Required for all domains
 
 ---

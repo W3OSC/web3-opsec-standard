@@ -1,8 +1,8 @@
----
+<!--
 id: google-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/google.svg" alt="Google Logo" width="64" height="64">

@@ -1,8 +1,8 @@
----
+<!--
 id: vercel-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/vercel.svg" alt="Vercel Logo" width="64" height="64"> <h2><a href="https://vercel.com/" target="_blank">Vercel</a> Account Settings</h2>

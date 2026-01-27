@@ -1,8 +1,8 @@
----
+<!--
 id: linear-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/linear.svg" alt="Linear Logo" width="64" height="64">

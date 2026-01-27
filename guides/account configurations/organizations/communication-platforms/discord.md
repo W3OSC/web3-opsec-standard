@@ -1,8 +1,8 @@
----
+<!--
 id: discord-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center"> <img src="../../../images/guides/discord.svg" alt="Discord Logo" width="64" height="64"> <h2><a href="https://discord.com/" target="_blank" rel="noopener noreferrer">Discord</a> Configuration Guide</h2> </div>
 

@@ -1,8 +1,8 @@
----
+<!--
 id: google-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/google.svg" alt="Google Logo" width="64" height="64">

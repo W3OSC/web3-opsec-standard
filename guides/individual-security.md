@@ -1,8 +1,8 @@
----
+<!--
 id: individual-security-individual-guide
 type: GUIDE
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <h1>Personal Security Checklist</h1>

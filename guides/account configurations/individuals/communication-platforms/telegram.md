@@ -1,8 +1,8 @@
----
+<!--
 id: telegram-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center"> <img src="../../../images/guides/telegram.svg" alt="Telegram Logo" width="64" height="64"> <h2><a href="https://telegram.org/" target="_blank" rel="noopener noreferrer">Telegram</a> Configuration Guide</h2> </div>
 

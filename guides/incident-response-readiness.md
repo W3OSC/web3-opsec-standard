@@ -1,8 +1,8 @@
----
+<!--
 id: incident-response-readiness-organization-guide
 type: GUIDE
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
   <h1>Incident Response Readiness Guide</h1>

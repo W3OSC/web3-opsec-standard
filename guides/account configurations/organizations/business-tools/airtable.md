@@ -1,8 +1,8 @@
----
+<!--
 id: airtable-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/airtable.svg" alt="Airtable Logo" width="64" height="64">

@@ -1,8 +1,8 @@
----
+<!--
 id: linear-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/linear.svg" alt="Linear Logo" width="64" height="64">

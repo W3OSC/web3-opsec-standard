@@ -1,8 +1,8 @@
----
+<!--
 id: airtable-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center">
   <img src="../../../images/guides/airtable.svg" alt="Airtable Logo" width="64" height="64">

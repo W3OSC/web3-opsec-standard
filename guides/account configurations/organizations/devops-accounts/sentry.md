@@ -1,8 +1,8 @@
----
+<!--
 id: sentry-organization-configuration
 type: CONFIGURATION
 scope: ORGANIZATION
----
+-->
 
 <div align="center"> <img src="../../../images/guides/sentry.svg" alt="Sentry Logo" width="64" height="64"> <h2><a href="https://sentry.io/" target="_blank" rel="noopener noreferrer">Sentry</a> Configuration Guide</h2> </div>
 

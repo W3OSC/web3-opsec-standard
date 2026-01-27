@@ -1,8 +1,8 @@
----
+<!--
 id: signal-individual-configuration
 type: CONFIGURATION
 scope: INDIVIDUAL
----
+-->
 
 <div align="center"> <img src="../../../images/guides/signal.svg" alt="Signal Logo" width="64" height="64"> <h2><a href="https://signal.org/" target="_blank" rel="noopener noreferrer">Signal</a> Configuration Guide</h2> </div>
 

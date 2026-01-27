@@ -71,7 +71,7 @@ Starting with `p=reject` might block legitimate email if your SPF/DKIM isn't con
 
 ---
 
-## Important: Certificate Control
+## Certificate Control
 
 ### CAA (Certification Authority Authorization)
 
@@ -88,7 +88,7 @@ Prevents rogue certificate authorities from issuing certificates for your domain
 
 ---
 
-## Recommended: Transport Security
+## Transport Security
 
 ### MTA-STS (Mail Transfer Agent Strict Transport Security)
 
@@ -113,7 +113,7 @@ max_age: 86400
 **Status:** Recommended for business domains sending/receiving sensitive email                                                                                                                                                                                                                                                    
 ---
 
-## Advanced: DNS Integrity
+## DNS Integrity
 
 **Advanced DNS security features require operational maturity. Only implement these if you have dedicated resources for ongoing maintenance and monitoring.**
 

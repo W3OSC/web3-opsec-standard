@@ -4,7 +4,7 @@ type: CONFIGURATION
 scope: INDIVIDUAL
 -->
 
-<div align="center"> <img src="../../../images/guides/trello.svg" alt="Trello Logo" width="64" height="64"> <h2><a href="https://trello.com/" target="_blank" rel="noopener noreferrer">Trello</a> Configuration Guide</h2> </div>
+<div align="center"> <img src="../../../../images/guides/trello.svg" alt="Trello Logo" width="64" height="64"> <h2><a href="https://trello.com/" target="_blank" rel="noopener noreferrer">Trello</a> Configuration Guide</h2> </div>
 
 ## Individual Account Settings
 

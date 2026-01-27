@@ -4,7 +4,7 @@ type: CONFIGURATION
 scope: ORGANIZATION
 -->
 
-<div align="center"> <img src="../../../images/guides/slack.svg" alt="Slack Logo" width="64" height="64"> <h2><a href="https://slack.com/" target="_blank" rel="noopener noreferrer">Slack</a> Configuration Guide</h2> </div>
+<div align="center"> <img src="../../../../images/guides/slack.svg" alt="Slack Logo" width="64" height="64"> <h2><a href="https://slack.com/" target="_blank" rel="noopener noreferrer">Slack</a> Configuration Guide</h2> </div>
 
 ## Workspace Settings
 

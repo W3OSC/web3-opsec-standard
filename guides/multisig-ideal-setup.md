@@ -144,6 +144,7 @@ Comprehensive wallet security combines multiple defensive layers to create a sys
 **Network Monitoring**
 - [ ] **Little Snitch**: Install [Little Snitch](https://www.obdev.at/products/littlesnitch/index.html) for active firewall and network monitoring
 - [ ] **Lulu**: Use [Lulu](https://objective-see.org/products/lulu.html) as a free, open source alternative to Little Snitch
+- [ ] **BlockBlock**: Install [BlockBlock](https://objective-see.org/products/blockblock.html) to monitor common persistence locations and alert whenever a persistent component is added
 - [ ] **Glasswire**: [Glasswire](https://www.glasswire.com/) can be used for Windows machines
 
 ### Multi-Channel Verification

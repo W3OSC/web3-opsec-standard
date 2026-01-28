@@ -27,7 +27,7 @@ scope: ORGANIZATION
             - [ ]  Restrict user group creation to admins > **On**
             - [ ]  Data export > **Restricted to org unit members** or **Restricted for all**
             - Synced views >
-                - [ ]  Who can enable syncing outside of Joe Van Loon’s Organization? > **Only admins**
+                - [ ]  Who can enable syncing outside of your Organization? > **Only admins**
                 - [ ]  Review share links > Review list and remove any unnecessary
             - Integrations & development >
                 - [ ]  Block API access to organization-owned apps & workspaces > **On**

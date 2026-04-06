@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/images/contributors/W3OS%20Graphic.png" width="250" />
+  <img src="/images/contributors/Group 427320726.png" width="450" />
 </p>
 
 [![Version](https://img.shields.io/badge/version-1.0.0--draft-orange.svg)](https://github.com/web3-opsec-standard/releases)

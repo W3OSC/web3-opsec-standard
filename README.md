@@ -81,6 +81,16 @@ W3OS is designed to be straightforward and actionable with meaningful impact, no
 
 ---
 
+## Support W3OS Development
+
+W3OS is a public good built by the Web3 security community. If you find it valuable, consider contributing to its ongoing development through our Giveth project:
+
+**[Donate on Giveth](https://giveth.io/project/the-web3-opsec-standard-w3os)**
+
+Your support helps fund continued development, new security guides, and community-driven improvements to the standard.
+
+---
+
 ## Core Contributors
 
 <table>

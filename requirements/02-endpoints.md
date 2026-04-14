@@ -63,6 +63,7 @@
 - Organizations should deploy an EDR solution on all endpoints handling organization operations
 - Managed EDR is preferred for large organizations. Self-managed is adequate with proper monitoring
 - In the absence of EDR, active network monitoring (e.g. Little Snitch, Lulu, or Glasswire) must be used
+- Persistence monitoring (e.g. BlockBlock) should be enabled to alert on persistent component additions
 
 **SP-EP-007: Network Monitoring and Firewall**
 - All endpoints must have active network monitoring in place

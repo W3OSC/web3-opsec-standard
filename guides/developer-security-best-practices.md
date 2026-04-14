@@ -169,6 +169,7 @@ Development in Web3 presents additional security risks over traditional develope
 - [ ] **Secure DNS**: Use [NextDNS](https://nextdns.io/) or [Quad9](https://quad9.net/) for malware protection
 - [ ] **VPN Usage**: Always use a VPN on untrusted networks
 - [ ] **Network Monitoring**: Use tools like [Little Snitch](https://www.obdev.at/products/littlesnitch/) (macOS), [Lulu](https://objective-see.org/products/lulu.html) (free alternative), or [Glasswire](https://www.glasswire.com/) (Windows) to actively block unknown network connections
+- [ ] **Persistence Monitoring**: Use [BlockBlock](https://objective-see.org/products/blockblock.html) to monitor common persistence locations and alert whenever a persistent component is added
 
 **Code Security**
 - [ ] **Commit Signing**: [Sign all git commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) for non-repudiation in logs

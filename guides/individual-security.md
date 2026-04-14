@@ -46,6 +46,7 @@ Your personal security directly impacts your organization's security posture. Co
 - [ ] A trusted VPN profile should be configured for use when on any public Wi-Fi
 - [ ] All work devices must have active network monitoring in place (e.g. [Little Snitch](https://www.obdev.at/products/littlesnitch/), [Lulu](https://objective-see.org/products/lulu.html), or [Glasswire](https://www.glasswire.com/))
 	- [ ] Network monitoring tools must track outbound connections and block all traffic by default, unless explicitly approved
+- [ ] Persistence monitoring should be enabled (e.g. [BlockBlock](https://objective-see.org/products/blockblock.html)) to monitor common persistence locations and alert whenever a persistent component is added
 - [ ] OS network firewalls must be enabled with no rule exceptions
 # Wallets & Transactions
 ### Hardware Wallets
@@ -69,6 +70,7 @@ Your personal security directly impacts your organization's security posture. Co
 - [ ] Multi-sig operations must be performed on devices dedicated only to those transactions and transaction verification tools (i.e. you should have a laptop dedicated only to transacting)
 	 - [ ] Signing devices must be operated on private, authenticated networks or over trusted VPNs
 	 - [ ] Active network monitoring should be in place (e.g. Little Snitch, Lulu, or GlassWire - with default deny on all network requests and only the minimum necessary IPs to execute transactions allowed)
+	 - [ ] Persistence monitoring should be enabled (e.g. BlockBlock) to alert on any persistent component additions
 # Operations
 ### Browser Security
 - [ ] Separate browsers should be used for different browsing trust levels:

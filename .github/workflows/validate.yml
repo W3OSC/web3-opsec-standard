@@ -1,0 +1,17 @@
+name: Validate W3OS Content
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate guides & requirements
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run content validator
+        run: node scripts/validate.js

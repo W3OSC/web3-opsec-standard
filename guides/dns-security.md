@@ -1,8 +1,8 @@
----
+<!--
 id: dns-security-records-guide
 type: GUIDE
 scope: ORGANIZATION
----
+-->
 
 <div align="center">
   <h1>DNS Security Records Guide</h1>

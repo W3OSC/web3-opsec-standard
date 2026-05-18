@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/W3OSC/web3-opsec-standard/main/schema/w3os-content.schema.json",
+  "title": "W3OS Content",
+  "description": "Full shape of the data the Sentry sync engine reads from this repository. Use this schema to understand what each markdown file must produce, and to validate a generated manifest before merge.",
+  "type": "object",
+  "required": ["domains", "guides"],
+  "additionalProperties": false,
+  "properties": {
+    "domains": {
+      "type": "array",
+      "description": "Security domains. Each domain maps to a requirements markdown file at requirements/{id}-{slug}.md",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/domain" }
+    },
+    "guides": {
+      "type": "array",
+      "description": "All guide markdown files found under guides/. Each file must contain a valid HTML comment metadata block.",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/guide" }
+    }
+  },
+
+  "$defs": {
+    "domain": {
+      "type": "object",
+      "required": ["id", "name", "slug", "order", "requirements"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^0[1-9]|[1-9][0-9]$",
+          "description": "Two-digit numeric domain ID matching the filename prefix (e.g. '01').",
+          "examples": ["01", "02", "03", "04", "05"]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable domain name.",
+          "examples": ["Wallet & Multi-Sig Management", "Endpoint Security"]
+        },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+          "description": "URL-safe slug. Combined with id to form the requirements filename: {id}-{slug}.md",
+          "examples": ["wallet-multisig", "endpoints", "communications-socials"]
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional short description of the domain."
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Display order (1-based)."
+        },
+        "requirements": {
+          "type": "array",
+          "description": "Security requirements parsed from requirements/{id}-{slug}.md",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/requirement" }
+        }
+      }
+    },
+
+    "requirement": {
+      "type": "object",
+      "required": ["requirementId", "title", "section", "controlPoints", "order"],
+      "additionalProperties": false,
+      "properties": {
+        "requirementId": {
+          "type": "string",
+          "pattern": "^SP-[A-Z]+-\\d{3}$",
+          "description": "Requirement identifier. Format: SP-{DOMAIN_CODE}-{NNN}. Must be unique within a domain.",
+          "examples": ["SP-WM-001", "SP-EP-012"]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short title of the requirement, parsed from **SP-XX-NNN: Title** in the markdown."
+        },
+        "section": {
+          "type": "string",
+          "description": "Section heading under which this requirement falls (### **Section Name** in markdown). May be empty string for requirements before any section header."
+        },
+        "controlPoints": {
+          "type": "array",
+          "description": "Bullet-point control points that define compliance for this requirement. Parsed from `- ` lines following the requirement header.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-based position of this requirement within its domain file."
+        }
+      }
+    },
+
+    "guide": {
+      "type": "object",
+      "required": ["w3osId", "type", "title", "description", "category", "scope", "checklistItems"],
+      "additionalProperties": false,
+      "properties": {
+        "w3osId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+          "description": "Unique guide identifier sourced from the `id` field in the guide's HTML comment metadata block."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["CONFIGURATION", "GUIDE"]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Extracted from the first <h1>, <h2> Configuration Guide heading, or # heading in the file."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short description. Auto-derived for CONFIGURATION guides; extracted from the Overview section for GUIDE type."
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Derived from folder path under guides/. Examples: 'Business Tools', 'Communication Platforms', 'DevOps Accounts', 'General Security'."
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["INDIVIDUAL", "ORGANIZATION"]
+        },
+        "checklistItems": {
+          "type": "array",
+          "description": "All `- [ ]` checklist items parsed from the guide. At least one is required for the sync to accept the guide.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

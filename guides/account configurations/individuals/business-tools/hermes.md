@@ -4,7 +4,7 @@ type: CONFIGURATION
 scope: INDIVIDUAL
 -->
 
-<div align="center"> <h2><a href="https://hermes-agent.nousresearch.com" target="_blank" rel="noopener noreferrer">Hermes</a> Configuration Guide</h2> </div>
+<div align="center"> <img src="../../../../images/guides/hermes.svg" alt="Hermes Logo" width="64" height="64"> <h2><a href="https://hermes-agent.nousresearch.com" target="_blank" rel="noopener noreferrer">Hermes</a> Configuration Guide</h2> </div>
 
 > Hermes is an autonomous AI agent by NousResearch with file-system, shell, and MCP access. Its built-in security model has seven layers - user authorization, dangerous command approval, container isolation, MCP credential filtering, context file scanning, cross-session isolation, and input sanitization. The checklist below ensures those layers are correctly configured. Reference: [Hermes Security Docs](https://hermes-agent.nousresearch.com/docs/user-guide/security).
 

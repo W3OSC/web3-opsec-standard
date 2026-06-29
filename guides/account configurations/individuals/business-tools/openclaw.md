@@ -4,7 +4,7 @@ type: CONFIGURATION
 scope: INDIVIDUAL
 -->
 
-<div align="center"> <h2><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> Configuration Guide</h2> </div>
+<div align="center"> <img src="../../../../images/guides/openclaw.svg" alt="OpenClaw Logo" width="64" height="64"> <h2><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> Configuration Guide</h2> </div>
 
 > OpenClaw is a high-privilege autonomous AI agent that runs with terminal/root-level access and continuously installs Skills, MCPs, scripts, and tools. This expansive capability surface creates serious risks - prompt injection, supply chain poisoning, destructive operations, and business-logic abuse. The checklist below is derived from the [SlowMist OpenClaw Security Practice Guide](https://github.com/slowmist/openclaw-security-practice-guide).
 

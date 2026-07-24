@@ -6,7 +6,7 @@ scope: ORGANIZATION
 
 <div align="center">
   <img src="../../../../images/guides/gcp.svg" alt="GCP Logo" width="64" height="64">
-  <h2><a href="https://cloud.google.com/" target="_blank" rel="noopener noreferrer">GCP</a> Security Configuration Guide</h2>
+  <h2><a href="https://cloud.google.com/" target="_blank" rel="noopener noreferrer">GCP</a> Configuration Guide</h2>
   <p><em>Identity, Network, Data, and Detection controls for Google Cloud accounts</em></p>
 </div>
 

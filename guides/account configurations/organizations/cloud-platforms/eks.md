@@ -18,6 +18,8 @@ EKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Control Plane Access
 
+**Attack path:** a public API server or an unencrypted etcd snapshot exposes the whole cluster.
+
 - [ ] **Disable the public API endpoint** and use private access, or restrict `publicAccessCidrs` to known admin ranges — never `0.0.0.0/0`
 - [ ] Reach the cluster over **VPN, Direct Connect, or a bastion** in the VPC
 - [ ] Enable **envelope encryption of Secrets with a KMS CMK** so etcd contents are not readable from a snapshot
@@ -60,6 +62,8 @@ EKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Network Segmentation
 
+**Attack path:** a compromised pod reaches every service and node in the VPC.
+
 - [ ] Place nodes in **private subnets**; no public IPs on worker nodes
 - [ ] Enforce **default-deny NetworkPolicy** (VPC CNI network policy, Calico, or Cilium)
 - [ ] Use **security groups for pods** to isolate sensitive workloads at the ENI level
@@ -70,6 +74,8 @@ EKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Pod Security
 
+**Attack path:** a privileged or host-namespaced pod escapes to the node and its IAM role.
+
 - [ ] Enforce **Pod Security Admission `restricted`**; block privileged, hostPath, hostNetwork, hostPID
 - [ ] **Disable ServiceAccount token automount** where not needed
 - [ ] Run **non-root**, read-only root filesystem, all capabilities dropped, `seccompProfile: RuntimeDefault`
@@ -79,6 +85,8 @@ EKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Images & Supply Chain
 
+**Attack path:** a poisoned or unpinned image runs attacker code on every node.
+
 - [ ] Use **private ECR** repositories; block public registries at admission
 - [ ] Enable **ECR enhanced scanning** and fail deployments on critical findings
 - [ ] **Pin digests**, set `imagePullPolicy: Always` for mutable tags
@@ -87,6 +95,8 @@ EKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 ---
 
 ## Detection & Response
+
+**Attack path:** without audit logs and runtime signals, IAM abuse and container escapes go unnoticed.
 
 - [ ] Enable **EKS control plane logging** (api, audit, authenticator) to CloudWatch and ship off-account
 - [ ] Enable **GuardDuty EKS Protection** (audit log monitoring **and** Runtime Monitoring)

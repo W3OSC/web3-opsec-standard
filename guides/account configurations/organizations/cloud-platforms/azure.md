@@ -6,7 +6,7 @@ scope: ORGANIZATION
 
 <div align="center">
   <img src="../../../../images/guides/azure.svg" alt="Azure Logo" width="64" height="64">
-  <h2><a href="https://azure.microsoft.com/" target="_blank" rel="noopener noreferrer">Azure</a> Security Configuration Guide</h2>
+  <h2><a href="https://azure.microsoft.com/" target="_blank" rel="noopener noreferrer">Azure</a> Configuration Guide</h2>
   <p><em>Identity, Network, Data, and Detection controls for Microsoft Azure accounts</em></p>
 </div>
 

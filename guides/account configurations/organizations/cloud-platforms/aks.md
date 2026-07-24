@@ -18,10 +18,11 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Control Plane Access
 
+**Attack path:** a public API server exposes the cluster to unauthenticated reach and brute force.
+
 - [ ] Deploy a **[private cluster](https://learn.microsoft.com/en-us/azure/aks/private-clusters)** or use **API Server VNet Integration** — keep the control plane off the internet
 - [ ] If public, restrict to **authorized IP ranges**; never `0.0.0.0/0`
-- [ ] Stay within **supported Kubernetes versions** (N, N-1, N-2) and enable **auto-upgrade**
-- [ ] Enable **node image auto-upgrade** (weekly or automatic)
+- [ ] Stay on a **supported Kubernetes version** (N, N-1, N-2) with **cluster and node-image auto-upgrade** enabled
 
 ---
 
@@ -38,6 +39,8 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 ---
 
 ## Workload Identity
+
+**Attack path:** a broadly-scoped kubelet or workload identity turns a pod compromise into subscription access.
 
 - [ ] Use **[Microsoft Entra Workload ID](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)** so pods get federated, scoped tokens
 - [ ] **Do not grant the kubelet identity broad subscription roles** — every pod on the node can reach it
@@ -57,6 +60,8 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Network Segmentation
 
+**Attack path:** a compromised pod reaches every service and node in the VNet.
+
 - [ ] Enable **network policy** (Azure NPM, Calico, or Cilium) with **default-deny ingress and egress**
 - [ ] Use **internal ingress controllers** / internal load balancers; do not expose services publicly by default
 - [ ] Restrict **egress** through **Azure Firewall** or an NVA; allow-list required destinations
@@ -67,6 +72,8 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Workload Privileges
 
+**Attack path:** a privileged or host-namespaced pod escapes to the node and its managed identity.
+
 - [ ] Enforce **Pod Security Admission `restricted`** and back it with **Azure Policy for AKS**
 - [ ] Block **privileged**, hostPath, hostNetwork, hostPID; run **non-root**, drop capabilities, `seccompProfile: RuntimeDefault`
 - [ ] Use **Azure Linux** (or a hardened image) with **ephemeral OS disks**
@@ -76,6 +83,8 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Secrets
 
+**Attack path:** a read Secret or leaked token grants standing access to Azure resources.
+
 - [ ] Store secrets in **Azure Key Vault**; inject via the **[Secrets Store CSI driver](https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver)**
 - [ ] Restrict Key Vault access with **RBAC + private endpoint**; enable purge protection
 - [ ] Mount as **files, not environment variables**; rotate on suspected exposure
@@ -83,6 +92,8 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 ---
 
 ## Images & Supply Chain
+
+**Attack path:** a poisoned or unpinned image runs attacker code on every node.
 
 - [ ] Use a **private Azure Container Registry** with **Private Link** — never a public registry
 - [ ] Enable **vulnerability scanning** (Defender for Containers) and block critical findings
@@ -93,8 +104,10 @@ AKS-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Detection & Response
 
+**Attack path:** without audit logs and Defender signals, identity abuse and container escapes go unnoticed.
+
 - [ ] Enable **Microsoft Defender for Containers** for runtime threat detection
 - [ ] Send **control plane / audit logs** (`kube-audit`, `kube-apiserver`) to Log Analytics, retained outside the cluster's blast radius
 - [ ] Alert on: cluster-admin bindings, `exec` into pods, Secret reads, `listClusterAdminCredential` calls, Entra role changes
-- [ ] Scan posture regularly (**kube-bench**, **kubestriker**, AKS Periscope)
+- [ ] Benchmark the cluster against CIS with **kube-bench** and **kubestriker**
 - [ ] Rehearse **credential revocation** — rotate managed identities, Key Vault secrets, and cluster credentials

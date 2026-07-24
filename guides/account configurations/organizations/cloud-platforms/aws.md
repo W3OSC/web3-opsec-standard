@@ -6,7 +6,7 @@ scope: ORGANIZATION
 
 <div align="center">
   <img src="../../../../images/guides/aws.svg" alt="AWS Logo" width="64" height="64">
-  <h2><a href="https://aws.amazon.com/" target="_blank" rel="noopener noreferrer">AWS</a> Security Configuration Guide</h2>
+  <h2><a href="https://aws.amazon.com/" target="_blank" rel="noopener noreferrer">AWS</a> Configuration Guide</h2>
   <p><em>Identity, Network, Data, and Detection controls for AWS accounts</em></p>
 </div>
 

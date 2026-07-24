@@ -18,6 +18,8 @@ GKE-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Control Plane Access
 
+**Attack path:** a public control plane or the read-only kubelet port exposes cluster and node data.
+
 - [ ] Run a **[private cluster](https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept)** — nodes get no public IPs
 - [ ] Restrict the control plane with **authorized networks**; never expose it to `0.0.0.0/0`
 - [ ] **Disable the kubelet read-only port (10255)** — it leaks pod and node data unauthenticated
@@ -50,6 +52,8 @@ GKE-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Network Segmentation
 
+**Attack path:** a compromised pod reaches every service and node in the VPC.
+
 - [ ] Enable **[network policy enforcement](https://cloud.google.com/kubernetes-engine/docs/how-to/network-policy)** (Dataplane V2 / Cilium) and apply **default-deny ingress and egress**
 - [ ] Use **private nodes** with Cloud NAT for controlled egress
 - [ ] Restrict **VPC firewall rules** to required ports; no broad internal allow-all
@@ -58,6 +62,8 @@ GKE-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 ---
 
 ## Workload Privileges
+
+**Attack path:** a privileged or host-namespaced pod escapes to the node and its service account.
 
 - [ ] Enforce **Pod Security Admission `restricted`** (or Policy Controller equivalents)
 - [ ] Block **privileged**, hostPath, hostNetwork, hostPID; run **non-root** with dropped capabilities
@@ -69,6 +75,8 @@ GKE-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 
 ## Secrets
 
+**Attack path:** a read Secret or leaked token grants standing access to project resources.
+
 - [ ] Store credentials in **Secret Manager**, not raw Kubernetes Secrets
 - [ ] Enable **[application-layer secrets encryption](https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets)** with Cloud KMS
 - [ ] Mount secrets as **files, not environment variables**; rotate on suspected exposure
@@ -76,6 +84,8 @@ GKE-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 ---
 
 ## Images & Supply Chain
+
+**Attack path:** a poisoned or unpinned image runs attacker code on every node.
 
 - [ ] Use **Artifact Registry** (private); block external registries at admission
 - [ ] Enforce **[Binary Authorization](https://cloud.google.com/binary-authorization/docs)** so only signed, attested images run
@@ -85,6 +95,8 @@ GKE-specific controls on top of the [Kubernetes](https://kubernetes.io/docs/conc
 ---
 
 ## Detection & Response
+
+**Attack path:** without audit logs and runtime signals, IAM abuse and container escapes go unnoticed.
 
 - [ ] Enable **Cloud Audit Logs** (admin + data access) and export to a **separate, restricted project**
 - [ ] Enable **VPC Flow Logs** and firewall rule logging for lateral-movement analysis

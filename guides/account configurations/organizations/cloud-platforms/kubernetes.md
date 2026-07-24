@@ -78,6 +78,8 @@ Every item below maps to something an attacker actually does: reach the control 
 
 ## Secrets Handling
 
+**Attack path:** a read Secret or a leaked pod token grants standing access — logs, env dumps, and etcd all leak them.
+
 - [ ] **Mount Secrets as files, not environment variables** — env vars leak via crash dumps, logs, and `/proc`
 - [ ] Prefer an **external secret store** (Vault, cloud secret manager) over raw etcd Secrets
 - [ ] Scope Secret access with **`resourceNames`** so a workload reads only its own
@@ -86,6 +88,8 @@ Every item below maps to something an attacker actually does: reach the control 
 ---
 
 ## Supply Chain & Images
+
+**Attack path:** a poisoned or unpinned image runs attacker code on every pull.
 
 - [ ] Pull only from **trusted/private registries**; block public registries via admission policy
 - [ ] **Pin image digests** (not `:latest`) so the running image cannot change underneath you
@@ -96,6 +100,8 @@ Every item below maps to something an attacker actually does: reach the control 
 
 ## Admission Control
 
+**Attack path:** without enforcement at admission, a non-compliant pod slips past every policy above.
+
 - [ ] Enforce policy at admission with **ValidatingAdmissionPolicy**, **Kyverno**, or **OPA/Gatekeeper**
 - [ ] **Fail closed** — a webhook that fails open is not a control
 - [ ] Restrict who can modify **admission webhooks**; editing them disables every policy at once
@@ -103,6 +109,8 @@ Every item below maps to something an attacker actually does: reach the control 
 ---
 
 ## Node Isolation & Resource Abuse
+
+**Attack path:** a container escape lands on whatever shares the node; an unbounded pod starves it.
 
 - [ ] **Separate sensitive workloads onto dedicated nodes** (taints/affinity) so a container escape does not land next to secrets-bearing pods
 - [ ] Isolate tenants by **namespace + node pool**; use separate clusters for hostile multi-tenancy
@@ -112,6 +120,8 @@ Every item below maps to something an attacker actually does: reach the control 
 ---
 
 ## Audit Logging & Detection
+
+**Attack path:** an attacker with cluster-admin erases local logs and persists unseen.
 
 - [ ] **Enable API server audit logging** and ship it **off-cluster** — an attacker with cluster-admin can erase local logs
 - [ ] Alert on: `system:masters` use, new ClusterRoleBindings, `exec` into pods, Secret reads by unusual identities, failed auth spikes

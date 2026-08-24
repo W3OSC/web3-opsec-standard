@@ -19,6 +19,10 @@
 - R-WM-015: Compromised Multi-sig Coordination Platform
 - R-WM-016: Malware Infection of Signer Devices
 - R-WM-017: Proposer Impersonation
+- R-WM-018: Unrecoverable Key Backup Failure
+- R-WM-019: Weak or Compromised Key Generation
+- R-WM-020: Missing Key Compromise Response Procedures
+- R-WM-021: Stale or Unverified Signer Sets
 
 ### **Individual Wallet Security**
 
@@ -124,3 +128,29 @@
 - A third party outside of the organization should be set up to monitor time locked transactions for anomalies and unintended transaction effects
 - The external monitor must perform transaction simulation of all pending transactions
 - Monitor reports must be delivered at least 48 business hours before the time lock for a transaction lapses in order to provide adequate time to respond in the event of an anomaly
+
+### **Key Lifecycle Management**
+
+**SP-WM-020: Key Generation Procedures**
+- Keys must be generated in an isolated environment (air-gapped device or dedicated hardware wallet) that has never been exposed to untrusted networks or software
+- Key generation software and firmware must be authentic and integrity-verified (checksums or signatures validated) before use
+- Generation of high-value keys (treasury, contract admin) must be performed as a documented ceremony with at least one witness attesting that procedures were followed
+- Keys must be generated using a hardware random number generator or an otherwise audited, high-quality entropy source - brain wallets, user-chosen phrases, and unaudited software RNGs must never be used
+
+**SP-WM-021: Backup Distribution and Recovery Testing**
+- Key backups must be geographically distributed across at least two separate physical locations so that no single disaster can destroy all copies
+- Backups must be stored in tamper-evident packaging or containers, with tamper checks performed on a defined schedule
+- Recovery from backup must be tested for each critical key at least annually, and after any change to backup media or storage locations
+- Recovery must be executable by at least two authorized people, so that no single individual's absence prevents key restoration
+
+**SP-WM-022: Key Compromise Protocol**
+- Organizations must maintain a written key compromise protocol covering each key type: multi-sig signer keys, deployer keys, hot wallets, and treasury keys
+- The protocol must be executable by at least two people without requiring participation of the potentially compromised keyholder
+- The protocol must include concrete fund-migration steps (pre-approved destination wallets) and signer-replacement steps (removal and addition transactions ready to propose)
+- The protocol should be rehearsed at least annually, with rehearsal outcomes documented and used to update the procedures
+
+**SP-WM-023: Signer Lifecycle Management**
+- Organizations must maintain documented keyholder onboarding and offboarding checklists covering key issuance, multi-sig membership changes, and access revocation
+- Signer liveness checks must be performed quarterly - each signer must demonstrate they can still access their key (e.g. by signing a challenge message)
+- Departed or unresponsive signers must be removed from multi-sigs within timelines proportional to risk (within days for high-value wallets)
+- New signers must prove ownership of their address by signing a challenge message before being added to any multi-sig

@@ -1,0 +1,1067 @@
+# W3OS — Full Requirements Text
+
+# Domain 1: Wallet & Multi-Sig Management
+
+## Risks
+
+- R-WM-001: Private Key and Seed Phrase Compromise
+- R-WM-002: Multi-Signature Wallet Misconfiguration
+- R-WM-003: Social Engineering Attacks Targeting Signers
+- R-WM-004: Hardware Wallet Vulnerabilities
+- R-WM-005: Transaction Blind Signing
+- R-WM-006: Operational Key Loss
+- R-WM-007: Malicious or Compromised Signers
+- R-WM-008: Transaction Data Tampering
+- R-WM-009: Malicious Transaction Proposal Detection Failure
+- R-WM-010: Lack of Response Time Delay
+- R-WM-011: Degraded Transaction Review Scrutiny
+- R-WM-012: Lack of Transaction Review Responsibility
+- R-WM-013: Mutable or Missing Monitoring and Alerting
+- R-WM-014: Emergency Response Readiness
+- R-WM-015: Compromised Multi-sig Coordination Platform
+- R-WM-016: Malware Infection of Signer Devices
+- R-WM-017: Proposer Impersonation
+- R-WM-018: Unrecoverable Key Backup Failure
+- R-WM-019: Weak or Compromised Key Generation
+- R-WM-020: Missing Key Compromise Response Procedures
+- R-WM-021: Stale or Unverified Signer Sets
+
+### **Individual Wallet Security**
+
+**SP-WM-001: Authentic Hardware Procurement**
+- Hardware wallets should be obtained through verified supply chains (direct from manufacturer is ideal)
+- Device authenticity must be cryptographically verifiable upon receipt
+
+**SP-WM-002: Hardware Wallet Features**
+- Hardware wallets must support large screens capable of displaying complete transaction data
+- Clear signing technology is recommended
+- Devices must have secure PIN entry with randomized entry layouts
+- PIN entry must have time-based lockouts to prevent brute force attacks
+- Hardware wallets must support firmware integrity verification
+
+**SP-WM-003: Mnemonic Seed Phrase Protection**
+- Seed phrases must be stored on disaster-resistant, physical media
+- Seed phrases must not be stored in plain text - importing them must require a passphrase, additional word, or be scrambled with a random word order; with the secret stored in a password manager
+- Private keys and seed phrases must be generated on wallet devices and must never be exported
+- Alternatively, seed phrases can be sharded using Shamir's Secret Sharing algorithm, with each shard recommended to be shared with a trusted guardian (3rd party custodian service, family members, password manager, personal physical media, etc.)
+
+**SP-WM-004: Dedicated Wallet Addresses**
+- Multi-sig signers must use dedicated wallet addresses for signing only
+- All signing wallets should be monitored for any activity that is not directly related to multi-sig operations
+
+**SP-WM-005: Physical Security**
+- Wallets must have a PIN requirement or biometric factor required to access the wallet and approve transactions
+- PINs must be at least 6 digits long
+- Wallets should be physically secured in a safe or secret hiding place when not in use
+
+### **Multi-Sig Configuration and Transaction Security**
+
+**SP-WM-006: Multi-sig Usage**
+- Smart contract ownership/administration and treasury operations must be managed by an on-chain multi-sig
+- Multi-sigs must be configured such that they cannot be altered or bypassed without satisfying the signature requirements
+
+**SP-WM-007: Quorum Selection**
+- Multi-sig wallets must implement a minimum 3-of-5 signer quorum
+- Multi-sigs managing high value wallets and contracts should have at least 1 additional required signer that is external to the organization (such as a security partner or trusted advisor)
+- Signers should be diverse individuals to reduce risk of multiple compromised accounts - a mix of executives, developers, and operational roles is recommended
+
+**SP-WM-008: Transaction Time Locks**
+- Multi-sig wallets must include a time-lock mechanism on all transactions
+- Time-locks should delay transactions a minimum of 3 days
+- Organizations can establish veto quorums to bypass time-locks in case of emergency
+- The standard quorum plus two additional signers should be required to bypass
+
+**SP-WM-009: Multi-Device Verification**
+- All signers must verify transaction data on at least two independent devices
+- All signers must verify transaction data through at least two separate communication channels
+- At least 2 signers must use transaction simulation tools to verify transaction effects will be as expected
+  - All signers should verify the output of the transaction simulations before signing
+
+**SP-WM-010: On-device Verification**
+- Hardware wallet displays must be manually verified against expected transaction data before signing
+- All transaction details must be human-readable on hardware wallet screens
+- Entire transaction details must be fully reviewed and scrutinized - if not possible, then expected transaction hashes must be computed by multiple parties (shared via secure, redundant channels) and verified against hardware wallet displays
+- Clear-signing technology can be used, but is not a substitute for manual scrutiny
+
+**SP-WM-011: Hot Wallet Usage**
+- A hot wallet must be used as an intermediary for treasury wallets
+- A cold wallet must be used to store the majority of assets, with only basic transfers to the hot wallet address allowed
+- Hot wallet must have a minimum 2-of-3 signer quorum
+
+**SP-WM-012: Wallet Segregation**
+- Very high value assets must be distributed amongst separate wallets to prevent potential loss of all assets
+- Segregated wallets should be managed by different multi-sigs
+- Seldom used wallets should have increased time-lock periods and any activity on them should trigger alerts to the entire team
+
+**SP-WM-013: Address Whitelisting**
+- Approved smart contract and wallet addresses must be added to a whitelist that is enforced at the contract-level
+- Interactions with all other addresses should be denied and revert the transaction
+- Updating the whitelist should require an extra signer in addition to the standard transaction approval quorum
+
+### **Operational Security and Access Control**
+
+**SP-WM-014: Out-of-Band Confirmation**
+- Transaction proposals and verification must be coordinated through end-to-end encrypted communication channels (e.g. Signal)
+- Organizations must use redundant communication channels for transaction coordination
+- Links to URLs containing transaction requests or confirmation data (even those provided by trusted parties) must never be clicked - they must be navigated to by using bookmarks or typing them out manually
+
+**SP-WM-015: Dedicated Signing Machines**
+- Multi-sig operations must be performed on devices dedicated only to these transactions and verification tools
+- All network access should be default blocked, with only the minimum necessary IPs to execute these transaction signatures allowed
+- Signing devices must be operated on private, authenticated networks or over trusted VPNs
+- Organizations must implement active network monitoring on signing devices
+
+**SP-WM-016: Continuous Monitoring**
+- All multi-sig wallet addresses must be monitored for unauthorized activity
+- Authorized transactions awaiting time lock delay should be monitored, with at least 1 dedicated reviewer outside of the signing quorum
+- Monitoring channels (e.g. email, Slack or Telegram chats) must be immutable (or trigger alerts when their configuration changes or logs are deleted/tampered with) and redundant such that an admin could not disable or tamper with one monitoring channel without generating an alert on the other channel
+
+**SP-WM-017: Self-hosted Multi-sig UI**
+- Multi-sig coordination UIs should be self-hosted to eliminate supply chain risk
+- Hosted UI should be IP restricted to allow access only from signer machines
+
+**SP-WM-018: Transaction Simulation**
+- Multi-sig transactions must always be simulated in a mainnet-like environment to ensure expected state changes before proposing for multi-sig transacting
+- At least 2 signers must perform simulation testing separately
+- Simulation testing output should be shared with and reviewed by all signers before signing a proposal
+- Local simulation tools are more secure, but a trusted platform such as Tenderly is acceptable
+
+**SP-WM-019: External Party Security Monitoring**
+- A third party outside of the organization should be set up to monitor time locked transactions for anomalies and unintended transaction effects
+- The external monitor must perform transaction simulation of all pending transactions
+- Monitor reports must be delivered at least 48 business hours before the time lock for a transaction lapses in order to provide adequate time to respond in the event of an anomaly
+
+### **Key Lifecycle Management**
+
+**SP-WM-020: Key Generation Procedures**
+- Keys must be generated in an isolated environment (air-gapped device or dedicated hardware wallet) that has never been exposed to untrusted networks or software
+- Key generation software and firmware must be authentic and integrity-verified (checksums or signatures validated) before use
+- Generation of high-value keys (treasury, contract admin) must be performed as a documented ceremony with at least one witness attesting that procedures were followed
+- Keys must be generated using a hardware random number generator or an otherwise audited, high-quality entropy source - brain wallets, user-chosen phrases, and unaudited software RNGs must never be used
+
+**SP-WM-021: Backup Distribution and Recovery Testing**
+- Key backups must be geographically distributed across at least two separate physical locations so that no single disaster can destroy all copies
+- Backups must be stored in tamper-evident packaging or containers, with tamper checks performed on a defined schedule
+- Recovery from backup must be tested for each critical key at least annually, and after any change to backup media or storage locations
+- Recovery must be executable by at least two authorized people, so that no single individual's absence prevents key restoration
+
+**SP-WM-022: Key Compromise Protocol**
+- Organizations must maintain a written key compromise protocol covering each key type: multi-sig signer keys, deployer keys, hot wallets, and treasury keys
+- The protocol must be executable by at least two people without requiring participation of the potentially compromised keyholder
+- The protocol must include concrete fund-migration steps (pre-approved destination wallets) and signer-replacement steps (removal and addition transactions ready to propose)
+- The protocol should be rehearsed at least annually, with rehearsal outcomes documented and used to update the procedures
+
+**SP-WM-023: Signer Lifecycle Management**
+- Organizations must maintain documented keyholder onboarding and offboarding checklists covering key issuance, multi-sig membership changes, and access revocation
+- Signer liveness checks must be performed quarterly - each signer must demonstrate they can still access their key (e.g. by signing a challenge message)
+- Departed or unresponsive signers must be removed from multi-sigs within timelines proportional to risk (within days for high-value wallets)
+- New signers must prove ownership of their address by signing a challenge message before being added to any multi-sig
+
+---
+
+# Domain 2: Endpoint Security
+
+## Risks
+
+- R-EP-001: Malware Infection and Credential Theft
+- R-EP-002: Physical Device Compromise
+- R-EP-003: Network-Based Attacks and Lateral Movement
+- R-EP-004: Social Engineering Targeting Device Users
+- R-EP-005: Insider Threats and Privilege Abuse
+- R-EP-006: Development Environment Compromise
+- R-EP-007: Commingled Personal and Organizational data
+- R-EP-008: Insecure Networks Usage
+- R-EP-009: Public Credential Leakage
+- R-EP-010: Malicious Browser Extensions and IDE Plugins
+- R-PS-011: Unauthorized Physical Access to Privileged Devices
+- R-PS-012: Visual Surveillance and Shoulder Surfing Attacks
+- R-PS-013: Theft or Tampering of Privileged Devices
+
+### **Device Management**
+
+**SP-EP-001: Dedicated Devices**
+- Each organization member must have a device dedicated to organization-related activities and work
+- Devices should have biometric login options, secure boot, and support for full disk encryption
+- Personal devices must never be used for work activities or have access to organization accounts
+
+**SP-EP-002: Device Supply Chain Security**
+- Dedicated devices should be procured by the organization directly from manufacturers or authorized distributors
+- Hardware wallets should be purchased using pseudonyms and delivered to secure locations
+- Devices must be delivered securely and inspected for tampering upon receipt
+- Hardware authenticity must be verified through cryptographic attestation when available
+
+**SP-EP-003: Device Configuration**
+- Full disk encryption must be required on all organization devices
+- Inactivity screen locks must be enabled, with a period of no more than 5 minutes before requiring password re-entry
+- A secure DNS provider should be used (e.g. Cloudflare's [1.1.1.1](https://www.cloudflare.com/learning/dns/what-is-1.1.1.1/))
+- OS and browser security updates must always be installed as soon as possible when they are available
+- Users must operate with standard (non-administrative) accounts for daily activities
+- Administrative privileges must only be granted on a just-in-time basis with proper approval and logging
+
+### **Access Control**
+
+**SP-EP-004: Secure Device Usage**
+- Endpoints must implement automatic screen locks with timeout periods ≤5 minutes
+- Biometric authentication should be used to prevent password leakage to cameras and onlookers when in public
+- Privacy screens should be used when working in public spaces
+- Trusted VPNs should be used when on any public Wi-Fi
+- When traveling, an organization-managed VPN should be used to secure network traffic
+- Applications must never be run with root or administrator privileges unless absolutely necessary for specific system tasks
+
+**SP-EP-005: Home Network Security**
+- Home WiFi networks should have recommended security settings:
+	- A strong password (at least 20 characters)
+	- Router and modem updated to the latest firmware
+	- Rotated admin login credentials (not the default for the device)
+	- Have a separate network for guest devices
+	- Use WPA3/WPA2 encryption (AES, not TKIP)
+	- Disable WPS
+	- Disable remote management
+
+### **Security Monitoring**
+
+**SP-EP-006: Endpoint Detection and Response (EDR)**
+- Organizations should deploy an EDR solution on all endpoints handling organization operations
+- Managed EDR is preferred for large organizations. Self-managed is adequate with proper monitoring
+- In the absence of EDR, active network monitoring (e.g. Little Snitch, Lulu, or Glasswire) must be used
+- Persistence monitoring (e.g. BlockBlock) should be enabled to alert on persistent component additions
+
+**SP-EP-007: Network Monitoring and Firewall**
+- All endpoints must have active network monitoring in place
+- Network monitoring tools must track outbound connections and block all traffic unless explicitly approved
+- Network firewalls must be enabled
+
+**SP-EP-008: Malware Detection**
+- All organization devices should have basic antivirus software enabled (built-in OS antivirus is acceptable, but must be properly enabled without any rule exceptions)
+- Antivirus software should be regularly updated as soon as new releases are available
+
+### **Software Management**
+
+**SP-EP-009: Browser Security and Isolation**
+- Organization members should implement browser app isolation
+  - Suggested set up: One browser for session-based, sensitive activities; another browser for opening links and temporary browsing
+- Wallet extensions should only be used on a browser dedicated only to transacting
+
+**SP-EP-010: Secure External File Interaction**
+- Files received from outside the organization must only be opened in a secure sandbox or after being sanitized (e.g. via [Dangerzone](https://dangerzone.rocks/) or Google Docs)
+- Internally shared files must be distributed via a dedicated file sharing platform (Google Drive/Docs, Dropbox, Notion, etc.), and never sent as email or DM attachments (to prevent social engineering malware delivery vectors)
+- Shared links should always be manually navigated to or re-typed (to avoid homograph attacks)
+
+**SP-EP-011: Browser Extension and Plugin Vetting**
+- All browser extensions must be reviewed and approved before installation
+- Extensions must be obtained only from official stores (Chrome Web Store, Firefox Add-ons, Microsoft Edge Add-ons, etc.)
+- User-installed extensions (i.e. manually installed from file) must be prohibited on organization devices
+- Browser extension permissions must be reviewed and minimized to necessary functions only
+- Extensions with excessive permissions (read all websites, access to file system, etc.) should be avoided
+
+### **Workspace Security**
+
+**SP-EP-012: Secure Workspace Requirements**
+- Dedicated workspace areas must be established for performing sensitive operations
+- Workspaces must be positioned to prevent unauthorized visual access to screens and activities
+- Privileged operations should never be performed in public spaces
+
+**SP-EP-013: Remote Work Physical Security**
+- Work areas must be isolated from common areas where visitors or family members have access
+- Organizational devices and materials must be securely stored when not in use
+- Privacy screens should be used on all devices to prevent visual eavesdropping when in public spaces
+- Computer screens must be locked when unattended
+- Biometric login and SSO should be used in public spaces to prevent password leakage
+
+---
+
+# Domain 3: Communications & Social Media
+
+## Risks
+
+- R-CS-001: Account Takeover and Impersonation Attacks
+- R-CS-002: Social Engineering Targeting Team Members
+- R-CS-003: Community Scams and Phishing Campaigns
+- R-CS-004: Information Disclosure Through Insecure Communications
+- R-CS-005: Coordinated Attacks on Multiple Platforms
+- R-CS-006: Platform-Specific Vulnerabilities
+- R-CS-007: Spear Phishing and Email Spoofing
+- R-CS-008: Impersonated Organization Members
+
+### **Account Security**
+
+**SP-CS-001: Multi-Factor Authentication for All Accounts**
+- All organizational communication accounts must implement multi-factor authentication
+- SMS-based authentication must not be used as a primary or backup factor
+- Hardware security keys should be used where supported by platforms
+
+**SP-CS-002: Account Recovery Protection**
+- Account recovery options can be used, but SMS recovery should not be enabled
+- Recovery email addresses must be dedicated organizational accounts with strong security and 2FA
+
+### **Secure Communications**
+
+**SP-CS-003: End-to-End Encrypted Channels**
+- Encrypted communication should be used for confidential communications and coordination of admin operations
+- Signal or equivalent end-to-end encrypted messaging platforms can be used
+
+**SP-CS-004: Email Authentication**
+- SPF, DKIM, and DMARC email domain records must be properly configured and enabled
+- Email filtering should be enabled to block known malicious content and spam
+- All internal emails should be encrypted and signed with an authentic PGP key, with the public keys shared via a trusted channel
+- Sender address spoofing must be detected and filtered for all organization member inboxes
+- Email platforms should scan for malicious links and attachments
+
+**SP-CS-005: External Party Verification**
+- Interactions with new external identities and communication channels must have their authenticity confirmed with that party via a secure channel (existing authenticated channels, video chats, social consensus, in person discussion)
+- Communication channels with trusted external parties must have strong authentication requirements (signed and encrypted emails, encrypted Signal chats, secure Slack chats, etc.)
+
+**SP-CS-006: Secure File Sharing and Viewing**
+- Files received from external parties must never be directly opened, they must be sanitized with an approved software or service (e.g. [Dangerzone](https://dangerzone.rocks/), [VirusTotal](https://www.virustotal.com/gui/home/upload), or [Google Drive](https://support.google.com/drive/answer/141702))
+- Internally shared files must be distributed via secure file sharing platforms, never via email or chat
+
+**SP-CS-007: Critical Operations Confirmations**
+- Internal operations coordination must be confirmed in a secure channel (camera-on video calls, end-to-end encrypted chats, in person)
+- Redundant channels for confirmation of operational details are recommended
+
+**SP-CS-008: Organization Identity**
+ - Organization members must perform all email communication using official emails
+ - Externally verifiable PGP keys should be used to sign emails for external parties to verify authenticity of organization emails
+ - External direct messaging profiles must be linked to from trusted sources (e.g. company websites or well-established social media accounts)
+
+---
+
+# Domain 4: DevOps & Infrastructure
+
+## Risks
+
+- R-DI-001: Compromised Development Environments
+- R-DI-002: Insecure Cloud Configurations
+- R-DI-003: Supply Chain Attacks Through Dependencies
+- R-DI-004: Privileged Access Abuse
+- R-DI-005: CI/CD Pipeline Manipulation
+- R-DI-006: Infrastructure Secrets Exposure
+- R-DI-007: Malware Infection in Trusted Code
+- R-DI-008: Impersonated Code Commits
+- R-DI-009: Forced Manual Deployments
+- R-DI-010: Compromised Software Dependencies and Packages
+- R-DI-011: Typosquatting and Package Name Confusion Attacks
+- R-DI-012: Malicious or Compromised Development Tools
+- R-DI-013: Cloud Service Provider Security Failures
+- R-DI-014: Malicious Code Injection by Trusted Contributors
+- R-DI-015: Frontend Compromise Serving Malicious Transactions
+- R-DI-016: Domain Hijacking via Registrar Compromise
+- R-DI-017: Fraudulent TLS Certificate Issuance
+
+### **Development Environment Security**
+
+**SP-DI-001: Isolated Development Environments**
+- Development activities should be performed in containerized or virtualized environments
+- Each code repo should have its own isolated environment to prevent cross contamination
+- Code execution must be sandboxed to prevent host system compromise and malware infection
+
+**SP-DI-002: IDE Plugin Security**
+- IDE extensions and plugins must be thoroughly vetted before installation
+- Extensions must be obtained only from official repositories (e.g. VS Code Marketplace)
+- AI-powered extensions that process code should be restricted to approved providers only
+- Regular reviews of installed extensions must be performed to identify unused or unrecognized plugins
+
+### **Source Code Management**
+
+**SP-DI-003: Repository Security Controls**
+- All source code repos must be private by default
+- Branch protection rules must be enabled for main/production branches to prevent forced merges
+- Signed commits must be required for all code changes
+- At least two-person approval must be required for pull requests to protected branches
+
+**SP-DI-004: Source Code Secret Scanning**
+- Source code must be continuously scanned for accidentally committed secrets
+- Pre-commit hooks should be used by all developers to prevent accidentally committing secrets
+
+**SP-DI-005: Package Verification and Integrity**
+- All software packages must be verified for authenticity before installation
+- Packages must be obtained from official repositories and trusted mirrors only
+- Private package repositories should be used for internal dependencies
+- Package integrity monitoring should detect tampering or modification
+
+**SP-DI-006: Typosquatting Detection and Prevention**
+- Package names should be verified against known typosquatting patterns before installation
+- Visual verification techniques must be used to detect character substitution attacks:
+  - Copy package names into code blocks to display in monospace font for character verification
+  - Use monospace fonts (Consolas, Monaco, Courier New) that clearly distinguish similar characters
+  - Compare package names character-by-character against official documentation
+- Automated typosquatting detection tools should be integrated into package management workflows
+
+**SP-DI-007: Dependency Management and Scanning**
+- All dependencies must be scanned for known vulnerabilities before deployment
+- Dependency version pinning must be used to prevent automatic updates to compromised versions
+- Regular dependency audits must be used to identify outdated or vulnerable components
+- Package versions should be at least 6 months old and have balanced usage metrics
+- The changelog of individual dependencies and versions should be reviewed for alignment to expected functionality
+
+**SP-DI-008: Enhanced Code Review for External Contributors**
+- Require additional approvers for all code contributions from external collaborators
+- Track code contributions and flag unexpected code changes (e.g. commit rewrites or unprompted edits)
+- Restrict privileges for external contributors to minimum necessary access
+
+### **Developer Operations**
+
+**SP-DI-009: Secure Secrets Storage**
+- Secrets must not be stored in source code or configuration files unless encrypted
+- Dedicated secrets management systems must be used for production secrets
+- Production secrets should not be accessible by humans
+
+**SP-DI-010: Pipeline Access Controls**
+- Deployment pipeline modifications must require multi-party approvals
+- Pipeline secrets must be managed through secure secret stores, and only accessible by system accounts
+- Separate service accounts with minimal permissions must be used for pipeline execution
+- Manual deployment steps and permissions for humans must not be allowed
+
+### **Infrastructure**
+
+**SP-DI-011: Infrastructure as Code (IaC)**
+- All infrastructure must be defined and managed through code
+- IaC definitions must be automatically deployed, with no manual steps or permissions required for humans
+- Infrastructure changes must go through a multi-party approval process
+- IaC security scanning must be performed before deployment using automated tools
+
+**SP-DI-012: Infrastructure Access Controls**
+- Infrastructure access must use individual (non-shared) accounts with multi-factor authentication
+- Privileged access must be time-limited and require explicit team approval by multiple parties
+- Just-in-time (JIT) access control should be implemented for privileged manual operations
+- Where JIT access control is not possible, auto-expiring (or planned manually revoked) credentials should be used
+- All access activities must be fully logged and monitored in redundant, immutable channels
+
+**SP-DI-013: Break-Glass Accounts**
+- Break-glass procedures should be established for emergency access to infrastructure and deployments
+- Emergency access to these accounts must be monitored and fully audited upon any usage
+- Break-glass account usage must trigger immediate, immutable alerts to the entire team
+- Post-incident reviews should be conducted for all break-glass usage
+
+**SP-DI-014: Backup and Disaster Recovery**
+- Critical systems should have automated backup and recovery procedures
+- A disaster recovery plan should be defined
+- Backup systems should be tested regularly
+
+**SP-DI-015: Cloud Service Provider Security**
+- Cloud security configurations must be continuously monitored and validated
+- Cloud service provider security incident notification must be in place
+- Admin actions taken with cloud systems must trigger immediate alerts
+- Multi-cloud strategies should be implemented to reduce single provider dependency
+
+### **Smart Contract Security**
+
+**SP-DI-016: Contract State Monitoring**
+- Invariant monitoring should be set up for deployed and owned smart contracts, with well-defined invariants
+- Alerts for all major attack indicators should be defined, including at least:
+    - Changes in ETH and applicable ERC20 balances
+    - Changes in contract ownership and admin permissions
+    - Usage of protected functions
+- Alerts must be delivered to immutable channels that cannot be silently supressed
+- Alerts and invariant monitoring should be enforced at the relayer level, blocking execution and requiring override in order to process flagged transactions
+
+### **Frontend Integrity**
+
+**SP-DI-017: Frontend Content Protection**
+- Content Security Policy (CSP) headers must be deployed on all user-facing frontends
+- Subresource Integrity (SRI) must be used for all external scripts loaded on transaction or signing pages
+- Third-party scripts that auto-update must not be included on pages that construct or sign transactions
+- Wallet connector and frontend SDK versions must be pinned and reviewed before updating
+
+**SP-DI-018: Frontend Build Integrity**
+- The hash of the deployed frontend artifact must be verified against the CI build output
+- Frontend deployments must only be performed through the protected pipeline, with no manual uploads allowed
+- Monitoring should be in place to detect unexpected changes to the deployed frontend
+
+**SP-DI-019: Frontend Compromise Response**
+- A documented procedure must exist for warning users of a compromised frontend using at least two independent channels
+- The team must have the capability to rapidly take down or replace a compromised frontend
+
+### **Domain & Registrar Security**
+
+**SP-DI-020: Registrar Account Security**
+- Registrar and DNS accounts must use FIDO2/hardware-key multi-factor authentication, with SMS-based MFA excluded
+- Registrar-side transfer locks (EPP) must be enabled on all domains
+- Registry locks should be enabled for critical domains
+- An enterprise-tier registrar should be used for critical domains
+
+**SP-DI-021: DNS Change Control**
+- DNS changes must require review by a second person before taking effect
+- DNS change notifications must be delivered to the team
+- An audit log of all DNS changes must be maintained
+- A domain inventory must be maintained with expiry tracking and funded auto-renewal
+
+**SP-DI-022: Certificate and DNS Monitoring**
+- Certificate Transparency monitoring must be in place with alerts on unexpected certificate issuance, with wildcard certificates flagged
+- DNS zones must be continuously monitored for unauthorized changes
+- DNSSEC should be enabled on primary domains
+- CAA records should be used to restrict which certificate authorities may issue certificates
+
+---
+
+# Domain 5: General Security
+
+## Risks
+
+- R-GS-001: Delayed Incident Detection
+- R-GS-002: Inadequate Response Procedures
+- R-GS-003: Lack of Monitoring Responsibility
+- R-GS-004: Tampering of Monitoring Mechanisms
+- R-GS-005: Communication Failures During Incidents
+- R-GS-006: Insufficient Backup and Recovery Capabilities
+- R-GS-007: Social Engineering Attacks
+- R-GS-008: Weak Passwords
+- R-GS-009: Account Takeover Via Credential Leakage
+- R-GS-010: Compromise of Phone Number by SIM Swapping
+- R-GS-011: Lost Account Access
+- R-GS-012: Overly Broad Access
+- R-GS-013: SSO Single Point of Failure
+- R-GS-014: Malicious or Compromised Insiders
+- R-GS-015: Third-Party Data Breaches Affecting Organization
+- R-GS-016: Third Party Privileged Access Abuse
+- R-GS-017: Compromised Credential Detection Failure
+- R-GS-018: Nation-State Operative Infiltration Via Hiring
+- R-GS-019: Remote Worker Identity Fraud and Impersonation
+- R-GS-020: Unknown or Untracked Organizational Assets
+- R-GS-021: Lingering Access After Personnel Departure
+- R-GS-022: Sensitive Data Recovery From Disposed Devices
+- R-GS-023: Undocumented Security Expectations
+
+### **Incident Response Planning**
+
+**SP-GS-001: Comprehensive Incident Response Runbook**
+- Organizations must maintain documented incident response plans for all critical systems
+- Response procedures must define roles, responsibilities, and escalation paths
+- Response procedures should be as prescriptive as possible such that anyone on the team could perform the required actions with no assistance required
+
+**SP-GS-002: Web3-Specific Response Procedures**
+- Incident response plans must include multi-sig wallet compromise scenarios
+- Smart contract circuit breakers should be set up to automatically halt ongoing attacks as they occur
+
+**SP-GS-003: Incident Response Controls**
+- Incident response runbooks must include pre-configured response tactics including:
+	- Rapid code deployment rollbacks
+    - Accounts access ripcord (immediate revocation of all access of an organization member)
+    - Redundant database backups with tested restore procedures (multiple storage media are recommended)
+    - Multiple availability zones and fallback regions
+    - Multi-sig wallet freezes
+- Managed EDR (Endpoint Detection and Response) should be in place to allow rapid response to device compromise
+
+**SP-GS-004: Immutable Incident Monitoring and Alerting**
+- Immutable logs of sensitive actions must be in place
+- Logs and alerting channels must be configured such that it is either impossible to disable or edit them, or that any such action would trigger an insuppressible alert (via a separate alerting mechanism) indicating that the logs have been altered
+- Signed Git commits must be required (to enforce non-repudiation of code changes)
+- Alerts should be delivered via multiple redundant channels (e.g. Telegram channel, Discord bot, email)
+
+### **Security Training & Ownership**
+
+**SP-GS-005: Phishing Simulation and Testing**
+- Organizations must conduct regular phishing simulation exercises
+- Simulations must include Web3-specific phishing scenarios
+- Additional training must be provided to personnel who fail simulations
+
+**SP-GS-006: Social Engineering Prevention**
+- Organizations must provide social engineering awareness training
+- Personnel should be trained to recognize common social engineering tactics
+- Reporting mechanisms should be available for suspicious contact attempts
+
+**SP-GS-007: Security Ownership**
+- Organizations should designate one or more members of the team to be the security champion of the organization
+- The security champion should have the additional duties of tracking security posture, pushing for necessary security improvements, and interfacing with security partners
+
+### **Security Policy**
+
+**SP-GS-008: Password Management**
+- Passwords and secrets should be:
+    - Not reused
+    - 20-32 characters
+    - Automatically generated with the full character set (letters, numbers, and symbols)
+- A password manager must be used (1Pass or Bitwarden recommended)
+- Password manager master passwords should be complex, and at least 20 characters with a mix of phonetic phrases, numbers, and special characters
+    - [https://xkcd.com/936/](https://xkcd.com/936/)
+- Organization password manager accounts should be separate from personal password manager accounts
+
+**SP-GS-009: Account Sharing**
+- Account delegation must be used where possible, rather than credential sharing
+- Secrets must be shared with the minimum set of people necessary
+- For shared accounts where delegation is not possible, temporary credentials should be provisioned as needed, rather than long-lived ones (or credentials should be rotated after each use)
+- Account credentials must not be shared, in order to enforce non-repudiation of actions taken
+
+**SP-GS-010: Principle of Least Privilege**
+- Admin privileges must only be granted to the minimum necessary roles
+- Dedicated accounts must be used for admin activities, separate from the general accounts of admin users
+- Permission changes and admin account usage should be logged and actively monitored
+
+**SP-GS-011: Login Methods**
+- SSO (Single Sign-On - e.g. Log in with Google/Github/Apple) can be used for non-sensitive accounts, but must not be enabled for highly sensitive access (financial, administrative, deployments, infrastructure, etc.)
+- 2FA must be enforced on all accounts
+    - FIDO security keys are recommended, but mobile authenticator apps acceptable
+    - SMS-based 2FA must never be used unless no other option is available
+    - 2FA seeds should not be stored in password managers
+- Passkeys are recommended as a primary login method when available
+
+**SP-GS-012: Superadmin Break Glass Accounts**
+- Owner/superadmin privileges for all services must be limited to a single account
+- Owner/superadmin should also have a separate individual account if necessary to take non-admin actions
+- These accounts must be treated as break glass accounts and their usage should trigger an alert to the entire team
+
+**SP-GS-013: SIM Swap Mitigation**
+- All members must set a SIM PIN to mitigate physical theft of SIM cards
+- All members should add additional number transfer security requirements through their phone provider:
+	- **AT&T** - Go to your myAT&T Profile and log in > My Linked Accounts > Manage extra security for your account > turn on Extra security
+	- **T-Mobile** - Add account [Takeover Protection](https://www.t-mobile.com/support/plans-features/account-takeover-protection) to your account
+	- **Verizon** - Enable [Number Lock](https://myvpostpay.verizon.com/ui/acct/secure/profile/security/portsecurity). This can be done by phone, through the app, or on [their website](https://myvpostpay.verizon.com/ui/acct/secure/profile/security/portsecurity)
+	- **Google Fi** - Enable [Number Lock](https://support.google.com/fi/answer/15147412?hl=en#zippy=%2Cturn-on-number-lock)
+- All members must register a Signal account for their phone number (even if not using Signal), to prevent account impersonation via SIM swap attacks
+
+### **Insider Threat Resistance**
+
+**SP-GS-014: Malicious Insider Threat Modeling**
+- Insider threat modeling should be performed on each permission level within the org (admin, developer, SRE, DBA, member, etc.)
+	- For each permission level, determine the highest amount of damage that an attacker with that access could cause
+	- For the highest levels of damage that the business could not recover from, put in place security controls that mitigate or prevent that damage, including:
+		- Two-party approvals of sensitive actions
+		- Automated time-locks using system accounts and scripts for admin actions
+		- Segmentation of assets (e.g. on-chain assets distributed amongst multiple wallets, different deployers for front-end and back-end)
+
+**SP-GS-015: Insider Access Minimization**
+- Permissions of each organization member on all services and accounts must be reviewed and reduced to the absolute minimum required to perform their role
+- Issuing short-lived credentials at the time of use rather than permanent accounts is recommended
+- Elevated privileges (like deploy keys or admin actions) must be designated only to break-glass accounts
+	- Break-glass accounts differ from typical accounts in that they are heavily monitored (alerts on any actions taken), and their credentials are designed for one-time use
+	- These account credentials can be held by admins in a secure vault, or you can use [Shamir’s Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing) to create a quorum necessary to reconstruct the credentials for additional security
+	- Break-glass accounts and credentials should be deleted after use and recreated to be ready for future events
+
+**SP-GS-016: Third Party Access Management**
+- External access to organization systems must be time-limited and purpose-specific
+- Just-in-time access provisioning should be used for third party support activities
+- External access must be monitored and logged with immutable audit trails
+- Multi-factor authentication must be required for all vendor access
+- Vendor access must be reviewed and revalidated on a regular schedule
+
+**SP-GS-017: Enhanced Identity Verification for Remote Workers**
+- Require video interviews with multiple team members for all remote positions (using a trusted video conferencing platform)
+- Verify government-issued identification documents and perform background checks of new hires
+- For high-privilege roles, require in-person meetings or trusted third-party verification
+
+### **Compromise Monitoring**
+
+**SP-GS-018: Leaked Credential Monitoring**
+- Leaked passwords and account details must be monitored for the organization
+- Automatic alerts for leaked passwords must be instant and immutable
+- All passwords must be reset and access reviewed for any organization members with leaked credentials
+
+**SP-GS-019: Compromised Accounts Monitoring**
+-  Socials accounts should have automated behavioral analysis in place to flag unusual activities that might indicate ongoing attacks (e.g. twitter posts about unrelated tokens)
+- All publications and announcements from authentic organization channels should be monitored by multiple organization members
+
+### **Organizational Governance**
+
+**SP-GS-020: Asset Inventory**
+- Organizations must maintain registries of the following organizational assets:
+    - Wallets and keys
+    - Domains
+    - Organizational accounts
+    - Devices
+    - Service accounts and API keys
+- Each inventory entry must have a named owner
+- The inventory must be updated within one business day of any changes
+- Critical assets must be explicitly flagged in the inventory
+
+**SP-GS-021: Written Security Policy**
+- Organizations must maintain a plain-language security policy accessible to all members
+- The security policy must be acknowledged at onboarding before access is granted
+- The security policy must be reviewed at least annually and after significant changes
+
+**SP-GS-022: Risk Register**
+- Organizations should maintain a documented risk register with likelihood, impact, and mitigations for each risk
+- The risk register should be reviewed after significant organizational or technical changes
+- A risk register is recommended and appropriate for mature organizations
+
+### **Personnel Lifecycle**
+
+**SP-GS-023: Onboarding Security Checklist**
+- Organizations must maintain a documented onboarding checklist covering identity verification, device provisioning, MFA enrollment, security training, and policy acknowledgment
+- Access must be granted only after the onboarding checklist is completed
+- NDAs must be signed by personnel handling keys, funds, or sensitive code
+
+**SP-GS-024: Offboarding and Termination**
+- Organizations must maintain a documented offboarding checklist covering accounts, credentials, devices, physical items, and active sessions
+- All access must be removed within 24 hours of departure
+- For involuntary terminations, access must be revoked immediately at notification
+- Keyholder departures must additionally trigger signer-rotation procedures
+
+**SP-GS-025: Media Sanitization and Disposal**
+- Devices and storage media must be securely wiped or physically destroyed before disposal or reassignment
+- Disposal of media that held key material must be documented
+- Hardware wallets must be decommissioned by resetting them and verifying key removal
+
+---
+
+# Domain 6: Financial Controls & Banking Security
+
+## Risks
+
+- R-FC-001: Unauthorized Wire or ACH Transfer
+- R-FC-002: Social Engineering of Financial Personnel
+- R-FC-003: Fraudulent Payment Authorization
+- R-FC-004: Single Point of Failure in Payment Approval
+- R-FC-005: Account Takeover of Banking Portals
+- R-FC-006: Insider Theft or Misappropriation of Funds
+- R-FC-007: Business Email Compromise Leading to Payment Fraud
+- R-FC-008: Unmonitored or Undetected Financial Anomalies
+- R-FC-009: Lack of Financial Incident Response Readiness
+- R-FC-010: Inadequate Segregation of Financial Duties
+- R-FC-011: Overly Broad Access to Financial Accounts
+- R-FC-012: Insufficient Controls on High-Value Transactions
+- R-FC-013: Unvetted Payment Recipients
+- R-FC-014: Treasury Overexposure to a Single Wallet, Chain, or Custodian
+- R-FC-015: Undetected Treasury Balance Discrepancies
+- R-FC-016: Treasury Loss From Unvetted Protocol Deployments
+- R-FC-017: Inbound Payment Misdirection
+
+### **Account Security & Access Control**
+
+**SP-FC-001: Financial Platform Authentication**
+- All banking and financial service portals must require strong multi-factor authentication
+- Hardware security keys (FIDO2) are strongly recommended as the primary MFA method for financial accounts
+- SMS-based MFA must not be used for banking portals due to SIM swap risk
+- Password manager-generated, unique passwords must be used for all financial portal accounts
+- Shared financial portal credentials must never be used - each authorized user must have their own individual login
+
+**SP-FC-002: Principle of Least Privilege for Financial Access**
+- Access to financial accounts and banking portals must be limited to the minimum personnel necessary
+- View-only access should be granted to personnel who require visibility but do not initiate or approve transactions
+- Full administrative access must be restricted to a small set of highly trusted individuals
+- Financial portal access should be reviewed and revalidated quarterly, and immediately upon any personnel changes
+- Access must be revoked immediately upon any team member departure
+
+**SP-FC-003: Dedicated Financial Devices**
+- Financial portal access and payment approvals should be performed on devices dedicated exclusively to financial operations
+- Dedicated financial devices must not be used for general browsing, email, or any other purpose
+- Financial operations must not be performed over public or untrusted networks
+- A trusted VPN must be used when accessing financial portals remotely
+- Active network monitoring tools should be installed on dedicated financial devices to detect anomalous outbound traffic
+- Financial portal accounts must be accessed only through bookmarked, verified URLs and never through links in emails or messages
+
+### **Multi-Party Authorization & Approval**
+
+**SP-FC-004: Dual Authorization for Outbound Payments**
+- All outbound payments, wire transfers, and ACH transactions must require approval from at least two authorized individuals
+- A single person must never have the unilateral ability to initiate and approve a payment
+- Approval authority must be enforced at the banking platform level, not solely through internal policy
+- For organizations with three or fewer financial approvers, all available approvers should be required to confirm high-value transactions
+
+**SP-FC-005: Tiered Transaction Approval Thresholds**
+- Transaction approval requirements must scale with transaction value:
+  - Low-value routine transactions may require single approval but must be within a pre-approved recurring payment structure
+  - Mid-value transactions must require dual approval from designated financial approvers
+  - High-value transactions must require three or more approvals
+- Threshold values must be formally defined, documented, and enforced
+- Any single transaction above the high-value threshold must require an out-of-band verbal or video confirmation between approvers before final authorization
+
+**SP-FC-006: Separation of Financial Duties**
+- The roles of payment initiator and payment approver must be held by separate individuals
+- No single individual should control the full payment lifecycle from request through execution
+- For small teams where strict separation is not always possible, compensating controls must be in place:
+  - Mandatory post-hoc review of all transactions by a non-initiating party
+  - Immutable automated transaction alerts delivered to all financial stakeholders
+
+**SP-FC-007: Out-of-Band Payment Confirmation**
+- All high-value or non-routine payment requests must be verbally confirmed through a trusted, separate communication channel (e.g. phone call or video call) before approval
+- Out-of-band confirmation must independently verify: recipient identity, exact payment amount, destination account details, and stated purpose
+- Confirmation must never rely solely on email, chat, or any channel through which the original payment request was made
+- Approvers must be trained to independently verify the identity of anyone requesting a financial action, even if the request appears to come from a known colleague or executive
+
+### **Recipient & Vendor Controls**
+
+**SP-FC-008: Payment Recipient Whitelisting**
+- All recurring payment recipients must be added to an approved whitelist, enforced at the platform level
+- First-time payments to new recipients must require elevated approval - at minimum one additional approver beyond the standard quorum
+- Changes to existing whitelisted recipient details (bank account number, routing number, address) must be treated as a new recipient and require the full new-recipient approval process
+- Whitelist additions and modifications must be logged and reviewed by a party separate from the person who initiated the change
+
+**SP-FC-009: Business Email Compromise Resistance**
+- Any email-based payment request must be treated as unverified until independently confirmed through a separate channel
+- Urgency-framed payment requests must trigger increased scrutiny and mandatory out-of-band confirmation regardless of the apparent sender
+- Domain lookalike monitoring should be in place to detect impersonation attempts against the organization's domain
+
+### **Account Structure & Segregation**
+
+**SP-FC-010: Operational Account Segregation**
+- Operating funds must be held separately from reserve or emergency capital
+- Day-to-day operational expenses should be funded from a lower-balance operating account, with transfers in from reserves as needed
+- Reserve accounts must have more restrictive transaction controls and approval requirements than operating accounts
+
+**SP-FC-011: Third-Party Custodian Selection**
+- Banking and financial services partners must be evaluated for security features prior to onboarding, including:
+  - Multi-user approval workflows
+  - Role-based access controls
+  - FIDO2/hardware key MFA support
+  - Immutable transaction audit logs
+  - Real-time transaction alerting
+- Preference should be given to institutions that natively support dual-control transaction authorization
+
+### **Monitoring**
+
+**SP-FC-012: Real-Time Transaction Monitoring**
+- Real-time transaction alerts must be configured for all financial accounts
+- Alerts must be delivered to at least two separate individuals through at least two separate channels (e.g. email and a team messaging platform)
+- Alert delivery channels must be immutable and redundant such that disabling one channel would trigger a notification on the other
+- All alerts must include: transaction amount, recipient account details, initiator identity, and timestamp
+
+### **Incident Response & Emergency Controls**
+
+**SP-FC-014: Financial Incident Response Runbook**
+- A documented financial incident response plan must exist
+- The runbook must include procedures for:
+  - Immediately freezing or suspending outbound payment capabilities
+  - Contacting banking partners to recall or reverse unauthorized transfers
+  - Preserving evidence and audit trails for investigation
+
+**SP-FC-015: Emergency Account Freeze Capability**
+- Organizations must know and document the exact process to immediately freeze outbound transactions for every financial account they hold
+- Emergency freeze contact details for all banking partners must be maintained in a secure, offline document accessible to admins
+
+### **Crypto Treasury Operations**
+
+**SP-FC-016: Treasury Spending Policy**
+- A documented spending policy must exist for every treasury wallet, defining its purpose, authorized spenders, and spending limits
+- Spending limits must be tiered, with transactions above defined thresholds requiring timelocks or additional approvals
+- Per-signer and per-automation movement ceilings must be defined and enforced so that no single key or automated process can move more than its authorized limit
+- The spending policy must be reviewed and reapproved whenever wallet purpose, signers, or automation changes
+
+**SP-FC-017: Treasury Concentration Limits**
+- Concentration caps must be defined for the maximum share of treasury value held in any single wallet, on any single chain, and with any single custody provider
+- Exceptions to concentration caps must require documented approval from designated financial stakeholders before funds are moved
+- Treasury exposure must be periodically reviewed against the defined caps, with rebalancing actions documented when caps are exceeded
+
+**SP-FC-018: Custody Platform Configuration**
+- Custody and multisig platform policies must enforce separation of duties so that transaction initiators cannot unilaterally approve their own transactions
+- Platform-level value caps and destination address allowlists must be configured for treasury wallets
+- Any change to custody platform policies (approvers, limits, allowlists) must require re-authentication and approval by a party separate from the requester
+- IP allowlisting should be enabled for custody platform access where the provider supports it
+- Custody arrangements, including platform, policy configuration, and responsible owners, must be documented for every treasury wallet
+
+**SP-FC-019: Treasury Reconciliation**
+- On-chain treasury balances must be reconciled against internal financial records at a defined frequency
+- All treasury transactions must be categorized and recorded in internal records, including purpose, counterparty, and approver
+- Any discrepancy between on-chain balances and internal records must be investigated as a potential security incident until explained
+
+**SP-FC-020: Protocol Due Diligence for Treasury Deployments**
+- Documented due diligence must be completed before deploying treasury funds into any protocol, covering at minimum: audit history, admin key structure, upgradeability, timelock configuration, monitoring coverage, bug bounty program, and team transparency
+- Exposure limits must be defined per protocol, and treasury deployments must not exceed them without documented approval
+- Deployed positions must be monitored on an ongoing basis for protocol governance changes, upgrades, and security incidents
+- Due diligence must be refreshed before increasing exposure to a previously approved protocol
+
+**SP-FC-021: Inbound Payment Controls**
+- Receive addresses for significant inbound payments must be freshly generated or re-verified against the intended wallet before being shared with the sender
+- A round-trip test transfer must be completed before receiving the first significant payment from a new counterparty
+- Sender identity must be re-verified through an authenticated channel before providing receive addresses, and address changes must never be accepted over the same channel as the original payment discussion
+
+---
+
+# Domain 7: AI Agent Operational Security
+
+## Risks
+
+- R-AI-001: Unapproved Agent Tooling on Organization Devices
+- R-AI-002: Unvetted Agent Extensions and MCP Servers
+- R-AI-003: Prompt Injection via Untrusted Content
+- R-AI-004: Shared Trust Boundary Between Ingestion and Privileged Access
+- R-AI-005: Credential Disclosure to Third-Party Model Providers
+- R-AI-006: Unscoped Credential Availability Within Agent Sessions
+- R-AI-007: Indirect Production Access via Pipeline Modification
+- R-AI-008: Unsupported Isolation Leading to Developer Workarounds
+
+### **Agent Control**
+
+**SP-AI-001: Approved Agent Tooling**
+- The organization must maintain a list of agent tooling approved for use on organization devices
+- Approved tooling must be enforced through the application control capability of the endpoint management or EDR deployment required by SP-EP-006, not through published expectation alone
+- Introduction paths outside application control must be identified, including transient package execution, browser-based agents, and IDE-integrated agents
+- Reducing the number of agents in use is the objective, as every other requirement in this domain applies only to tooling the organization configures
+
+**SP-AI-002: Agent Extension Vetting**
+- Extensions to approved agents, including MCP servers, skills, and plugins, must be vetted before use
+- Vetted extensions must be distributed centrally, consistent with the browser extension controls in SP-EP-011
+- User-installed agent extensions must be prohibited on organization devices
+- Extension configuration files must be included in the sandbox baseline required by SP-AI-007 rather than maintained per-developer
+
+### **Session Isolation**
+
+**SP-AI-003: Agent Session Profiles**
+- A general profile must be defined for agent work that reads untrusted content, including repository files, issues, pull request comments, dependency metadata, and web pages
+- A credentialed profile must be defined for agent work touching production or privileged systems, without general outbound network read access
+- Both profiles must exist as version-controlled configuration shared across the organization, not as per-developer setup
+- Outbound domain allow-listing must not be recorded as satisfying this requirement, as untrusted content is hosted on allowed domains
+- This requirement extends the device separation principle of SP-EP-001 to sessions within a single device
+
+**SP-AI-004: Agent Credential Handling**
+- Credentials must be supplied to agent processes by a secret manager at process start
+- Credentials must not be stored in shell profiles, environment files on disk, or pasted into agent chat interfaces
+- Credentials issued for agent use must be short-lived where the provider supports expiry
+- Where expiry is unsupported, credentials must be scoped to the narrowest permission set the provider allows
+- Client-side blocking of credential paste should be enabled where the approved agent tooling supports it
+
+### **Production Reachability**
+
+**SP-AI-005: Pipeline Configuration Approval**
+- Modification of pipeline definitions, workflow files, and identity trust policies must require human approval through code ownership rules
+- Branch protection must prevent agent-authored pipeline changes from executing with production credentials before approval
+- Repository write access must be treated as production access wherever pipelines execute with production credentials
+
+**SP-AI-006: Agent Production Reachability**
+- Every path from an agent identity to a production resource must be enumerated, including repository write, pipeline execution, identity federation, and role chaining
+- Paths not intended by the organization must be removed
+- Restrictions on direct production access must not be recorded as mitigating where an indirect path remains open
+
+### **Enablement**
+
+**SP-AI-007: Published Sandbox Baseline**
+- The organization must publish a reference sandbox configuration implementing SP-AI-002, SP-AI-003, and SP-AI-004
+- The baseline must be audited before publication and on material change
+- The baseline must be version-controlled and shared, so that developers are not required to construct isolation configurations independently
+
+---
+
+# Domain 8: Smart Contract & Protocol Operations
+
+## Risks
+
+- R-SC-001: Unaudited Code Deployment
+- R-SC-002: Deployed Bytecode Mismatch With Audited Source
+- R-SC-003: Deployer Key Compromise
+- R-SC-004: Unprotected Privileged Functions
+- R-SC-005: Malicious or Rushed Upgrades
+- R-SC-006: Missing Emergency Pause Capability
+- R-SC-007: Undisclosed Vulnerability With No Intake Channel
+- R-SC-008: Governance Takeover via Flash-Loan Voting
+- R-SC-009: Malicious Governance Proposal Payloads
+- R-SC-010: Oracle Manipulation or Staleness
+- R-SC-011: Bridge Compromise Exposure
+- R-SC-012: RPC Provider Failure or Censorship
+- R-SC-013: Upgrade Without Re-Audit
+- R-SC-014: Unresolved Audit Findings in Production
+
+### **Audit Lifecycle**
+
+**SP-SC-001: Pre-Deployment Audit Coverage**
+- All smart contracts must undergo at least one independent external security audit before mainnet deployment
+- Audit scope must cover every contract that will be deployed, including libraries, proxies, and initialization/migration scripts
+- Final audit reports must be retained internally and should be published publicly to support user due diligence
+- Audit firms should be selected based on demonstrated expertise with the protocol's specific stack (language, chain, and contract patterns)
+
+**SP-SC-002: Audit Finding Resolution**
+- All critical and high severity audit findings must be resolved before mainnet deployment
+- Every audit finding must be tracked in a findings register through to resolution or a documented, risk-accepted rationale
+- Fixes for critical and high severity findings must be verified by the original auditor (or another qualified external reviewer) before deployment
+- Medium and lower severity findings that are accepted rather than fixed must have a documented justification approved by security leadership
+
+**SP-SC-003: Re-Audit Triggers**
+- Any major contract upgrade must trigger a re-audit of the changed code and its interactions before deployment
+- Deployment of new core contracts must require a new audit engagement covering the new code
+- Changes to trust assumptions (e.g. new privileged roles, new external dependencies, modified access control) must trigger a re-audit even if code changes are small
+- Re-audit trigger criteria must be documented so that the decision is not left to ad-hoc judgment under deadline pressure
+
+**SP-SC-004: Audit Coverage Tracking**
+- An audit applicability matrix must be maintained mapping every deployed contract (by address and commit hash) to the audit report(s) that cover it
+- The matrix must be updated as part of every deployment and upgrade process
+- Any deployed code not covered by an audit must be explicitly flagged in the matrix with a remediation plan
+- The audit coverage matrix should be reviewed at least quarterly to catch drift between audited code and production deployments
+
+### **Deployment Operations**
+
+**SP-SC-005: Documented Deployment Procedures**
+- A written deployment procedure must exist covering the full progression from testnet to staging/canary to mainnet
+- All deployments must be simulated in a mainnet-fork environment before execution, with expected state changes verified against the simulation output
+- Every deployment plan must include a documented rollback or mitigation plan for deployment failure scenarios
+- Deployment steps should be scripted and repeatable rather than performed manually, with scripts version-controlled and peer reviewed
+
+**SP-SC-006: Deployment Verification**
+- Contract source code must be published and verified on relevant block explorers immediately after deployment
+- Deployed bytecode must be verified to match a build of the exact audited commit before the contract is put into production use
+- Verification of the bytecode-to-audited-commit match must be performed by at least one person who did not execute the deployment
+- Official contract addresses must be published through the organization's authenticated channels (docs site, verified social accounts) to prevent address-spoofing attacks
+
+**SP-SC-007: Deployment Key Security**
+- Deployments must use dedicated deployer keys that hold no privileged roles and are never reused as admin, upgrade, or treasury keys
+- Deployer keys must be rotated or permanently retired after the deployment they were created for is complete
+- Deployer keys must be generated and stored on hardware wallets or equivalent secure key management, never in plaintext in CI systems or developer machines
+- Deployments of critical contracts should be executed as a multi-party ceremony, with at least two people independently verifying each transaction before broadcast
+- Any privileged roles temporarily assigned to a deployer address during setup must be transferred to the proper multi-sig or governance contract before the deployment is declared complete
+
+### **Privileged Function Governance**
+
+**SP-SC-008: Privileged Function Documentation**
+- Every privileged function across all deployed contracts must be documented in a central register, including the function signature, the contract it lives on, and its potential impact
+- The register must record which address or role holds each privilege and the access control mechanism enforcing it (multi-sig, timelock, governance, EOA)
+- No privileged function should be controlled by a single externally-owned account
+- The privileged function register must be reviewed after every deployment or upgrade and at least quarterly
+
+**SP-SC-009: Timelocks and Pause Mechanisms**
+- Privileged operations that can affect user funds or protocol behavior must execute behind a timelock to provide reaction time for users and monitors
+- Critical contracts must implement a pause or circuit-breaker mechanism, and the pause path must be tested on a fork or testnet at least annually
+- Emergency functions (pause, guardian actions) must require multi-sig authorization, and every emergency execution must undergo a documented post-execution review
+- Timelock and pause configurations (delays, authorized addresses) must be monitored for changes, with alerts on any modification
+
+**SP-SC-010: Upgrade Governance**
+- A documented upgrade policy must define who may propose upgrades, who approves them, and the required approval quorum
+- All upgrades must pass through the standard timelock, with the delay duration formally documented and long enough for meaningful external review
+- Users must be given advance notice of upgrades through official channels, including a description of what is changing and when it takes effect
+- Upgrade proposals must reference the exact commit hash and audit report covering the new implementation
+- Emergency expedited upgrade paths, if they exist, must be documented, require a higher approval quorum, and trigger mandatory post-hoc review
+
+**SP-SC-011: Emergency On-Chain Authority**
+- A designated emergency authority (guardian multi-sig or security council) must exist with documented power to execute emergency on-chain actions
+- Emergency authority members must be reachable 24/7 through documented, redundant contact channels with a defined escalation order
+- Emergency response procedures must be rehearsed at least annually through drills that exercise the actual signing path end-to-end
+- The scope of emergency powers must be explicitly documented and limited to defensive actions (e.g. pause), not arbitrary state changes
+
+### **Vulnerability Disclosure**
+
+**SP-SC-012: Security Contact**
+- A security contact must be published via security.txt on the organization's domain and a SECURITY.md file in public code repositories
+- The security intake channel must be actively monitored, with a documented internal owner responsible for triage
+- A response SLA must be defined and published, acknowledging incoming vulnerability reports within a stated timeframe (48 hours or less is recommended)
+- An encrypted reporting option (PGP key or a platform with encrypted submission) should be provided for sensitive reports
+
+**SP-SC-013: Bug Bounty Program**
+- A public bug bounty program must be maintained with tiered rewards proportional to severity and funds at risk
+- The bounty program must define its scope explicitly, listing in-scope contract addresses and out-of-scope issues
+- Patch SLAs must be defined per severity level, with critical vulnerabilities patched or mitigated on an emergency timeline
+- Bounty payout decisions should follow a published severity rubric to keep reward outcomes predictable and credible to researchers
+- The program scope and reward tiers must be reviewed and updated after every major deployment
+
+### **On-Chain Governance Security**
+
+**SP-SC-014: Governance Proposal Security**
+- All governance proposals must have a minimum review period between submission and voting to allow community and internal scrutiny
+- Proposal payloads (calldata) must be decoded, verified, and simulated against a mainnet fork before votes are cast, with results published for voters
+- Quorum requirements must be set high enough that proposals cannot pass with trivially acquirable voting power
+- Proposals whose executed payload differs from the described intent must be treated as malicious and vetoed or cancelled through documented mechanisms
+- Internal signers or delegates must never vote on a proposal whose payload they have not independently verified
+
+**SP-SC-015: Governance Attack Monitoring**
+- Token delegation patterns must be monitored, with alerts on large or rapid shifts in delegated voting power
+- Monitoring must detect flash-loan-style voting patterns, such as large token acquisitions immediately before proposal snapshots
+- Abnormal proposal activity (unusual submission timing, unknown proposers, near-quorum proposals with low visibility) must trigger alerts to the security team
+- Alerts should be delivered through at least two redundant channels, and a documented response procedure must exist for suspected governance attacks
+
+### **Protocol Dependencies**
+
+**SP-SC-016: Oracle Configuration**
+- All oracle dependencies must be documented, including provider, update frequency, deviation thresholds, and heartbeat intervals
+- Contracts consuming oracle data must handle staleness explicitly, rejecting or safely degrading on prices older than a defined threshold
+- Redundant or fallback oracle sources should be configured for price feeds critical to protocol solvency
+- Oracle feed health (update cadence, deviation from reference markets) must be continuously monitored with alerting on anomalies
+- Oracle configuration changes must go through the same review and approval process as contract upgrades
+
+**SP-SC-017: Bridge Exposure Management**
+- Total value exposed to each bridge must be tracked, with documented exposure limits per bridge
+- Bridge dependencies must be monitored for security incidents, governance changes, and abnormal flows affecting the bridged assets
+- A documented emergency exit plan must exist for each bridge dependency, describing how to withdraw or freeze exposure if the bridge is compromised
+- New bridge integrations must undergo a documented risk assessment (audit history, validator/relayer trust model, incident record) before adoption
+
+**SP-SC-018: RPC Provider Redundancy**
+- Protocol operations and monitoring infrastructure must use at least two independent RPC providers
+- Automatic failover between RPC providers must be configured and tested at least annually
+- Critical operations (deployments, emergency actions) should have a documented fallback path, including self-hosted node access, in case commercial providers fail or censor transactions
+- RPC provider responses for critical reads should be cross-checked across providers to detect inconsistent or manipulated data
+
+---

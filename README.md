@@ -44,6 +44,21 @@ W3OS is designed to be straightforward and actionable with meaningful impact, no
 
 ---
 
+## Real Incidents, Mapped to W3OS Controls
+
+Nearly every major Web3 loss since 2022 was an *operational* failure, not a code bug. Each of these would have been prevented or contained by specific W3OS controls:
+
+| Incident | Loss | Operational failure | W3OS controls |
+|---|---|---|---|
+| Bybit (2025) | ~$1.46B | Compromised multisig UI served malicious payload; signers blind-signed a delegatecall | SP-WM-009, SP-WM-010, SP-WM-017, SP-WM-018 + [Transaction Verification guide](guides/transaction-verification.md) |
+| Ronin Bridge (2022) | ~$624M | Validator quorum concentrated under one operator; spear-phishing | SP-WM-007, SP-GS-006 |
+| WazirX (2024) | ~$235M | Multisig transaction payload manipulated; signature collection abused | SP-WM-009, SP-WM-018 |
+| Munchables (2024) | $62.5M (recovered) | DPRK operative hired as developer with key access | SP-GS-017, SP-GS-023 + [Hiring Security guide](guides/hiring-security.md) |
+| Radiant Capital (2024) | ~$50M | Malware on signer devices; UI displayed benign transactions | SP-EP-006, SP-WM-015, SP-WM-010 |
+| Curve Finance DNS (2022) | ~$570K | DNS hijack served a wallet-drainer frontend | SP-DI-020, SP-DI-021, SP-DI-022 |
+
+---
+
 ## Practical Scenarios for Using W3OS
 
 ### Protecting community channels (Discord / X / Telegram)

@@ -21,6 +21,10 @@
 - R-GS-017: Compromised Credential Detection Failure
 - R-GS-018: Nation-State Operative Infiltration Via Hiring
 - R-GS-019: Remote Worker Identity Fraud and Impersonation
+- R-GS-020: Unknown or Untracked Organizational Assets
+- R-GS-021: Lingering Access After Personnel Departure
+- R-GS-022: Sensitive Data Recovery From Disposed Devices
+- R-GS-023: Undocumented Security Expectations
 
 ### **Incident Response Planning**
 
@@ -149,3 +153,44 @@
 **SP-GS-019: Compromised Accounts Monitoring**
 -  Socials accounts should have automated behavioral analysis in place to flag unusual activities that might indicate ongoing attacks (e.g. twitter posts about unrelated tokens)
 - All publications and announcements from authentic organization channels should be monitored by multiple organization members
+
+### **Organizational Governance**
+
+**SP-GS-020: Asset Inventory**
+- Organizations must maintain registries of the following organizational assets:
+    - Wallets and keys
+    - Domains
+    - Organizational accounts
+    - Devices
+    - Service accounts and API keys
+- Each inventory entry must have a named owner
+- The inventory must be updated within one business day of any changes
+- Critical assets must be explicitly flagged in the inventory
+
+**SP-GS-021: Written Security Policy**
+- Organizations must maintain a plain-language security policy accessible to all members
+- The security policy must be acknowledged at onboarding before access is granted
+- The security policy must be reviewed at least annually and after significant changes
+
+**SP-GS-022: Risk Register**
+- Organizations should maintain a documented risk register with likelihood, impact, and mitigations for each risk
+- The risk register should be reviewed after significant organizational or technical changes
+- A risk register is recommended and appropriate for mature organizations
+
+### **Personnel Lifecycle**
+
+**SP-GS-023: Onboarding Security Checklist**
+- Organizations must maintain a documented onboarding checklist covering identity verification, device provisioning, MFA enrollment, security training, and policy acknowledgment
+- Access must be granted only after the onboarding checklist is completed
+- NDAs must be signed by personnel handling keys, funds, or sensitive code
+
+**SP-GS-024: Offboarding and Termination**
+- Organizations must maintain a documented offboarding checklist covering accounts, credentials, devices, physical items, and active sessions
+- All access must be removed within 24 hours of departure
+- For involuntary terminations, access must be revoked immediately at notification
+- Keyholder departures must additionally trigger signer-rotation procedures
+
+**SP-GS-025: Media Sanitization and Disposal**
+- Devices and storage media must be securely wiped or physically destroyed before disposal or reassignment
+- Disposal of media that held key material must be documented
+- Hardware wallets must be decommissioned by resetting them and verifying key removal

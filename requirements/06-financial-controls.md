@@ -15,6 +15,10 @@
 - R-FC-011: Overly Broad Access to Financial Accounts
 - R-FC-012: Insufficient Controls on High-Value Transactions
 - R-FC-013: Unvetted Payment Recipients
+- R-FC-014: Treasury Overexposure to a Single Wallet, Chain, or Custodian
+- R-FC-015: Undetected Treasury Balance Discrepancies
+- R-FC-016: Treasury Loss From Unvetted Protocol Deployments
+- R-FC-017: Inbound Payment Misdirection
 
 ### **Account Security & Access Control**
 
@@ -118,3 +122,39 @@
 **SP-FC-015: Emergency Account Freeze Capability**
 - Organizations must know and document the exact process to immediately freeze outbound transactions for every financial account they hold
 - Emergency freeze contact details for all banking partners must be maintained in a secure, offline document accessible to admins
+
+### **Crypto Treasury Operations**
+
+**SP-FC-016: Treasury Spending Policy**
+- A documented spending policy must exist for every treasury wallet, defining its purpose, authorized spenders, and spending limits
+- Spending limits must be tiered, with transactions above defined thresholds requiring timelocks or additional approvals
+- Per-signer and per-automation movement ceilings must be defined and enforced so that no single key or automated process can move more than its authorized limit
+- The spending policy must be reviewed and reapproved whenever wallet purpose, signers, or automation changes
+
+**SP-FC-017: Treasury Concentration Limits**
+- Concentration caps must be defined for the maximum share of treasury value held in any single wallet, on any single chain, and with any single custody provider
+- Exceptions to concentration caps must require documented approval from designated financial stakeholders before funds are moved
+- Treasury exposure must be periodically reviewed against the defined caps, with rebalancing actions documented when caps are exceeded
+
+**SP-FC-018: Custody Platform Configuration**
+- Custody and multisig platform policies must enforce separation of duties so that transaction initiators cannot unilaterally approve their own transactions
+- Platform-level value caps and destination address allowlists must be configured for treasury wallets
+- Any change to custody platform policies (approvers, limits, allowlists) must require re-authentication and approval by a party separate from the requester
+- IP allowlisting should be enabled for custody platform access where the provider supports it
+- Custody arrangements, including platform, policy configuration, and responsible owners, must be documented for every treasury wallet
+
+**SP-FC-019: Treasury Reconciliation**
+- On-chain treasury balances must be reconciled against internal financial records at a defined frequency
+- All treasury transactions must be categorized and recorded in internal records, including purpose, counterparty, and approver
+- Any discrepancy between on-chain balances and internal records must be investigated as a potential security incident until explained
+
+**SP-FC-020: Protocol Due Diligence for Treasury Deployments**
+- Documented due diligence must be completed before deploying treasury funds into any protocol, covering at minimum: audit history, admin key structure, upgradeability, timelock configuration, monitoring coverage, bug bounty program, and team transparency
+- Exposure limits must be defined per protocol, and treasury deployments must not exceed them without documented approval
+- Deployed positions must be monitored on an ongoing basis for protocol governance changes, upgrades, and security incidents
+- Due diligence must be refreshed before increasing exposure to a previously approved protocol
+
+**SP-FC-021: Inbound Payment Controls**
+- Receive addresses for significant inbound payments must be freshly generated or re-verified against the intended wallet before being shared with the sender
+- A round-trip test transfer must be completed before receiving the first significant payment from a new counterparty
+- Sender identity must be re-verified through an authenticated channel before providing receive addresses, and address changes must never be accepted over the same channel as the original payment discussion

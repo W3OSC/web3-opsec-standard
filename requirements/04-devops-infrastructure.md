@@ -16,6 +16,9 @@
 - R-DI-012: Malicious or Compromised Development Tools
 - R-DI-013: Cloud Service Provider Security Failures
 - R-DI-014: Malicious Code Injection by Trusted Contributors
+- R-DI-015: Frontend Compromise Serving Malicious Transactions
+- R-DI-016: Domain Hijacking via Registrar Compromise
+- R-DI-017: Fraudulent TLS Certificate Issuance
 
 ### **Development Environment Security**
 
@@ -123,3 +126,40 @@
     - Usage of protected functions
 - Alerts must be delivered to immutable channels that cannot be silently supressed
 - Alerts and invariant monitoring should be enforced at the relayer level, blocking execution and requiring override in order to process flagged transactions
+
+### **Frontend Integrity**
+
+**SP-DI-017: Frontend Content Protection**
+- Content Security Policy (CSP) headers must be deployed on all user-facing frontends
+- Subresource Integrity (SRI) must be used for all external scripts loaded on transaction or signing pages
+- Third-party scripts that auto-update must not be included on pages that construct or sign transactions
+- Wallet connector and frontend SDK versions must be pinned and reviewed before updating
+
+**SP-DI-018: Frontend Build Integrity**
+- The hash of the deployed frontend artifact must be verified against the CI build output
+- Frontend deployments must only be performed through the protected pipeline, with no manual uploads allowed
+- Monitoring should be in place to detect unexpected changes to the deployed frontend
+
+**SP-DI-019: Frontend Compromise Response**
+- A documented procedure must exist for warning users of a compromised frontend using at least two independent channels
+- The team must have the capability to rapidly take down or replace a compromised frontend
+
+### **Domain & Registrar Security**
+
+**SP-DI-020: Registrar Account Security**
+- Registrar and DNS accounts must use FIDO2/hardware-key multi-factor authentication, with SMS-based MFA excluded
+- Registrar-side transfer locks (EPP) must be enabled on all domains
+- Registry locks should be enabled for critical domains
+- An enterprise-tier registrar should be used for critical domains
+
+**SP-DI-021: DNS Change Control**
+- DNS changes must require review by a second person before taking effect
+- DNS change notifications must be delivered to the team
+- An audit log of all DNS changes must be maintained
+- A domain inventory must be maintained with expiry tracking and funded auto-renewal
+
+**SP-DI-022: Certificate and DNS Monitoring**
+- Certificate Transparency monitoring must be in place with alerts on unexpected certificate issuance, with wildcard certificates flagged
+- DNS zones must be continuously monitored for unauthorized changes
+- DNSSEC should be enabled on primary domains
+- CAA records should be used to restrict which certificate authorities may issue certificates

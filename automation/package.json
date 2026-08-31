@@ -1,0 +1,27 @@
+{
+  "name": "w3os-guide-verification",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Automated liveness/staleness verification for W3OS account configuration guides",
+  "bin": {
+    "w3os-verify": "./cli.js"
+  },
+  "scripts": {
+    "verify": "node cli.js verify",
+    "linkcheck": "node cli.js linkcheck",
+    "doctor": "node cli.js doctor"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@playwright/mcp": "^0.0.41",
+    "imapflow": "^1.0.191",
+    "mailparser": "^3.7.1",
+    "otplib": "^12.0.1",
+    "yaml": "^2.6.0"
+  }
+}

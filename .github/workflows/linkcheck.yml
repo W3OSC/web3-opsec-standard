@@ -1,0 +1,60 @@
+name: Guide Link Check
+
+# Weekly zero-cost staleness signal: dead vendor-doc links are usually the first symptom
+# of renamed or removed features. Fails (and files an issue) when dead links are found.
+
+on:
+  schedule:
+    - cron: "0 5 * * 1" # Mondays 05:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install automation deps
+        working-directory: automation
+        run: npm ci
+      - name: Check links
+        id: check
+        working-directory: automation
+        run: |
+          set +e
+          node cli.js linkcheck --out output/linkcheck.md
+          echo "failed=$?" >> "$GITHUB_OUTPUT"
+          cat output/linkcheck.md >> "$GITHUB_STEP_SUMMARY"
+      - name: File issue for dead links
+        if: steps.check.outputs.failed != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('automation/output/linkcheck.md', 'utf8');
+            const title = 'Dead links found in configuration guides';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'guide-verification',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number, body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['guide-verification'],
+              });
+            }
+      - name: Fail on dead links
+        if: steps.check.outputs.failed != '0'
+        run: exit 1

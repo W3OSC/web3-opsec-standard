@@ -31,6 +31,8 @@ The various security guides are available to help you implement the required sec
 
 There are account configuration guides for many popular services and software - each provides you with a concrete checklist for securely configuring both admin and user accounts.
 
+The configuration guides are kept current by an automated verification pipeline: an agent logs into each service with a dedicated test account, checks every checklist item against the live settings UI, and opens a pull request with fixes for anything that drifted. See [automation/README.md](automation/README.md) for how it works and how to add a service.
+
 ## Why W3OS?
 
 Unlike other frameworks, W3OS is focused entirely on **operational security maturity** — a complement to code audits that directly and exhaustively addresses security risks crucial to business continuity, user safety, and peace of mind for stakeholders.

@@ -1,0 +1,129 @@
+name: Verify Config Guides
+
+# Monthly automated verification of account-configuration guides against the live
+# services, using dedicated test accounts. Opens a PR with auto-applied fixes and a
+# report of items needing manual review. See automation/README.md for setup.
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the 1st of each month
+  workflow_dispatch:
+    inputs:
+      services:
+        description: "Comma-separated service keys to verify (default: all enabled)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      has-targets: ${{ steps.matrix.outputs.has-targets }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install automation deps
+        working-directory: automation
+        run: npm ci
+      - name: Compute matrix
+        id: matrix
+        working-directory: automation
+        run: |
+          MATRIX=$(node cli.js matrix --ci ${{ inputs.services && format('--services "{0}"', inputs.services) || '' }})
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          COUNT=$(echo "$MATRIX" | node -e "process.stdin.once('data', d => console.log(JSON.parse(d).include.length))")
+          echo "has-targets=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "Planned $COUNT verification runs" >> "$GITHUB_STEP_SUMMARY"
+          echo "$MATRIX" | node -e "process.stdin.once('data', d => JSON.parse(d).include.forEach(t => console.log('- ' + t.service + ' / ' + t.scope)))" >> "$GITHUB_STEP_SUMMARY"
+
+  verify:
+    needs: plan
+    if: needs.plan.outputs.has-targets == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install automation deps
+        working-directory: automation
+        run: npm ci
+      - name: Install Playwright browser
+        working-directory: automation
+        run: npx playwright install --with-deps chromium
+      - name: Verify ${{ matrix.service }} (${{ matrix.scope }})
+        working-directory: automation
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          W3OS_CREDENTIALS: ${{ secrets.W3OS_CREDENTIALS }}
+          W3OS_IMAP_HOST: ${{ secrets.W3OS_IMAP_HOST }}
+          W3OS_IMAP_PORT: ${{ secrets.W3OS_IMAP_PORT }}
+          W3OS_IMAP_USER: ${{ secrets.W3OS_IMAP_USER }}
+          W3OS_IMAP_PASSWORD: ${{ secrets.W3OS_IMAP_PASSWORD }}
+        run: node cli.js verify --service "${{ matrix.service }}" --scope "${{ matrix.scope }}" --out output
+        continue-on-error: true
+      - name: Upload findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: findings-${{ matrix.service }}-${{ matrix.scope }}
+          path: automation/output/
+          if-no-files-found: warn
+          retention-days: 30
+
+  report:
+    needs: [plan, verify]
+    if: needs.plan.outputs.has-targets == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install automation deps
+        working-directory: automation
+        run: npm ci
+      - name: Download all findings
+        uses: actions/download-artifact@v4
+        with:
+          path: automation/output
+          merge-multiple: true
+      - name: Build report and update state
+        working-directory: automation
+        run: |
+          node cli.js report --in output --out output/report.md
+          cat output/report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Apply drifted-item fixes
+        working-directory: automation
+        run: node cli.js update --in output --write
+      - name: Validate guides still pass
+        run: node scripts/validate.js
+      - name: Read report body
+        id: report
+        run: |
+          {
+            echo 'body<<W3OS_REPORT_EOF'
+            cat automation/output/report.md
+            echo 'W3OS_REPORT_EOF'
+          } >> "$GITHUB_OUTPUT"
+      - name: Open pull request with fixes
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automated/guide-verification
+          title: "Automated guide verification: drift fixes and review report"
+          commit-message: "Apply automated guide verification fixes"
+          add-paths: |
+            guides/
+            automation/state.json
+          body: ${{ steps.report.outputs.body }}
+          labels: guide-verification

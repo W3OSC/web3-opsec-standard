@@ -1,0 +1,316 @@
+# W3OS guide verification registry.
+#
+# Each key matches a guide filename stem under "guides/account configurations/"
+# (e.g. `notion` -> notion.md in both individuals/ and organizations/).
+#
+# Fields:
+#   name:        Display name.
+#   login_url:   Where the verification agent starts the login flow.
+#   mode:        full     - fully automatable with a free test account (browser agent).
+#                assisted - automatable after a one-time human bootstrap (signup captcha,
+#                           phone verification, or persistent session created locally).
+#                manual   - cannot be verified with a free automated account (paid product,
+#                           bank, desktop app, self-hosted, or CLI-based guide). Excluded
+#                           from the automated matrix; tracked in the manual-review report.
+#   enabled:     Whether the service participates in automated verification runs.
+#                Flip to true once a test account is provisioned and credentials are stored
+#                (see automation/README.md). All services ship disabled so CI is a no-op
+#                until accounts exist.
+#   ci:          Safe to run from GitHub-hosted runners. Services with aggressive bot
+#                detection (Google, Discord, X) should run locally or on a self-hosted
+#                runner with a persistent browser profile.
+#   auth:        Which credential fields the agent may request via get_credential /
+#                get_totp_code / get_email_code. Stored per service in the
+#                W3OS_CREDENTIALS JSON secret or W3OS_<SERVICE>_<FIELD> env vars.
+#   notes:       Free-form guidance injected into the verification agent's prompt
+#                (login quirks, paid-plan gates, what to skip).
+
+airtable:
+  name: Airtable
+  login_url: https://airtable.com/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp]
+  notes: >-
+    Free plan test workspace. Some org admin settings live under Enterprise Hub and are
+    plan-gated - record those as unverifiable_paid.
+
+google:
+  name: Google
+  login_url: https://accounts.google.com
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp, email_code]
+  notes: >-
+    Google aggressively challenges automated logins from new devices/datacenter IPs.
+    Run locally (or self-hosted runner) with a persistent browser profile bootstrapped
+    once by a human (`--headed`). Organization guide requires a Google Workspace admin
+    account (paid) - org items beyond consumer account settings are unverifiable_paid.
+
+hermes:
+  name: Hermes
+  login_url: https://hermes-agent.nousresearch.com/docs/user-guide/security
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: >-
+    Local autonomous agent software, not a hosted account. Verification means diffing the
+    guide against the vendor security docs - covered by linkcheck plus manual review.
+
+linear:
+  name: Linear
+  login_url: https://linear.app/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp, email_code]
+  notes: >-
+    Free plan test workspace. Linear may send a login code by email - use get_email_code.
+    Some admin settings (SAML, SCIM) are plan-gated - record as unverifiable_paid.
+
+mercury:
+  name: Mercury
+  login_url: https://app.mercury.com
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: >-
+    Business bank account - cannot create a disposable test account. Manual review only.
+
+notion:
+  name: Notion
+  login_url: https://www.notion.so/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp, email_code]
+  notes: >-
+    Free plan test workspace. Notion emails a login code for password-less flows - prefer
+    password login; use get_email_code if a code is required. "Security & data" org
+    settings are Enterprise-gated - record as unverifiable_paid.
+
+openclaw:
+  name: OpenClaw
+  login_url: https://github.com/openclaw/openclaw
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: >-
+    Local high-privilege agent software, not a hosted account. Linkcheck plus manual review.
+
+trello:
+  name: Trello
+  login_url: https://id.atlassian.com/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp, email_code]
+  notes: >-
+    Trello uses Atlassian SSO. Free workspace is sufficient for the individual guide.
+
+discord:
+  name: Discord
+  login_url: https://discord.com/login
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp]
+  notes: >-
+    Automated user-account logins can trigger anti-bot verification and are restricted by
+    Discord ToS - run locally with a persistent profile bootstrapped by a human, low
+    frequency. Server (organization) settings require the test account to own a test server.
+
+signal:
+  name: Signal
+  login_url: https://signal.org
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: >-
+    Desktop/mobile app tied to a phone number - no web surface to automate. Manual review.
+
+telegram:
+  name: Telegram
+  login_url: https://web.telegram.org
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [phone]
+  notes: >-
+    Login requires a code delivered to the Telegram app on the account's phone - bootstrap
+    the web session once locally (`--headed`); the session persists in the browser profile.
+    Organization guide requires the test account to own a test group/channel.
+
+twitter-x:
+  name: X (Twitter)
+  login_url: https://x.com/login
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [username, email, password, totp]
+  notes: >-
+    Heavy anti-automation. Run locally with a persistent bootstrapped profile, low
+    frequency. Organization features (X Premium) are paid - record as unverifiable_paid.
+
+github:
+  name: GitHub
+  login_url: https://github.com/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp]
+  notes: >-
+    Free account plus a free test organization owned by it. Enterprise-only settings
+    (SAML, IP allow lists on Enterprise plans) - record as unverifiable_paid.
+
+godaddy:
+  name: GoDaddy
+  login_url: https://sso.godaddy.com
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp]
+  notes: >-
+    Account is free but domain-management settings only render with a product on the
+    account - items that require an owned domain are unverifiable without one; record as
+    blocked with a note unless the test account holds a cheap domain.
+
+render:
+  name: Render
+  login_url: https://dashboard.render.com/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp, email_code]
+  notes: Free tier account and workspace.
+
+sentry:
+  name: Sentry
+  login_url: https://sentry.io/auth/login/
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp]
+  notes: >-
+    Free developer tier org. SSO/SAML settings are Business-plan gated - unverifiable_paid.
+
+teleport:
+  name: Teleport
+  login_url: https://goteleport.com
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: >-
+    Self-hosted / enterprise cloud infrastructure product; guide covers deployment
+    hardening, not a hosted account UI. Manual review (a future `cli` mode could verify
+    against a local OSS Teleport cluster).
+
+vercel:
+  name: Vercel
+  login_url: https://vercel.com/login
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp, email_code]
+  notes: >-
+    Hobby (free) team. Some team security settings (SAML, audit log) are Pro/Enterprise
+    gated - unverifiable_paid.
+
+slack:
+  name: Slack
+  login_url: https://slack.com/signin
+  mode: full
+  enabled: false
+  ci: true
+  auth: [email, password, totp, email_code]
+  notes: >-
+    Free workspace owned by the test account. Slack often emails a sign-in code - use
+    get_email_code. Enterprise Grid settings - unverifiable_paid.
+
+aws:
+  name: AWS
+  login_url: https://signin.aws.amazon.com
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp]
+  notes: >-
+    Account creation needs a credit card (free tier). Once an org sandbox account exists,
+    console verification is automatable. Until then manual review.
+
+azure:
+  name: Microsoft Azure
+  login_url: https://portal.azure.com
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp]
+  notes: >-
+    Free account needs a credit card. Entra ID settings automatable once provisioned.
+
+gcp:
+  name: Google Cloud
+  login_url: https://console.cloud.google.com
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp]
+  notes: >-
+    Free tier needs a credit card, and login shares Google's anti-bot posture - run
+    locally with a bootstrapped profile.
+
+hetzner:
+  name: Hetzner
+  login_url: https://accounts.hetzner.com/login
+  mode: assisted
+  enabled: false
+  ci: false
+  auth: [email, password, totp]
+  notes: >-
+    New accounts go through identity verification - one-time human bootstrap, then
+    automatable.
+
+kubernetes:
+  name: Kubernetes
+  login_url: https://kubernetes.io/docs/
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: >-
+    CLI/manifest-based guide, no account UI. A future `cli` verification mode could run
+    the checks against an ephemeral kind cluster in CI. Manual review for now.
+
+eks:
+  name: Amazon EKS
+  login_url: https://console.aws.amazon.com/eks
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: Requires a billable AWS account plus a running cluster. Manual review.
+
+gke:
+  name: Google GKE
+  login_url: https://console.cloud.google.com/kubernetes
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: Requires a billable GCP account plus a running cluster. Manual review.
+
+aks:
+  name: Azure AKS
+  login_url: https://portal.azure.com
+  mode: manual
+  enabled: false
+  ci: false
+  auth: []
+  notes: Requires a billable Azure account plus a running cluster. Manual review.

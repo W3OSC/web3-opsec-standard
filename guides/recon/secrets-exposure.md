@@ -48,4 +48,4 @@ If a secret was reachable on the public internet, assume it has been harvested. 
 
 ## Notes
 
-Blocking the URL is necessary but not sufficient — rotation is the part that actually contains the incident. Prioritise any on-chain keys first.
+Blocking the URL is necessary but not sufficient — rotation is the part that actually contains the incident. Prioritize any on-chain keys first.

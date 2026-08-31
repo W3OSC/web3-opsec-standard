@@ -13,7 +13,7 @@ scope: ORGANIZATION
 
 ## Overview
 
-Multi-factor authentication is the single highest-leverage identity control an organisation can turn on. Credential phishing and breach-password reuse are the two most common ways attackers get in, and enforced MFA neutralises both: a stolen password alone no longer opens anything. This guide covers enforcing MFA across the org and using phishing-resistant factors where it matters most.
+Multi-factor authentication is the single highest-leverage identity control an organization can turn on. Credential phishing and breach-password reuse are the two most common ways attackers get in, and enforced MFA neutralizes both: a stolen password alone no longer opens anything. This guide covers enforcing MFA across the org and using phishing-resistant factors where it matters most.
 
 ---
 

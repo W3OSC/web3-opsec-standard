@@ -13,7 +13,7 @@ scope: ORGANIZATION
 
 ## Overview
 
-SPF (Sender Policy Framework) is a DNS TXT record that lists which mail servers are allowed to send email on behalf of your domain. Without it — or with a permissive version of it — anyone on the internet can send mail that appears to come from your domain, which is the opening move in most phishing and business-email-compromise attacks against a web3 team and its community. This guide walks you through publishing an SPF record that authorises only your real senders and rejects everyone else.
+SPF (Sender Policy Framework) is a DNS TXT record that lists which mail servers are allowed to send email on behalf of your domain. Without it — or with a permissive version of it — anyone on the internet can send mail that appears to come from your domain, which is the opening move in most phishing and business-email-compromise attacks against a web3 team and its community. This guide walks you through publishing an SPF record that authorizes only your real senders and rejects everyone else.
 
 ---
 
@@ -21,7 +21,7 @@ SPF (Sender Policy Framework) is a DNS TXT record that lists which mail servers 
 
 ### Why It's Critical
 
-Receiving mail servers use SPF to decide whether a message that claims to be from your domain actually came from an authorised server. A missing record means no such check happens. A record ending in `+all` authorises the entire internet, and `?all` (neutral) or `~all` (softfail) still let unauthorised mail through — spoofed mail can land in inboxes and get users to click, connect a wallet, or approve a transaction.
+Receiving mail servers use SPF to decide whether a message that claims to be from your domain actually came from an authorized server. A missing record means no such check happens. A record ending in `+all` authorizes the entire internet, and `?all` (neutral) or `~all` (softfail) still let unauthorized mail through — spoofed mail can land in inboxes and get users to click, connect a wallet, or approve a transaction.
 
 ### Implementation Steps
 

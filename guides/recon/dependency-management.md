@@ -25,7 +25,7 @@ A vulnerability with a published advisory is a vulnerability with a published ex
 
 ### Implementation Steps
 
-- [ ] Review the flagged dependencies and their advisories; prioritise CRITICAL and HIGH severity.
+- [ ] Review the flagged dependencies and their advisories; prioritize CRITICAL and HIGH severity.
 - [ ] Upgrade each affected package to a patched version; where no fix exists, evaluate a replacement or a temporary mitigation.
 - [ ] Re-run the dependency audit to confirm the findings clear.
 - [ ] Verify your lockfile pins the fixed versions so the patch actually ships.

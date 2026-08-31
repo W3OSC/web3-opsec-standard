@@ -28,7 +28,7 @@ The damage from impersonation lands on your community and your reputation even w
 - [ ] Confirm you do not own the domain and capture evidence (screenshots, WHOIS, resolving IP, any mail records).
 - [ ] File abuse / takedown reports with the domain's registrar and its hosting provider.
 - [ ] Report the domain to phishing feeds — Google Safe Browsing, and for web3, Chainabuse (https://chainabuse.com/) — so wallets and browsers warn users.
-- [ ] Warn your community through your official, verified channels with the exact malicious domain so they can recognise it.
+- [ ] Warn your community through your official, verified channels with the exact malicious domain so they can recognize it.
 - [ ] If it targets a specific campaign (a token launch, an airdrop), coordinate the warning with that announcement.
 
 ---
@@ -45,4 +45,4 @@ The damage from impersonation lands on your community and your reputation even w
 
 ## Notes
 
-Prioritise look-alikes that have a mail server configured — those can phish by email *and* host a fake site, and are the most dangerous.
+Prioritize look-alikes that have a mail server configured — those can phish by email *and* host a fake site, and are the most dangerous.

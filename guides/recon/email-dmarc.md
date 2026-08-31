@@ -26,7 +26,7 @@ Even with SPF and DKIM in place, without DMARC there is no instruction telling r
 ### Implementation Steps
 
 - [ ] Publish a DMARC record as a TXT entry at `_dmarc.yourdomain.com` starting in monitor mode: `v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com`.
-- [ ] Collect and review the aggregate (`rua`) reports for 1–4 weeks — use a DMARC report analyser — until every legitimate sending source passes SPF or DKIM alignment.
+- [ ] Collect and review the aggregate (`rua`) reports for 1–4 weeks — use a DMARC report analyzer — until every legitimate sending source passes SPF or DKIM alignment.
 - [ ] Fix any legitimate sources that are failing (add them to SPF, enable DKIM signing) before tightening the policy.
 - [ ] Raise the policy to `p=quarantine` and monitor for a further week.
 - [ ] Raise the policy to `p=reject` — full enforcement.

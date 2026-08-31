@@ -42,7 +42,7 @@ TLS 1.0 and 1.1 are deprecated and vulnerable to downgrade and cipher attacks. I
 
 - [ ] Require TLS 1.2 or higher; disable TLS 1.0 and 1.1 at the load balancer / server.
 - [ ] Prefer modern cipher suites and enable HSTS (see the web security headers guide) so browsers refuse plain HTTP.
-- [ ] Re-test your endpoint with an SSL/TLS analyser after changes and aim for an A grade.
+- [ ] Re-test your endpoint with an SSL/TLS analyzer after changes and aim for an A grade.
 
 ---
 

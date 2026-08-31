@@ -27,7 +27,7 @@ Without DNSSEC, a resolver that an attacker can poison will happily hand your us
 
 - [ ] Enable DNSSEC at your DNS host / provider for the zone.
 - [ ] Publish the resulting DS (Delegation Signer) record at your domain registrar to complete the chain of trust.
-- [ ] Verify the chain validates (use a DNSSEC analyser); a broken chain can take your domain offline, so confirm it before considering the change done.
+- [ ] Verify the chain validates (use a DNSSEC analyzer); a broken chain can take your domain offline, so confirm it before considering the change done.
 - [ ] Document the key-rollover process your provider uses so future rotations don't break resolution.
 
 ---

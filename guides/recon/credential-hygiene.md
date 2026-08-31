@@ -40,7 +40,7 @@ You cannot stop your addresses from appearing in other companies' breaches — y
 
 ### Implementation Steps
 
-- [ ] Roll out a password manager across the organisation so every account has a unique, strong, generated password.
+- [ ] Roll out a password manager across the organization so every account has a unique, strong, generated password.
 - [ ] Enforce MFA org-wide (see the enforce-2FA guide).
 - [ ] Monitor breach and stealer-log sources for your domains so new exposures are caught quickly.
 

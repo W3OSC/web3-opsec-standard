@@ -6,203 +6,134 @@ scope: INDIVIDUAL
 
 <div align="center">
   <h1>Developer Security Guide</h1>
-  <p><em>Security practices for Web3 development</em></p>
+  <p><em>Trust-level isolation for Web3 development environments</em></p>
 </div>
 
 ---
 
 ## Overview
 
-Development in Web3 presents additional security risks over traditional developer environments. Apps integrate with crypto wallets for development and testing, developers often have app or contract deployment permissions, and attackers specifically target Web3 developers and organizations to steal crypto assets.
+Web3 developers are a target class of their own. Development machines sit next to wallet extensions and deployment credentials, developers hold contract deployment permissions, and attackers deliver malware through the tools of the trade: dependencies, take-home projects, "can you check out my repo" messages, and poisoned tooling.
+
+The core defense is isolation by trust level: decide which operations are privileged, which are routine, and which are untrusted — then make sure code from one level can never touch the credentials of another. This guide covers that model and the concrete setups (dedicated devices, dev containers, browser separation) that implement it.
+
+The device and network baseline — disk encryption, screen locks, secure DNS, VPN, network and persistence monitoring — is covered in the [Personal Security Checklist](individual-security.md). This guide assumes it and focuses on what is specific to development work.
 
 ---
 
 ## Security Risks
 
-- **🦠 Malicious Code Execution**
-  - Untrusted code containing malware in development environments
-  - Compromised libraries and dependencies in trusted projects
-  - Supply chain attacks through development tools
-
-- **💻 Endpoint Compromise**
-  - General malware infection from downloads, external files, or 0-day exploits
-  - Physical device attacks and theft
-  - Network-based attacks on development machines
-
-- **🌐 Browser-Based Attacks**
-  - Browser vulnerabilities (e.g. cross-site scripting)
-  - Wallet extension attacks and vulnerabilities
-  - Session hijacking and phishing attacks
-
-- **🔑 Credential Compromise**
-  - Side-channel credential leakage
-  - Accidental credential exposure in code
-  - Overly permissive dev accounts
+- **Malicious code execution** — untrusted repos and scripts, compromised dependencies inside trusted projects, supply-chain attacks through development tools (see the [Supply Chain & Dependency Security Guide](supply-chain-dependency-security.md))
+- **Endpoint compromise** — malware from downloads and external files, 0-day exploits, network-based attacks, physical attacks and theft
+- **Browser-based attacks** — browser and wallet-extension vulnerabilities, session hijacking, phishing
+- **Credential compromise** — secrets accidentally committed to code, side-channel leakage, overly permissive dev accounts
 
 ---
 
-## Trust Level Isolation
+## Trust Levels
 
-### 🔴 **Privileged Operations**
-*Highest security requirements - dedicated secure environment*
+Classify every activity into one of three levels, and never let a lower level's code run where a higher level's credentials live.
 
-- **Wallet Operations**
-  - Transaction signing and multi-sig operations
-  - Hardware wallet interactions
-  - Transaction simulation and verification
-  - Contract deployments
+### Privileged — dedicated secure environment
 
-- **Sensitive Data Access**
-  - Internal confidential documents and information
-  - Production deployment credentials
-  - Administrative access to critical systems
+The operations that move funds or grant control:
 
-- **High Permission Sessions**
-  - Cloud platform consoles (AWS, GCP, Azure)
-  - Online banking and financial services
-  - Organization admin panels and privileged accounts
+- **Wallet operations** — transaction signing and multi-sig participation, hardware wallet interactions, transaction simulation and verification, contract deployments
+- **Sensitive data access** — production deployment credentials, internal confidential documents, administrative access to critical systems
+- **High-permission sessions** — cloud consoles (AWS, GCP, Azure), online banking and financial services, organization admin panels
 
-### 🟡 **Default Operations**
-*Standard security measures - daily work environment*
+### Default — daily work environment
 
-- **Development Work**
-  - Using pre-installed and verified development tools
-  - Working with known, trusted codebases
-  - Standard IDE and editor usage
+Standard development activity with standard precautions:
 
-- **Authenticated Browsing**
-  - Logged-in sessions for work tools
-  - Social media and communication platforms
-  - Personal browsing with saved sessions
+- **Development work** — known, trusted codebases; pre-installed and verified tools; normal IDE usage
+- **Authenticated browsing** — logged-in work tools, communication platforms, personal browsing with saved sessions
 
-### 🟠 **Untrusted Operations**
-*Maximum isolation required - disposable environment*
+### Untrusted — disposable environment
 
-- **Code Execution**
-  - Running foreign or unknown code
-  - Testing new libraries and dependencies
-  - Executing downloaded scripts or tools
+Anything that runs code or content you didn't write and haven't verified:
 
-- **File Handling**
-  - Opening external files from unknown sources
-  - Downloading and running untrusted executables
-  - Processing user-submitted content
-
-- **Risky Browsing**
-  - Opening untrusted links
-  - Temporary browsing without saved sessions
-  - Accessing potentially malicious websites
-  - Downloading and using video conference software
+- **Code execution** — foreign or unknown code, new libraries and dependencies, downloaded scripts and tools
+- **File handling** — external files from unknown sources, untrusted executables, user-submitted content
+- **Risky browsing** — untrusted links, temporary sessionless browsing, video-conference software downloads
 
 ---
 
-## Implementation Strategies
+## Implementation
 
-### 🖥️ Device Separation
+Three mechanisms enforce the trust levels in practice: separate devices, containerized execution, and separate browsers.
 
-**Dedicated Privileged Device**
-- [ ] **Separation**: Use a separate machine exclusively for privileged operations
-- [ ] **Air Gap**: Isolate from other devices and networks when possible
-- [ ] **Network Isolation**: Use separate WiFi network or cellular connection
-- [ ] **Physical Security**: No external device connections (USB drives, keyboards, etc.)
-- [ ] **VPN Usage**: Always use a VPN when traveling or on untrusted networks
+### Device separation
 
-**Development and Untrusted Environment Separation**
-- [ ] Use separate devices, OS accounts, or VMs for segregating between daily activity and untrusted operations
-- [ ] Regularly wipe untrusted environments clean
-- [ ] Assume untrusted environment is always infected with malware - do not enter any credentials for usual accounts, create dedicated accounts with minimal access when needed
+**Dedicated privileged device**
 
-### 📦 Virtualization & Containerization
+- [ ] **Use a separate machine exclusively for privileged operations**
+- [ ] **Air-gap where possible** — isolate from other devices and networks
+- [ ] **Isolate the network** — a separate WiFi network or a cellular connection
+- [ ] **Allow no external device connections** — USB drives, keyboards, and other peripherals stay off
+- [ ] **Always use a VPN** when traveling or on untrusted networks
 
-**Development Containers** *(Recommended for all code execution)*
-- [ ] **Execution**: Use dev containers for all project execution, including for trusted projects
-- [ ] **Project Isolation**: Create a separate container for each project
-- [ ] **No Persistence**: Use clean images for untrusted operations
-- [ ] **Container Methods**: Containers can be OS images in Docker, IDE-integrated project containers, or cloud-based workstations
+**Untrusted environment separation**
 
-**Virtual Machines**
-- [ ] Use VMs for untrusted operations when dedicated hardware isn't available and dev containers are not desired
-- [ ] Ensure proper VM configuration (no shared storage, network, or device access)
-- [ ] Restore VMs to clean state after each use
+- [ ] **Segregate daily activity from untrusted operations** using separate devices, OS accounts, or VMs
+- [ ] **Wipe untrusted environments regularly**
+- [ ] **Assume the untrusted environment is already infected** — never enter credentials for your usual accounts there; create dedicated minimal-access accounts when one is needed
 
-### 🌐 Browser Separation
+### Dev containers and VMs
 
-**Use a two-browser system within your default trust level:**
+Run all project code in containers — including trusted projects, since any of their dependencies can be compromised. Containers can be Docker images, IDE-integrated project containers, or cloud workstations.
 
-**🔒 Session-Based Browser** *(Trusted Operations)*
-- [ ] Use only for authenticated, trusted browsing
-- [ ] Never open links or paste URLs directly
-- [ ] Maintain logged-in sessions for work tools
-- [ ] Regular cookie and cache clearing
+- [ ] **One container per project** — never reused across projects
+- [ ] **Clean images for untrusted work** — no persistence between sessions
+- [ ] **Clone repos inside the container** — ideally a repo never touches the host machine
+- [ ] **Minimal, security-focused base images**
+- [ ] **No host network access or shared storage** for containers
+- [ ] **Keep sensitive credentials out** — untrusted projects get no API keys or deployment credentials; development credentials must be separate from production ones and encrypted at rest with a different passphrase or key
+- [ ] **Use VMs when containers don't fit** — configured with no shared storage, network, or device access, and restored to a clean snapshot after each use
 
-**🕵️ Ephemeral Browser** *(Untrusted Operations)*
-- [ ] Configure to run in private/incognito mode by default
-- [ ] Set as default browser to catch clicked links
-- [ ] No persistent cookies, cache, or history
-- [ ] Use for all temporary and untrusted browsing
+Setup guides: [VS Code / Cursor dev containers](https://code.visualstudio.com/docs/devcontainers/containers) · [JetBrains dev containers](https://www.jetbrains.com/help/idea/start-dev-container-from-welcome-screen.html)
 
-**Browser Security**
-- [ ] Keep browsers updated to latest versions
-- [ ] Avoid beta features and experimental settings
-- [ ] Use reputable, security-focused browsers for sensitive operations
+### Browser separation
 
----
+Within your default trust level, run a two-browser system:
 
-## Additional Security Tips
+**Session browser — trusted operations only**
 
-**Device Protection**
-- [ ] **Full Disk Encryption**: Enable on all devices to protect against theft
-- [ ] **Privacy Screens**: Use to prevent shoulder surfing in open spaces
-- [ ] **Biometric Authentication**: Use biometrics, passkeys, or SSO in public to avoid leaking typed credentials
-- [ ] **Linux**: Consider SELinux for advanced access controls
-- [ ] **Windows**: Enable Windows Defender Application Control or AppLocker
-- [ ] **macOS**: Ensure System Integrity Protection (SIP) is enabled
-- [ ] **Root OS Accounts**: Do not log in as root for performing daily tasks, only when absolutely necessary. Your regular account should have minimal permissions
+- [ ] **Authenticated, trusted browsing only** — never open clicked links or pasted URLs here
+- [ ] **Maintain logged-in sessions** for work tools
+- [ ] **Clear cookies and cache regularly**
 
-**Travel Security**
-- [ ] Use dedicated travel devices or wipe devices before travel
-- [ ] Create backup snapshots for easy device restoration
-- [ ] Avoid accessing sensitive accounts on untrusted networks
-- [ ] Ensure remote wipe capabilities in case of theft or seizure of device
+**Ephemeral browser — everything else**
 
-**DNS and Network Protection**
-- [ ] **Secure DNS**: Use [NextDNS](https://nextdns.io/) or [Quad9](https://quad9.net/) for malware protection
-- [ ] **VPN Usage**: Always use a VPN on untrusted networks
-- [ ] **Network Monitoring**: Use tools like [Little Snitch](https://www.obdev.at/products/littlesnitch/) (macOS), [Lulu](https://objective-see.org/products/lulu.html) (free alternative), or [Glasswire](https://www.glasswire.com/) (Windows) to actively block unknown network connections
-- [ ] **Persistence Monitoring**: Use [BlockBlock](https://objective-see.org/products/blockblock.html) to monitor common persistence locations and alert whenever a persistent component is added
+- [ ] **Private/incognito mode by default** — no persistent cookies, cache, or history
+- [ ] **Set as the system default browser** so clicked links land here, not in your session browser
+- [ ] **Use for all temporary and untrusted browsing**
 
-**Code Security**
-- [ ] **Commit Signing**: [Sign all git commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) for non-repudiation in logs
-- [ ] **Encrypted Secrets**: Use a tool like [git-secret](https://sobolevn.me/git-secret/) to encrypt secrets in code repos
-- [ ] **Secret Leakage**: Use an automated scanner like [git-secrets](https://github.com/awslabs/git-secrets) in pre-commit hooks to prevent accidental leakage of unencrypted secrets
+Keep both browsers updated, avoid beta and experimental features, and give wallet extensions a third dedicated browser used only for transacting (see the [Personal Security Checklist](individual-security.md)).
 
 ---
 
-## Development Containers Setup
+## Developer-Specific Hardening
 
-Development containers completely isolate potentially risky code execution from the host machine. Even trusted projects can contain malicious dependencies, making containerized execution necessary for the security of your development environment.
+Beyond the baseline checklist, these controls matter most for people who write and ship code.
 
-### Supported IDEs
+**Operating system**
 
-**Visual Studio Code & Cursor**
-- 📖 [VS Code Dev Containers Guide](https://code.visualstudio.com/docs/devcontainers/containers)
-- 📖 [Cursor Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) (same as VS Code)
+- [ ] **Work from a non-admin account** — elevate only when genuinely necessary, never for daily tasks
+- [ ] **macOS** — keep System Integrity Protection (SIP) enabled
+- [ ] **Windows** — enable Windows Defender Application Control or AppLocker
+- [ ] **Linux** — consider SELinux for mandatory access control
 
-**JetBrains IDEs**
-- 📖 [JetBrains Dev Containers Guide](https://www.jetbrains.com/help/idea/start-dev-container-from-welcome-screen.html)
+**Travel**
 
-### Container Security Best Practices
+- [ ] **Use dedicated travel devices**, or wipe devices before travel
+- [ ] **Keep backup snapshots** for fast device restoration
+- [ ] **Avoid sensitive accounts on untrusted networks**
+- [ ] **Enable remote wipe** in case of theft or seizure
 
-**Container Configuration**
-- [ ] **One Container Per Project**: Never reuse containers across projects
-- [ ] **Appropriate Base Images**: Choose minimal, security-focused base images
-- [ ] **No Host Downloads**: Avoid downloading code outside of the container
-- [ ] **Network and Storage**: Do no allow containers to access host network and avoid shared storage devices
+**Code and secrets**
 
-**Credential Management**
-- [ ] **No Sensitive Credentials**: Avoid supplying API keys or deployment credentials to untrusted projects. Development credentials must be different from production credentials, encrypted at rest with a different passphrase/key
-- [ ] **1Password Integration**: Use [1Password SSH/Git signing](https://vinialbano.com/how-to-sign-git-commits-with-1password/#setting-up-1password-for-ssh-and-git-commit-signing) for simple secure commit signing
-
-**Container Lifecycle**
-- [ ] **Clean State**: Start each session with a clean container
-- [ ] **Initialization**: Clone repos inside of containers rather than importing them after creation (ideally, repos should never touch the host machine)
+- [ ] **Scan dependencies** for malicious, vulnerable, and risky packages with [depenemy](https://github.com/W3OSC/depenemy) — see the [Supply Chain & Dependency Security Guide](supply-chain-dependency-security.md) for the full lifecycle approach
+- [ ] **Sign all git commits** for non-repudiation in logs ([GitHub guide](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)); [1Password SSH/Git signing](https://vinialbano.com/how-to-sign-git-commits-with-1password/#setting-up-1password-for-ssh-and-git-commit-signing) makes this painless
+- [ ] **Encrypt secrets that must live in repos** with a tool like [git-secret](https://sobolevn.me/git-secret/)
+- [ ] **Block accidental secret leakage** with an automated pre-commit scanner like [git-secrets](https://github.com/awslabs/git-secrets)

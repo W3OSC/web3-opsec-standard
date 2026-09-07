@@ -172,6 +172,7 @@ Development in Web3 presents additional security risks over traditional develope
 - [ ] **Persistence Monitoring**: Use [BlockBlock](https://objective-see.org/products/blockblock.html) to monitor common persistence locations and alert whenever a persistent component is added
 
 **Code Security**
+- [ ] **Dependency Scanning**: Scan projects for malicious, vulnerable, and risky dependencies with [depenemy](https://github.com/W3OSC/depenemy) — see the [Supply Chain & Dependency Security Guide](supply-chain-dependency-security.md) for the full lifecycle approach
 - [ ] **Commit Signing**: [Sign all git commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) for non-repudiation in logs
 - [ ] **Encrypted Secrets**: Use a tool like [git-secret](https://sobolevn.me/git-secret/) to encrypt secrets in code repos
 - [ ] **Secret Leakage**: Use an automated scanner like [git-secrets](https://github.com/awslabs/git-secrets) in pre-commit hooks to prevent accidental leakage of unencrypted secrets

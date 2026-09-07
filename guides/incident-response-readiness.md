@@ -6,170 +6,178 @@ scope: ORGANIZATION
 
 <div align="center">
   <h1>Incident Response Readiness Guide</h1>
-  <p><em>Comprehensive incident response planning and disaster recovery procedures</em></p>
+  <p><em>Runbooks, damage control, and monitoring for when things go wrong</em></p>
 </div>
 
 ---
 
 ## Overview
 
-Effective incident response requires comprehensive preparation before disasters strike. Attackers deliberately target organizations during vulnerable moments and aim to maximize panic and confusion. A well-structured incident response plan enables rapid damage mitigation, quick business continuity restoration, and effective containment of attacker movement while engaging in asset recovery. Remember that incident response is not just about technical controls - it requires clear procedures, designated responsibilities, and regular testing to ensure effectiveness when every second counts.
+Incidents are won or lost before they happen. Attackers deliberately strike at vulnerable moments and count on panic; a prepared organization responds from a runbook while an unprepared one improvises. Readiness means three things, and this guide covers each: rehearsed procedures for the disasters you can anticipate, technical controls that contain damage fast, and monitoring that detects incidents early and cannot be silenced by the attacker.
 
 ---
 
-## Incident Response Runbook
+## Incident Response Runbooks
 
-💡 **Plan ahead with detailed response runbooks for anticipated potential disaster scenarios.**
+Write detailed runbooks for anticipated disaster scenarios before you need them. The four below are a baseline for any Web3 organization.
 
-### Core Disaster Scenarios
+### Multi-sig wallet compromise
 
-**Multi-Sig Wallet Compromise**
-- [ ] **Immediate Actions**:
-  - [ ] Temporarily freeze multi-sig contract
-  - [ ] Revoke compromised accounts immediately
-  - [ ] Re-provision new devices for compromised users (laptops, hardware wallets, phones, etc.)
-- [ ] **Recovery Procedures**:
-  - [ ] Verify integrity of remaining signers
-  - [ ] Implement emergency quorum adjustment procedures (removing compromised accounts)
-  - [ ] Coordinate with remaining trusted parties for asset recovery
+Immediate actions:
 
-**Unauthorized Code Deployment**
-- [ ] **Immediate Actions**:
-  - [ ] Bring service offline immediately
-  - [ ] Freeze automated deployments
-  - [ ] Revoke compromised accounts
-  - [ ] Roll back to last known authorized deployment
-- [ ] **Recovery Procedures**:
-  - [ ] Audit deployment logs and access patterns
-  - [ ] Verify integrity of rollback version
-  - [ ] Implement additional deployment controls to prevent future abuse
-  - [ ] Recreate affected infrastructure instances
+- [ ] **Temporarily freeze the multi-sig contract**
+- [ ] **Revoke compromised accounts** immediately
+- [ ] **Re-provision devices for affected users** — laptops, hardware wallets, phones
 
-**Endpoint Compromise/Malware Infection**
-- [ ] **Immediate Actions**:
-  - [ ] Revoke compromised user's access to all services
-  - [ ] Quarantine device and create a snapshot image for forensic analysis
-  - [ ] Wipe the device and re-provision account access
-- [ ] **Recovery Procedures**:
-  - [ ] Conduct forensic analysis of compromised device
-  - [ ] Review all actions taken by compromised account, looking for damage caused or any points of infection of other devices or cloud assets and repos
-  - [ ] Implement additional endpoint monitoring and active firewalls
+Recovery:
 
-**On-Chain Asset Theft**
-- [ ] **Immediate Actions**:
-  - [ ] Freeze contract if possible
-  - [ ] Contact [SEAL 911](https://github.com/security-alliance/seal-911) immediately
-  - [ ] Do basic forensics to determine attacker addresses
-  - [ ] Contact CEXs, DEX front-ends, and other relevant parties to blacklist attacker addresses
-- [ ] **Recovery Procedures**:
-  - [ ] Engage blockchain forensics specialists
-  - [ ] Coordinate with law enforcement
-  - [ ] Implement contract upgrade or redeployment procedures
+- [ ] **Verify the integrity of the remaining signers**
+- [ ] **Adjust the quorum through emergency procedures** to remove compromised accounts
+- [ ] **Coordinate asset recovery** with the remaining trusted parties
 
-### Response Planning Principles
+### Unauthorized code deployment
 
-**Prescriptive Procedures**
-- [ ] **Detailed Instructions**: Create step-by-step procedures that any team member can execute
-- [ ] **Clear Responsibilities**: Assign specific roles and responsibilities for each scenario
-- [ ] **Decision Trees**: Provide clear decision-making frameworks for different situations
-- [ ] **Contact Information**: Maintain updated emergency contact lists and escalation procedures
+Immediate actions:
 
-**Regular Testing & Updates**
-- [ ] **Tabletop Exercises**: Conduct regular incident response simulations
-- [ ] **Procedure Updates**: Review and update procedures based on new threats and lessons learned
-- [ ] **Team Training**: Ensure all team members understand their roles in incident response
+- [ ] **Take the service offline** and freeze automated deployments
+- [ ] **Revoke compromised accounts**
+- [ ] **Roll back** to the last known authorized deployment
+
+Recovery:
+
+- [ ] **Audit deployment logs and access patterns**
+- [ ] **Verify the integrity of the rollback version**
+- [ ] **Recreate affected infrastructure instances**
+- [ ] **Add deployment controls that would have prevented the abuse** — see the [Secure Deployments & Infrastructure Guide](deployments-infra-access-control.md)
+
+### Endpoint compromise / malware infection
+
+Immediate actions:
+
+- [ ] **Revoke the compromised user's access to all services**
+- [ ] **Quarantine the device** and create a snapshot image for forensic analysis
+- [ ] **Wipe the device and re-provision account access**
+
+Recovery:
+
+- [ ] **Analyze the forensic image**
+- [ ] **Review every action the compromised account took** — damage caused, and any spread to other devices, cloud assets, or repos
+- [ ] **Strengthen endpoint monitoring and active firewalls** based on what was missed
+
+### On-chain asset theft
+
+Immediate actions:
+
+- [ ] **Freeze the contract** if possible
+- [ ] **Contact [SEAL 911](https://github.com/security-alliance/seal-911)** immediately
+- [ ] **Identify attacker addresses** with basic forensics
+- [ ] **Notify CEXs, DEX frontends, and other relevant parties** to blacklist attacker addresses
+
+Recovery:
+
+- [ ] **Engage blockchain forensics specialists**
+- [ ] **Coordinate with law enforcement**
+- [ ] **Upgrade or redeploy contracts** as needed
+
+### Writing runbooks that work
+
+- [ ] **Prescriptive steps** — detailed enough that any team member can execute them
+- [ ] **Named roles and responsibilities** for each scenario
+- [ ] **Decision trees** for the judgment calls
+- [ ] **Current emergency contact lists** and escalation paths
+- [ ] **Regular tabletop exercises**, with procedures updated from new threats and lessons learned
+- [ ] **A trained team** — everyone knows their role before the incident, not during it
 
 ---
 
 ## Rapid Damage Control
 
-💡 **Implement technical controls that enable immediate response to contain damage and maintain business continuity.**
+These controls buy time during an incident: they contain the attacker and keep the business running while you execute a runbook.
 
-### Deployment & Access Controls
+### Deployment and access controls
 
-**Quick Deployment Rollbacks**
-- [ ] **Automated Rollback**: Implement accessible rollback mechanisms for all deployments
-- [ ] **Version Control**: Maintain comprehensive version history with verified clean states
-- [ ] **Rollback Testing**: Regularly test rollback procedures to ensure reliability
-- [ ] **Backup Deployments**: Maintain parallel deployment environments for rapid switching
+**Fast rollbacks**
 
-**Account Takeover (ATO) Response**
-- [ ] **Rapid Access Revocation**: Implement immediate access revocation capabilities (access ripcords like password manager lockouts, SSO account freezing, and consolidated access management services)
-- [ ] **Multi-Factor Reset**: Reset and re-enroll 2FA for affected accounts
-- [ ] **Privilege Escalation Controls**: Immediately remove the affected accounts' permissions from all critical systems
+- [ ] **Accessible rollback mechanisms** for every deployment
+- [ ] **Comprehensive version history** with verified clean states
+- [ ] **Regularly tested rollback procedures** — a rollback that has never been rehearsed is a hope, not a control
+- [ ] **Parallel deployment environments** maintained for rapid switching
 
-### Data Protection & Recovery
+**Account takeover response**
 
-**Non-Repudiation Controls**
-- [ ] **Signed Commits**: Require signed commits for all code changes to prevent impersonation
-- [ ] **Immutable Logs**: Implement tamper-proof, redundant logging systems that cannot be suppressed or edited without triggering alarms
-- [ ] **Action Auditing**: Keep comprehensive audit trails for all privileged actions
-- [ ] **Cryptographic Verification**: Use cryptographic signatures for critical operations where possible (e.g. using PGP keys or wallet signatures)
+- [ ] **Access ripcords** — immediate revocation capabilities such as password manager lockouts, SSO account freezing, and consolidated access management services
+- [ ] **2FA reset and re-enrollment** for affected accounts
+- [ ] **Immediate permission stripping** — remove affected accounts from all critical systems at once
 
-**Endpoint Detection and Response (EDR)**
-- [ ] **Real-Time Monitoring**: Deploy EDR agents on all organization member devices
-- [ ] **Automated Response**: Configure automated containment for detected threats (locking down the operating system, severing network and account access, etc.)
-- [ ] Solutions like [CrowdStrike](https://www.crowdstrike.com/platform/endpoint-security/), [Sentinel One](https://www.sentinelone.com/surfaces/endpoint/), or [Wazuh](https://wazuh.com/) (if you prefer OSS) offer deep insight into system behavior, flagging and preventing potential compromises as they occur
+### Non-repudiation
 
-### Backup & Recovery Systems
+- [ ] **Require signed commits** for all code changes to prevent impersonation
+- [ ] **Keep tamper-proof, redundant logs** that cannot be suppressed or edited without triggering alarms
+- [ ] **Keep comprehensive audit trails** for all privileged actions
+- [ ] **Use cryptographic signatures for critical operations** where possible — e.g. PGP keys or wallet signatures
 
-**Redundant Database Backups**
-- [ ] **Multiple Storage Media**: Use different storage media and locations (e.g. local and cloud storage)
-- [ ] **Automated Backups**: Implement automated, verified backup procedures
-- [ ] **Recovery Testing**: Regularly test backup restoration procedures
-- [ ] **Encryption**: Keep backups encrypted with a secure private/public key pair (public for encryption, private kept safe and only used to decrypt backups when needed)
+### Endpoint detection and response (EDR)
 
-**Infrastructure Redundancy**
-- [ ] **Multiple Availability Zones**: Deploy across multiple availability zones
-- [ ] **Fallback Regions**: Maintain fallback regions for disaster recovery
-- [ ] **Load Balancing**: Implement robust load balancing and failover mechanisms
-- [ ] **Geographic Distribution**: Distribute critical infrastructure geographically
+- [ ] **Deploy EDR agents on every organization member device** for real-time monitoring
+- [ ] **Configure automated containment** for detected threats — locking down the OS, severing network and account access
+- [ ] **Use proven solutions** — [CrowdStrike](https://www.crowdstrike.com/platform/endpoint-security/), [SentinelOne](https://www.sentinelone.com/surfaces/endpoint/), or [Wazuh](https://wazuh.com/) (open source) offer deep insight into system behavior, flagging and preventing compromises as they occur
+
+### Backups and redundancy
+
+**Database backups**
+
+- [ ] **Multiple storage media and locations** — e.g. local plus cloud
+- [ ] **Automated, verified backup procedures**
+- [ ] **Regularly tested restoration**
+- [ ] **Encryption with a key pair** — the public key encrypts; the private key stays locked away and is used only to restore
+
+**Infrastructure redundancy**
+
+- [ ] **Multiple availability zones** for all critical deployments
+- [ ] **Fallback regions** maintained for disaster recovery
+- [ ] **Robust load balancing and failover mechanisms**
+- [ ] **Geographic distribution** of critical infrastructure
 
 ---
 
 ## Monitoring & Alerting
 
-💡 **Establish comprehensive monitoring systems with immutable logging and redundant alerting to detect incidents quickly and securely.**
+Detection only counts if the attacker cannot turn it off. Build logging that cannot be silently edited and alerting that cannot be silently missed.
 
-### Immutable Logging Systems
+### Immutable logging
 
-**Tamper-Proof Logging**
-- [ ] **Write-Only Logs**: Configure logging systems to prevent modification or deletion of entries
-- [ ] **Cryptographic Integrity**: Use cryptographic hashes to verify log integrity (e.g. emitted logs should have an attached HMAC when stored)
-- [ ] **Real-Time Replication**: Implement real-time log replication to secure locations
+- [ ] **Append-only log storage** — entries cannot be modified or deleted once written
+- [ ] **Cryptographic integrity verification** — e.g. an HMAC attached to emitted logs when stored
+- [ ] **Real-time replication** to a secure secondary location
+- [ ] **Alerts on tampering** — any attempt to disable or modify logging pages someone
+- [ ] **Monitored log access** — reads are logged and alerted on too
+- [ ] **Retention policies** long enough for forensic analysis when needed
 
-**Log Monitoring & Protection**
-- [ ] **Alteration Alerts**: Configure alerts for any attempts to disable or modify logs
-- [ ] **Access Monitoring**: Monitor and alert on all log access attempts
-- [ ] **Retention Policies**: Implement appropriate log retention policies for forensic analysis when needed
+### Multi-channel alerting
 
-### Multi-Channel Alert Systems
+- [ ] **At least three independent alert channels**:
+  - [ ] A dedicated Telegram channel for security alerts
+  - [ ] A Discord bot posting real-time notifications to a dedicated channel
+  - [ ] Email alerts to multiple recipients
+- [ ] **PagerDuty or equivalent** for critical alerts — consider physical pagers for emergency alarms
+- [ ] **Mobile push notifications** for immediate awareness
+- [ ] **Tiered severities with automatic escalation** — on-call confirms and checks in on unacknowledged alerts, or backups and managers get paged
+- [ ] **Regular channel testing** so a dead webhook is found before the incident, not during it
+- [ ] **Tuned false-positive rates** — alarms should trip rarely enough that every one is taken seriously
 
-**Redundant Alert Delivery**
-- [ ] **Multiple Channels**: Use at least three different alert channels:
-  - [ ] **Telegram Channel**: Set up a dedicated Telegram channel for security alerts
-  - [ ] **Discord Bot**: Configure a Discord bot for real-time notifications in a dedicated channel
-  - [ ] **Email Alerts**: Implement email alerting with multiple recipients
-- [ ] **PagerDuty**: Add PagerDuty or an equivalent system for critical alerts (consider physical pagers for emergency alarms)
-- [ ] **Mobile Push**: Use mobile push notifications for immediate awareness
+### Coverage
 
-**Alert Configuration**
-- [ ] **Severity Levels**: Implement tiered alerting based on incident severity
-- [ ] **Escalation Procedures**: Configure automatic escalation for unacknowledged alerts (on-call should confirm and check in, otherwise backups and managers should be paged)
-- [ ] **Alert Testing**: Regularly test all alert channels to ensure reliability
-- [ ] **False Positive Management**: Tune alerts to minimize false positives while maintaining sensitivity (alarms should very rarely be tripped)
+**Systems**
 
-### Monitoring Coverage
+- [ ] **Infrastructure health** across all critical components
+- [ ] **Application performance and availability**
+- [ ] **Network traffic patterns** for anomalies
+- [ ] **Resource utilization** and capacity planning
 
-**System Monitoring**
-- [ ] **Infrastructure Health**: Monitor all critical infrastructure components
-- [ ] **Application Performance**: Track application performance and availability
-- [ ] **Network Traffic**: Monitor network traffic patterns for anomalies
-- [ ] **Resource Utilization**: Track resource usage and capacity planning
+**Security**
 
-**Security Monitoring**
-- [ ] **Access Patterns**: Monitor user access patterns and privilege usage
-- [ ] **Failed Authentication**: Track failed login attempts and suspicious activity
-- [ ] **Data Exfiltration**: Monitor for unusual data transfer patterns
-- [ ] **Malware Detection**: Implement real-time malware detection and alerting
-- [ ] **Anomalies in Code**: Monitor for front-end content changes and smart contract behavior and state anomalies
+- [ ] **Access patterns and privilege usage**
+- [ ] **Failed authentication attempts** and suspicious activity
+- [ ] **Data exfiltration indicators** — unusual transfer patterns
+- [ ] **Real-time malware detection**
+- [ ] **Frontend content changes and smart contract state anomalies** — Web3's highest-value tampering targets

@@ -5,210 +5,153 @@ scope: ORGANIZATION
 -->
 
 <div align="center">
-  <h1>Multi-Sig Operations and Ideal Setup Guide</h1>
-  <p><em>A comprehensive implementation of security best practices for multi-signature wallet management</em></p>
+  <h1>Multi-Sig Wallet Security Guide</h1>
+  <p><em>Platform setup, hardware wallets, transaction verification, and quorum design</em></p>
 </div>
 
 ---
 
 ## Overview
 
-Comprehensive wallet security combines multiple defensive layers to create a system that remains resilient even when facing sophisticated attacks or insider threats. The recommendations in this guide work together to establish a security framework where no single point of failure can compromise your assets. Remember that wallet security is not a one-time configuration but an ongoing process of continuous improvement and vigilance—in a landscape where attackers constantly evolve their methods, maintaining rigorous security protocols is essential for protecting high-value on-chain assets.
+Multi-sig security is defense in depth: platform choice, hardware wallets, verification discipline, isolated signing environments, and quorum design each cover for the failure of the others. Configured together, no single compromised device, person, or software component can move your assets. None of it is one-time setup — attackers constantly evolve their methods, and these layers only protect quorums that stay rigorous about maintaining them.
+
+Every signer should also meet the baseline in the [Personal Security Checklist](individual-security.md).
 
 ---
 
-## Multi-Sig & Software Wallets
+## Multi-Sig Platform & Software Wallets
 
-### Multi-Sig Platform Setup
+The software layer is the most exposed one — choose platforms and wallets that help you verify what you sign.
 
-**Trusted Multi-Sig Platform**
-- [ ] Use a trusted platform like Safe to set up and manage your multi-sig
-  - [ ] Set up wallet at [https://safe.global/wallet](https://safe.global/wallet)
-  - [ ] Safe is the gold standard for multi-sig wallet management, but any equivalent system can be used
+### Platform setup
 
-**Self-Hosted Multi-Sig UI** *(Highly Recommended)*
-- [ ] Host your own multi-sig UI for additional security
-  - [ ] Deploy from [https://github.com/safe-global/safe-wallet-monorepo/tree/dev/apps/web](https://github.com/safe-global/safe-wallet-monorepo/tree/dev/apps/web)
-  - [ ] While it should not be your final line of defense, securing the UI does protect your verification process from being compromised by supply-chain attacks
+- [ ] **Use a trusted multi-sig platform** — [Safe](https://safe.global/wallet) is the gold standard for multi-sig management, though any equivalent system can be used
+- [ ] **Self-host the multi-sig UI** (highly recommended) — deploy from the [Safe monorepo](https://github.com/safe-global/safe-wallet-monorepo/tree/dev/apps/web); it should not be your final line of defense, but securing the UI protects your verification process from frontend supply-chain attacks
 
-### Software Wallet Selection
+### Software wallet selection
 
-**Recommended Wallet Applications**
-- [ ] Review wallet security score rankings at [https://www.coinspect.com/wallets/](https://www.coinspect.com/wallets/)
+Compare wallet security scores at [coinspect.com/wallets](https://www.coinspect.com/wallets/) before choosing.
 
-**Rabby Wallet** *(Recommended)*
-- [ ] Install Rabby wallet from [https://rabby.io/](https://rabby.io/)
-  - [ ] Verify open source code
-  - [ ] Enable pre-sign security checks (e.g. new address warnings)
-  - [ ] Use built-in transaction simulation
+**[Rabby](https://rabby.io/)** (recommended, open source)
 
-**MetaMask with Security Snaps** *(Alternative)*
-- [ ] Install MetaMask from [https://metamask.io/](https://metamask.io/)
-- [ ] Install recommended security Snaps:
-  - [ ] **Wallet Guard Snap**: [https://snaps.metamask.io/snap/npm/wallet-guard-snap/](https://snaps.metamask.io/snap/npm/wallet-guard-snap/) - Good for transaction insights and security warnings
-  - [ ] **Tenderly Snap**: [https://snaps.metamask.io/snap/npm/tenderly/metamask-snap/](https://snaps.metamask.io/snap/npm/tenderly/metamask-snap/) - Allows you to easily simulate transactions before confirming them
-  - [ ] **Forta Network Snap**: [https://snaps.metamask.io/snap/npm/forta-network/metamask-snap/](https://snaps.metamask.io/snap/npm/forta-network/metamask-snap/) - Scam and malicious address detection
-  - [ ] **Web3 Antivirus Snap**: [https://snaps.metamask.io/snap/npm/web3-antivirus/web3-antivirus-snap/](https://snaps.metamask.io/snap/npm/web3-antivirus/web3-antivirus-snap/) - Security alerts on known bad addresses and assets
+- [ ] **Enable pre-sign security checks** — e.g. new-address warnings
+- [ ] **Use the built-in transaction simulation** before every signature
+
+**[MetaMask](https://metamask.io/) with security Snaps** (alternative)
+
+- [ ] **[Wallet Guard](https://snaps.metamask.io/snap/npm/wallet-guard-snap/)** — transaction insights and security warnings
+- [ ] **[Tenderly](https://snaps.metamask.io/snap/npm/tenderly/metamask-snap/)** — simulate transactions before confirming them
+- [ ] **[Forta Network](https://snaps.metamask.io/snap/npm/forta-network/metamask-snap/)** — scam and malicious address detection
+- [ ] **[Web3 Antivirus](https://snaps.metamask.io/snap/npm/web3-antivirus/web3-antivirus-snap/)** — alerts on known bad addresses and assets
 
 ---
 
 ## Hardware Wallets
 
-💡 **Hardware wallets are the cornerstone of secure asset storage and your last line of defense against attacks. All other security controls could fail and your hardware wallet would still keep you safe when used properly**
+Hardware wallets are your last line of defense: every other control in this guide could fail, and a properly used hardware wallet would still keep the keys safe.
 
-### Hardware Wallet Selection
+### Selection and purchase
 
-**Purchase Requirements**
-- [ ] **Direct Purchase**: Purchase your wallet directly from the manufacturer, do not purchase from a reseller. Use a pseudonym and ideally have it delivered to a P.O. box or secure locker.
-- [ ] **Large Screen**: Ensure your device has a large screen that supports displaying full transaction data. Wallets with clear signing technology are highly recommended
-- [ ] **Touch Screen PIN**: Use touch screen PIN entry with shuffled buttons
-- [ ] **Strong PIN**: Use at least a 6-digit PIN, but the longer the better
-- [ ] **Brand Diversification**: Consider diversifying wallet brands amongst your team to reduce risk of 0-day and supply chain vulnerabilities impacting multi-sig quorums
+- [ ] **Buy directly from the manufacturer** — never a reseller; use a pseudonym and ship to a PO box or secure locker where practical
+- [ ] **Require a large screen** that can display full transaction data; clear-signing support is highly recommended
+- [ ] **Use touch-screen PIN entry with shuffled buttons**
+- [ ] **Use at least a 6-digit PIN** — the longer the better
+- [ ] **Diversify brands across the team** so a single 0-day or supply-chain compromise cannot reach a quorum of signers
 
-**Recommended Hardware Wallets**
-- [ ] **Ledger Options**:
-  - [ ] [Ledger Stax](https://shop.ledger.com/products/ledger-stax)
-  - [ ] [Ledger Flex](https://shop.ledger.com/pages/ledger-flex)
-- [ ] **GridPlus**: [Grid Lattice1](https://gridplus.io/products/grid-lattice1)
-- [ ] **Trezor**: [Trezor Safe 5](https://trezor.io/trezor-safe-5)
+Recommended devices: [Ledger Stax](https://shop.ledger.com/products/ledger-stax) · [Ledger Flex](https://shop.ledger.com/pages/ledger-flex) · [GridPlus Lattice1](https://gridplus.io/products/grid-lattice1) · [Trezor Safe 5](https://trezor.io/trezor-safe-5)
 
-### Device Verification & Setup
+### Verification and key setup
 
-**Integrity Verification**
-- [ ] **Ledger**: Verify device integrity using [Ledger's verification guide](https://support.ledger.com/article/4404389367057-zd#h_01FPAFSEH1S9Q6B0NN21ZNKFHS)
-- [ ] **GridPlus**: Verify authenticity using [GridPlus verification guide](https://docs.gridplus.io/lattice1/lattice1-guides/how-to-verify-that-your-lattice1-is-authentic)
-- [ ] **Trezor**: Authenticate device using [Trezor authentication guide](https://trezor.io/learn/a/authenticate-trezor-safe-5)
+- [ ] **Verify device integrity on receipt** — [Ledger](https://support.ledger.com/article/4404389367057-zd#h_01FPAFSEH1S9Q6B0NN21ZNKFHS) · [GridPlus](https://docs.gridplus.io/lattice1/lattice1-guides/how-to-verify-that-your-lattice1-is-authentic) · [Trezor](https://trezor.io/learn/a/authenticate-trezor-safe-5)
+- [ ] **Generate new private keys on the device** — never import them from a computer or another device
+- [ ] **Never let keys exist digitally** — no exports, photos, or password-manager copies of private keys or seed phrases; always use 24-word seed phrases
+- [ ] **Never store seed phrases in plain text** — scramble the word order, add a 25th secret word, or require an import passphrase, with the related secret stored in a password manager
+- [ ] **Treat clear signing as an aid, not a substitute** — always fully verify transactions yourself
 
-**Key Generation & Security**
-- [ ] **Generate New Keys**: Generate new private keys on the device, do not import them from your computer or another device
-- [ ] **No Digital Storage**: Never export or store your private keys or seed phrases in any digital format, including pictures or in password managers. Always use 24-word seed phrases
-- [ ] **Seed Phrase Encryption**: Never store seed phrases in plain text. Seed phrases must be encrypted through some method. For example, seed phrases must be mixed in a randomly generated, recorded order; have a 25th secret word; or require a passphrase to be imported into a wallet - regardless of the method, the related secret value should be stored in a password manager
-- [ ] **Clear Signing Awareness**: Use Clear Signing support when available, but never rely on it alone - always fully verify transactions manually
+### Backup strategy
 
-### Private Key Backup Strategy
+A healthy quorum is itself a backup: signing wallets should serve no other purpose, and if a signer loses access, the quorum can vote to swap in a replacement. Individual seed backups are therefore optional for signers — provided the signing pool stays deep enough that losing several signers at once is still recoverable. Any wallet that controls assets outside a quorum must always have physical backups.
 
-**Backup Medium**
-- [ ] **Fireproof Metal**: Use fireproof metal as your physical seed phrase storage medium
-- [ ] **Physical Security**: Only store seed phrases backups in a secure location like a physical safe
+- [ ] **Use fireproof metal** as the physical backup medium
+- [ ] **Store backups only in a secure location** — a physical safe or equivalent
 
-**Backup Necessity**
-- [ ] **Optional Self-Recovery**: Seed phrase backups are not strictly necessary with a healthy quorum - multi-sig signing wallets should not be used for any other purpose and could be re-provisioned by existing quorum admins. In this case, it is recommended to maintain a healthy enough signing pool that loss of access to a few accounts at once could be recovered from. Either way, personal backup methods for admins are required to maintain access to on-chain assets in the event of loss of access to hardware wallets
-- [ ] **Quorum Social Recovery**: If access to wallet is lost, the quorum can vote to edit members to replace the inaccessible wallet
+Advanced options:
 
-**Advanced Backup Options**
-- [ ] **Key Splitting**: Split the key into multiple shards and securely distribute them
-  - [ ] Use [Shamir's Secret Sharing algorithm](https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing) for N of M key shards
-  - [ ] Consider using this [Shamir Secret Sharing implementation](https://github.com/privy-io/shamir-secret-sharing)
-- [ ] **Multi-Share Backups**: Use device-supported multi-share backups where available
-  - [ ] [Trezor Multi-Share Backup](https://trezor.io/learn/a/multi-share-backup-on-trezor)
-- [ ] **Secure Distribution**: Give shards to trusted family members, put in bank safe deposit boxes, and keep hidden around your house
+- [ ] **Shard the seed** with [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing) (N of M shards) — see this [open-source implementation](https://github.com/privy-io/shamir-secret-sharing)
+- [ ] **Use device-native multi-share backups** where available — e.g. [Trezor Multi-Share Backup](https://trezor.io/learn/a/multi-share-backup-on-trezor)
+- [ ] **Distribute shards across trust boundaries** — trusted family members, bank safe-deposit boxes, hidden physical locations
 
 ---
 
 ## Contract-Level Controls
 
-### Smart Contract Security
+On-chain controls keep working even when every off-chain layer is compromised.
 
-**Invariant Checks**
-- [ ] **Design Invariants**: Design contracts to enforce invariants and expected state changes such as token balance changes, ownership and administration, and proxy implementation addresses
-- [ ] **Automated Reversion**: Ensure contracts automatically revert transactions if any invariant is violated
-
-### Time-Lock Implementation
-
-**Challenge Periods**
-- [ ] **Enforce Time-Locks**: Incorporate challenge periods into your transaction execution process
-- [ ] **Veto Quorum**: Establish a smaller veto group separate from the confirmation quorum to review and confirm transaction legitimacy
-- [ ] **Delayed Execution**: Implement time-locks to prevent immediate execution of suspicious transactions
-- [ ] **Zodiac Delay Modifier**: Consider using [Zodiac Modifier Delay](https://github.com/gnosisguild/zodiac-modifier-delay/tree/main) or equivalent for implementing on-chain time-lock transaction delays to Safe wallets
+- [ ] **Enforce invariants in the contracts themselves** — expected token balance changes, ownership and administration, proxy implementation addresses — with automatic reversion when any invariant is violated
+- [ ] **Add a challenge period before execution** so suspicious transactions can be caught in flight
+- [ ] **Establish a veto quorum** — a smaller group, separate from the confirmation quorum, that reviews pending transactions and can block them
+- [ ] **Use [Zodiac Modifier Delay](https://github.com/gnosisguild/zodiac-modifier-delay/tree/main)** or equivalent for on-chain time-locked delays on Safe wallets
 
 ---
 
-## Transaction Review Process
+## Transaction Verification
 
-💡 **Implement strict verification processes to prevent human error and detect compromised software or transactions. Verification processes break down over time if they are not well defined and teams are not constantly proactive and vigilant**
+Verification discipline decays: processes break down over time unless they are well defined and teams stay deliberately vigilant. The tools below make rigorous verification cheap enough to sustain.
 
-### Verification Tools & Simulations
+### Verify what you sign
 
-**Transaction Hash Verification**
-- [ ] **Safe TX Hashes Util**: Use [Safe TX Hashes Util](https://github.com/pcaversaccio/safe-tx-hashes-util) to generate expected transaction hashes
-  - [ ] Compare generated hashes to hashes displayed on your hardware wallets
-  - [ ] Consider the [Cyfrin fork](https://github.com/Cyfrin/safe-tx-hashes) for additional support without relying on Safe API
+- [ ] **Compute expected transaction hashes independently** with [Safe TX Hashes Util](https://github.com/pcaversaccio/safe-tx-hashes-util) — or the [Cyfrin fork](https://github.com/Cyfrin/safe-tx-hashes), which works without relying on the Safe API — and compare against what your hardware wallet displays
+- [ ] **Decode calldata into human-readable form** with the [Swiss Knife decoder](https://calldata.swiss-knife.xyz/decoder)
+- [ ] **Monitor the Safe for suspicious activity** — [Safe Watcher](https://github.com/Gearbox-protocol/safe-watcher) or equivalent, connected to Telegram and watching especially for unexpected `delegateCall` transactions
+- [ ] **Firewall signing machines to known-good domains** using the [DeFi DNS whitelist](https://github.com/0xKoda/defi-dns-whitelist/tree/main)
+- [ ] **Run network and persistence monitoring on signing machines** — [Little Snitch](https://www.obdev.at/products/littlesnitch/index.html) or [LuLu](https://objective-see.org/products/lulu.html) (macOS), [GlassWire](https://www.glasswire.com/) (Windows), plus [BlockBlock](https://objective-see.org/products/blockblock.html) to alert on anything installing persistence
 
-**Monitoring & Analysis Tools**
-- [ ] **Safe Watcher**: Implement [Gearbox Safe Watcher](https://github.com/Gearbox-protocol/safe-watcher) or equivalent for monitoring and alerts
-  - [ ] Connect to Telegram for notifications
-  - [ ] Monitor for suspicious delegateCall transactions
-- [ ] **DNS Whitelist**: Use [DeFi DNS Whitelist](https://github.com/0xKoda/defi-dns-whitelist/tree/main) as a firewall for dedicated signing machines
-- [ ] **Calldata Decoder**: Use [Swiss Knife Decoder](https://calldata.swiss-knife.xyz/decoder) to make transaction call data more human-readable
+### Multi-channel confirmation
 
-**Network Monitoring**
-- [ ] **Little Snitch**: Install [Little Snitch](https://www.obdev.at/products/littlesnitch/index.html) for active firewall and network monitoring
-- [ ] **Lulu**: Use [Lulu](https://objective-see.org/products/lulu.html) as a free, open source alternative to Little Snitch
-- [ ] **BlockBlock**: Install [BlockBlock](https://objective-see.org/products/blockblock.html) to monitor common persistence locations and alert whenever a persistent component is added
-- [ ] **Glasswire**: [Glasswire](https://www.glasswire.com/) can be used for Windows machines
-
-### Multi-Channel Verification
-
-**Redundant Confirmation Channels**
-- [ ] **Never Rely on Single Device**: Never rely solely on the signing machine for confirmation
-- [ ] **Two Additional Devices**: Validate transaction details on at least two additional devices to compare against wallet transaction details. It is recommended to include a mobile device as one of these
-- [ ] **Independent Verification**: Ensure multi-channel approach provides independent verification even if one device is compromised
+- [ ] **Never rely on the signing machine alone** to tell you the truth about a transaction
+- [ ] **Validate transaction details on at least two additional devices** — a mobile device is recommended as one of them
+- [ ] **Keep the channels independent** so one compromised device cannot forge consensus
 
 ---
 
-## Device Segregation & Hardening
+## Signing Environment
 
-💡 **Isolate wallet management environments to reduce risk and prevent cross-contamination.**
+Isolate wallet management from everything else you do. Three tiers, strongest first:
 
-### Air-Gapped Machine Options
+**Air-gapped machine** (highest security)
 
-**Complete Network Isolation** *(Highest Security)*
-- [ ] **Physical Isolation**: Physically remove or disable the network interface
-- [ ] **Data Transfer Methods**: Use USB drives (with strict auto-run restrictions) or QR codes to transfer transaction data
-- [ ] **USB Precautions**: Exercise additional caution when using USBs for data transfer
+- [ ] **Physically remove or disable the network interface**
+- [ ] **Move transaction data by QR code or USB** — with strict auto-run restrictions and extra caution on any USB use
 
-**Restricted Network Access** *(Balanced Approach)*
-- [ ] **Firewall Rules**: Allow network connectivity but enforce strict firewall rules. Active network monitoring tools can be used to easily accomplish this
-- [ ] **Transaction-Only Traffic**: Permit only transaction-related traffic
-- [ ] **Usability Balance**: Provides balance between usability and security
+**Restricted-network machine** (balanced)
 
-**Dedicated Device** *(Minimum Requirement)*
-- [ ] **Single Purpose**: Use a dedicated laptop exclusively for crypto transactions
-- [ ] **No Other Activities**: Avoid using device for any other purpose
-- [ ] **Disciplined Usage**: Maintain strict discipline to avoid contamination from other activities
+- [ ] **Enforce strict firewall rules** permitting only transaction-related traffic — active network monitoring tools make this straightforward to maintain
 
-### Advanced OS-Level Controls
+**Dedicated machine** (minimum requirement)
 
-**Security-Hardened Operating Systems** *(For Advanced Users)*
-- [ ] **SELinux Implementation**: Consider employing SELinux or similar tools for advanced security configurations
-- [ ] **File System Restrictions**: Restrict file system access and inter-process communications
+- [ ] **One laptop, used exclusively for crypto transactions** — no other activities, ever; the discipline is the control
+
+For advanced users, SELinux or similar mandatory access controls can further restrict file system access and inter-process communication on signing machines.
 
 ---
 
-## Wallet & Quorum Diversity
+## Wallet & Quorum Design
 
-💡 **Diversify your wallet infrastructure and carefully select your multi-signature quorum to minimize single points of failure.**
+Minimize single points of failure in both where assets sit and who can move them.
 
-### Wallet Separation Strategy
+### Wallet separation
 
-**Cold vs Hot Wallet Separation**
-- [ ] **Separate Storage Types**: Keep long-term storage (cold wallets) distinct from day-to-day transaction signing (hot wallets)
-- [ ] **Split Cold Wallets**: Split up cold wallet assets into multiple smaller wallets to prevent total loss in a single transaction in the event of an attack. At least 3 equally funded cold wallets is recommended
+- [ ] **Separate cold storage from hot signing wallets** — long-term holdings never share keys with day-to-day transacting
+- [ ] **Split cold assets across at least 3 equally funded wallets** so no single attack can take everything in one transaction
 
-### Quorum Selection
+### Quorum selection
 
-**Quantity and Expertise Requirements**
-- [ ] **Technical Signers**: Include a high number of competent, well-vetted technical signers that will understand full transaction details and effects in your signing quorum
-- [ ] **Optimal Quorum Size**: Implement a transaction approval threshold of 3 to 5 signers from a pool of no more than double that amount as potential signers. More signers is not always better, ensure all signers are highly trusted and secure. Have as high of a signing threshold as you can tolerate
+- [ ] **Favor competent, well-vetted technical signers** who will understand full transaction details and effects
+- [ ] **Use a 3-to-5 signature threshold** drawn from a pool of no more than double that — more signers is not automatically better; every signer must be highly trusted and secure. Set the threshold as high as you can tolerate
+- [ ] **Diversify signer backgrounds** — developers, founders, and other trusted roles, plus external parties such as security auditors or trusted advisors
+- [ ] **Distribute signers across different hardware, networks, and organizations**
 
-**Diversity Requirements**
-- [ ] **Background Diversity**: Choose signers from varying organization roles. Include developers, founders, and other trusted roles
-- [ ] **External Parties**: Include external parties such as security auditors or trusted advisors
-- [ ] **Distributed Signers**: Ensure signers are distributed across different hardware, networks, and organizations
+### Custody options
 
-### Custodianship Considerations
-
-**Managed Custody Services** *(Optional)*
-- [ ] **Third-Party Options**: Self-management is not a hard requirement. Consider using a custody service with a company whose business model focuses on securely managing on-chain assets (e.g. Circle, CEXs like Coinbase or Kraken, [MPC Vault](https://mpcvault.com/), etc.)
-- [ ] **Mixed Management**: Consider a combination of in-house hot wallet management and external custodian services for cold storage
-- [ ] **Risk Diversification**: Use diversification of management methods to reduce overall risk
+- [ ] **Consider professional custody** — self-management is not a hard requirement; custody services whose business is securing on-chain assets (Circle, CEXs like Coinbase or Kraken, [MPC Vault](https://mpcvault.com/)) are a legitimate option
+- [ ] **Consider mixing models** — in-house hot wallet management with external custody for cold storage diversifies management risk

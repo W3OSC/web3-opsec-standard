@@ -13,124 +13,129 @@ scope: INDIVIDUAL
 
 ## Overview
 
-Authentication and multi-factor authentication (MFA) are critical security controls that protect access to accounts and systems. This guide provides recommendations for implementing strong authentication methods based on account sensitivity levels. Phishing-resistant authentication methods should be used for high-sensitivity accounts whenever possible.
+Authentication is the control that decides whether an attacker with your password gets in. This guide helps you pick the right setup for each account based on how much damage its compromise would cause, then harden the paths attackers actually use: phishable factors, recovery flows, and long-lived sessions.
+
+The rule of thumb throughout: the more an account can move or destroy, the more it must rely on phishing-resistant factors (passkeys and hardware keys), and the harder its recovery paths must be.
 
 ---
 
 ## MFA Basics
 
-Multi-factor authentication requires authentication from multiple independent factors:
+Multi-factor authentication (MFA) combines independent factors:
 
-- **Something you know** (password, PIN, recovery secret)
-- **Something you have** (phone, laptop, hardware key)
-- **Something you are** (biometrics: fingerprint, face)
+- **Something you know** — password, PIN, recovery secret
+- **Something you have** — phone, laptop, hardware key
+- **Something you are** — biometrics (fingerprint, face)
 
-Strong authentication requires **at least 2** of these factors. For **high-sensitivity** accounts, **all 3** factors should be required where practical.
+Strong authentication requires at least two of these. For high-sensitivity accounts, require all three where practical.
+
+Two properties matter more than the factor count:
+
+- **Phishing resistance** — passkeys and hardware keys cryptographically verify the site they authenticate to, so they cannot be relayed through a fake login page. Passwords, TOTP codes, and SMS codes can.
+- **Factor independence** — two factors stored in the same place (a password and a TOTP seed in one vault) fail together. Treat them as a single factor when assessing risk.
 
 ---
 
-## Recommended Setups by Risk Level
+## Recommended Setup by Sensitivity
 
-### Low Sensitivity
-Examples: throwaway accounts, low-impact services, accounts without financial privileges.
+Classify each account by the damage its compromise could cause, then meet the bar for that tier.
+
+### Low sensitivity
+Throwaway accounts, low-impact services, accounts with no financial or reputational leverage.
 
 - [ ] **Password + TOTP (2FA)**
 
-### Medium Sensitivity
-Examples: SaaS tools, community accounts, accounts that could be used for reputation damage.
+### Medium sensitivity
+SaaS tools, community accounts, anything usable for reputation damage.
 
-- [ ] **Passkey (PIN or biometric) (2FA)**
-- [ ] OR **Password + Passkey (2FA/3FA depending on unlock method)** if the service supports requiring both
-- [ ] **Fallback:** Password + TOTP (2FA) if passkeys are not supported
+- [ ] **Passkey with PIN or biometric unlock (2FA)**
+- [ ] **Password + passkey (2FA/3FA)** where the service supports requiring both
+- [ ] **Fallback** — password + TOTP if passkeys are not supported
 
-### High Sensitivity
-Examples: primary email, GitHub/org admin, production infrastructure, exchange accounts, custody-adjacent accounts.
+### High sensitivity
+Primary email, GitHub and organization admin, production infrastructure, exchange and custody-adjacent accounts.
 
-- [ ] **Hardware key + PIN/biometric + Password (3FA)** (Example: YubiKey Bio + password)
-- [ ] OR **Password + Passkey unlocked by biometric (3FA)** (Example: password + passkey + biometric unlock)
-- [ ] **If hardware keys cannot be operationally carried reliably:**
-  - [ ] Keep the hardware key in a secure location (e.g. a safe)
-  - [ ] Use **passkey** on your phone for on-the-go access
-  - [ ] Use **TOTP** only where stronger methods are not supported
+- [ ] **Hardware key + PIN/biometric + password (3FA)** — e.g. YubiKey Bio plus a password
+- [ ] **Or password + biometric-unlocked passkey (3FA)**
+- [ ] **If a hardware key cannot be carried reliably** — keep it in a safe, use a phone passkey for on-the-go access, and fall back to TOTP only where nothing stronger is supported
 
-### Critical Sensitivity
-Examples: treasury, multisig signer accounts, domain registrar, root/admin identities, accounts that can irreversibly move funds.
+### Critical sensitivity
+Treasury, multi-sig signer accounts, domain registrar, root and admin identities — anything that can irreversibly move funds.
 
-- [ ] **Phishing-resistant authentication everywhere** (hardware key / passkey)
-- [ ] **Two independent phishing-resistant factors** where supported (primary + backup)
-- [ ] Recovery paths must be hardened (see Recovery Hardening section below)
+- [ ] **Phishing-resistant authentication everywhere** — hardware key or passkey, no phishable fallbacks
+- [ ] **Two independent phishing-resistant factors** registered where supported (primary + backup)
+- [ ] **Hardened recovery paths** — see [Recovery hardening](#recovery-hardening) below
 
 ---
 
-## Quick Decision Matrix
+## Decision Matrix
 
-Choose the strongest authentication option that can be maintained.
+Choose the strongest option you can actually maintain.
 
-| Method / Setup | Phishing Resistant? | Portability | Recovery Burden | Best Fit | Notes |
-|---|---|---|---|---|---|
-| **Hardware key + PIN/biometric + Password (3FA)** | ✅ | ⚠️ | ⚠️ | High → Critical sensitivity | Strongest common setup when operationally supportable |
-| **Hardware key + PIN/biometric (2FA)** | ✅ | ⚠️ | ⚠️ | High sensitivity | Strong security; portability, loss, and breakage are the tradeoffs |
-| **Password + Passkey (2FA/3FA)** | ✅ | ✅ | ⚠️ | High sensitivity | Adds a knowledge factor on top of phishing-resistant auth when supported |
-| **Passkey (PIN or biometric) (2FA)** | ✅ | ✅ | ⚠️ | Medium → High sensitivity | Strong default when supported; ensure multiple passkey devices |
-| **Password + TOTP (2FA)** | ❌ | ✅ | ✅ | Low → Medium sensitivity | Good fallback when passkeys/keys are not supported |
-| **Password + SMS (2FA)** | ❌ | ✅ | ✅ | Last resort | Prefer carrier protections if unavoidable |
-| **Password only** | ❌ | ✅ | ✅ | Never recommended | Baseline only; easiest to phish |
+| Setup | Phishing resistant | Portability | Recovery burden | Best fit |
+|---|---|---|---|---|
+| Hardware key + PIN/biometric + password (3FA) | ✅ | ⚠️ | ⚠️ | High → critical |
+| Hardware key + PIN/biometric (2FA) | ✅ | ⚠️ | ⚠️ | High |
+| Password + passkey (2FA/3FA) | ✅ | ✅ | ⚠️ | High |
+| Passkey with PIN/biometric (2FA) | ✅ | ✅ | ⚠️ | Medium → high |
+| Password + TOTP (2FA) | ❌ | ✅ | ✅ | Low → medium |
+| Password + SMS (2FA) | ❌ | ✅ | ✅ | Last resort |
+| Password only | ❌ | ✅ | ✅ | Never |
 
-### Decision Guidelines
-- Prefer **passkeys** or **hardware keys** for **high-sensitivity** accounts
-- Use **TOTP** when stronger methods are not supported or do not fit your workflow, but treat it as **phishable**
-- Treat your account as only as strong as its **weakest recovery path** (email/SMS/support)
-- Avoid collapsing factors: if password + TOTP seed live in the same place, treat it as a **single failure domain**
-- "Remember this device" and long-lived sessions can silently downgrade security for high-sensitivity accounts
+When choosing:
+
+- Prefer passkeys or hardware keys for anything high sensitivity or above; TOTP is a fallback and remains phishable wherever it is used
+- An account is only as strong as its weakest recovery path — email, SMS, or a persuadable support desk
+- "Remember this device" and long-lived sessions silently downgrade strong setups
 
 ---
 
 ## Implementation Checklist
 
-### Authentication Method Selection
-- [ ] Prefer **passkey** or **hardware key** if supported
-- [ ] If using a hardware key, register **two keys** (primary + backup)
-- [ ] If using passkeys, ensure you have **at least two passkey-capable devices**
-- [ ] If forced into TOTP, keep the **TOTP seed** separate from your password vault
-- [ ] Never use SMS 2FA unless there is no other option
-- [ ] If SMS must be used, protect your SIM from being swapped (number lock / takeover protection with your carrier)
+Choosing strong factors is the start; the items below close the side doors — shared blast radius, recovery flows, phone numbers, and stale sessions.
 
-### Factor Independence
-- [ ] Do not store TOTP seeds in password managers
-- [ ] If your password and your TOTP seed live in the same place, treat it as **1.5FA** at best for risk decisions
-- [ ] For high-sensitivity accounts, keep at least one factor **outside** your password vault's blast radius
+### Choosing and registering factors
 
-### Recovery Hardening
+- [ ] **Prefer a passkey or hardware key** wherever the service supports one
+- [ ] **Register two hardware keys** (primary + backup) so losing one is an inconvenience, not a lockout
+- [ ] **Keep at least two passkey-capable devices enrolled** if using passkeys
+- [ ] **Buy hardware keys directly from the manufacturer** (e.g. YubiKeys from Yubico); consider shipping to a PO box if that fits your threat model
+- [ ] **Never use SMS 2FA unless there is no other option** — and if forced into it, enable your carrier's SIM swap protections (below)
 
-💡 **Account recovery flows are often the weakest link and can bypass strong MFA. Many real-world account takeovers occur by abusing recovery flows rather than defeating MFA methods.**
+### Factor independence
 
-- [ ] Treat your **primary email** as a **high-sensitivity** account (it resets everything)
-- [ ] Remove/disable SMS recovery where possible
-- [ ] Remove old recovery emails/phones you no longer control
-- [ ] Generate recovery codes and store them securely
-- [ ] Review recovery methods at least quarterly (especially after travel, phone changes, or device upgrades)
-- [ ] SMS-based account recovery must never be enabled
+- [ ] **Do not store TOTP seeds in your password manager** — a vault compromise would yield both factors at once; keep seeds in a dedicated authenticator on a single device
+- [ ] **Keep at least one factor outside your password vault's blast radius** for every high-sensitivity account
+- [ ] **Count honestly** — if the password and TOTP seed live in the same place, treat the account as 1.5FA at best when assessing risk
 
-### Session Management
+### Recovery hardening
 
-💡 **Many services allow skipping MFA after the first login, which can silently downgrade security for high-sensitivity accounts.**
+Account recovery is the weakest link in most authentication setups — many real-world takeovers abuse recovery flows rather than defeating MFA.
 
-- [ ] Disable "remember this device" where possible on high-sensitivity accounts
-- [ ] Require re-authentication for sensitive actions (password changes, API tokens, payouts, admin changes)
-- [ ] Periodically review active sessions and revoke unrecognized sessions
-- [ ] Prefer shorter session durations on admin accounts
-- [ ] Do not stay signed in on shared or travel devices
+- [ ] **Treat your primary email as a high-sensitivity account** — it can reset nearly everything else
+- [ ] **Disable SMS-based account recovery everywhere** — it lets a SIM swapper bypass every stronger factor you've set up
+- [ ] **Remove stale recovery emails and phone numbers** you no longer control
+- [ ] **Generate recovery codes and store them securely** — printed in a safe, or in a vault separate from the password
+- [ ] **Review recovery methods quarterly**, and after travel, phone changes, or device upgrades
 
-### Hardware Security
-- [ ] Purchase hardware keys directly from the manufacturer (e.g. YubiKeys from Yubico)
-- [ ] Consider shipping to a PO box if that better fits your threat model
-- [ ] Always have a backup: second hardware key, recovery codes stored securely, and/or multiple passkey devices
+### SIM swap protection
 
----
+Your phone number is a recovery path whether you want it to be or not. Lock it down:
 
-## Common Pitfalls
+- [ ] **Set a SIM PIN** to mitigate physical SIM theft
+- [ ] **Enable carrier port-out protection**:
+  - **AT&T** — myAT&T Profile → My Linked Accounts → Manage extra security → turn on Extra security
+  - **T-Mobile** — add [Account Takeover Protection](https://www.t-mobile.com/support/plans-features/account-takeover-protection)
+  - **Verizon** — enable [Number Lock](https://myvpostpay.verizon.com/ui/acct/secure/profile/security/portsecurity)
+  - **Google Fi** — enable [Number Lock](https://support.google.com/fi/answer/15147412?hl=en#zippy=%2Cturn-on-number-lock)
+- [ ] **Register your number on Signal** even if you don't use it, so a future SIM swapper cannot impersonate you there
 
-- [ ] **Do not store TOTP seeds in password managers** - collapses factor separation and expands blast radius of vault compromise
-- [ ] **Never use SMS 2FA unless there is no other option** - if SMS must be used, protect your SIM from being swapped
-- [ ] **Always have a backup** - maintain a second hardware key, recovery codes stored securely, and/or multiple passkey devices
-- [ ] **Ensure hardware is legitimate** - purchase directly from manufacturer, consider PO box shipping
+### Session management
+
+Many services allow skipping MFA after the first login, which silently weakens everything above.
+
+- [ ] **Disable "remember this device"** on high-sensitivity accounts where possible
+- [ ] **Require re-authentication for sensitive actions** — password changes, API tokens, payouts, admin changes
+- [ ] **Review active sessions periodically** and revoke any you don't recognize
+- [ ] **Prefer short session durations** on admin accounts
+- [ ] **Never stay signed in** on shared or travel devices

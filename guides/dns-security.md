@@ -5,154 +5,123 @@ scope: ORGANIZATION
 -->
 
 <div align="center">
-  <h1>DNS Security Records Guide</h1>
-  <p><em>Protect Your Domain and Email</em></p>
+  <h1>DNS Security Guide</h1>
+  <p><em>Email authentication, certificate control, and DNS integrity</em></p>
 </div>
 
 ---
 
 ## Overview
 
-DNS security records protect your domain from spoofing, phishing, and man-in-the-middle attacks. This guide tells you what to implement, why it matters, and how to do it. Whether you're a solo developer or managing enterprise infrastructure, implementing these records properly is critical for protecting your domain reputation and preventing email-based attacks.
+DNS records decide who can send email as your domain, which authorities can issue certificates for it, and whether resolvers can trust the answers they get. Without them, attackers can impersonate your domain in phishing campaigns against your own users, partners, and employees. This guide covers each record type in order of priority: what it protects against, exactly how to implement it, and whether you need it at all.
 
 ---
 
-## Email Security
+## Email Authentication
 
-**Email authentication records are the foundation of domain security. Without them, attackers can impersonate your domain and send phishing emails to your customers, partners, and employees.**
+These three records are the foundation of domain security. Without them, anyone can send email that appears to come from you.
 
 ### SPF (Sender Policy Framework)
 
-**Why It's Critical**
-Stops attackers from sending email that looks like it's from your domain. Without SPF, anyone can pretend to be you.
+**Required if you send email from your domain.**
 
-**Implementation Steps**
-- [ ] Go to your DNS provider
-- [ ] Add a TXT record at your root domain (`@`)
-- [ ] Set value to: `v=spf1 include:_spf.google.com ~all` (for Google Workspace)
-- [ ] Or: `v=spf1 include:spf.protection.outlook.com ~all` (for Microsoft 365)
- 
-**Important:** You can only have ONE SPF record. If you use multiple email services (e.g., Google + Mailchimp), combine them: `v=spf1 include:_spf.google.com 
-include:servers.mcsv.net ~all`
-                                                                                
-**Status:** Required if you send email from your domain
+SPF lists the servers allowed to send email as your domain. Without it, anyone can pretend to be you.
 
----
+- [ ] **Add a TXT record at your root domain** (`@`)
+- [ ] **Set the value for your provider** — `v=spf1 include:_spf.google.com ~all` for Google Workspace, or `v=spf1 include:spf.protection.outlook.com ~all` for Microsoft 365
+- [ ] **Keep it to ONE record** — multiple SPF records are invalid; if you use several email services (e.g. Google + Mailchimp), combine them: `v=spf1 include:_spf.google.com include:servers.mcsv.net ~all`
 
 ### DKIM (DomainKeys Identified Mail)
 
-**Why It's Critical**
-Cryptographically signs your emails so recipients know they're actually from you and haven't been tampered with.
+**Required if you send email from your domain.**
 
-**Implementation Steps**
-- [ ] Enable DKIM in your email provider (Google Workspace, Office 365, etc.)
-- [ ] Provider gives you DNS record(s) to add - the "selector" name (like google._domainkey or selector1._domainkey) comes from your provider
-- [ ] After adding the DNS record, return to your provider and click "Verify" or "Activate" to start signing emails   
+DKIM cryptographically signs outgoing mail so recipients can verify it actually came from you and wasn't tampered with in transit.
 
-**Status:** Required if you send email from your domain
-
----
+- [ ] **Enable DKIM in your email provider** (Google Workspace, Microsoft 365, etc.)
+- [ ] **Add the DNS record(s) the provider generates** — the selector name (like `google._domainkey` or `selector1._domainkey`) comes from your provider
+- [ ] **Return to the provider and click Verify/Activate** — signing doesn't start until the record is confirmed
 
 ### DMARC
 
-**Why It's Critical**
-Tells other email servers what to do when someone fails SPF or DKIM checks. This is your policy enforcement mechanism.
+**Required for all domains.**
 
-**Implementation Steps**
-- [ ] Add a TXT record at _dmarc.yourdomain.com with: v=DMARC1; p=none; rua=mailto:dmarc-reports@yourdomain.com (make sure this email exists - you'll get daily   
-  reports)
-- [ ] Monitor reports for 1-4 weeks depending on your email patterns (longer if you send monthly invoices/newsletters)
-- [ ] Once reports show all legitimate email passes, change p=none to p=reject (or use p=quarantine as a safer middle step) 
+DMARC tells receiving servers what to do with mail that fails SPF or DKIM — it is the enforcement layer on top of both.
 
-**Why the Progression Matters**
-Starting with `p=reject` might block legitimate email if your SPF/DKIM isn't configured perfectly. The gradual approach lets you fix issues before enforcing.
+- [ ] **Add a TXT record at `_dmarc.yourdomain.com`** with `v=DMARC1; p=none; rua=mailto:dmarc-reports@yourdomain.com` — make sure the report address exists; you'll receive daily reports
+- [ ] **Monitor reports for 1–4 weeks** (longer if you send infrequent mail like monthly invoices or newsletters) until all legitimate mail passes
+- [ ] **Then enforce** — change `p=none` to `p=reject`, using `p=quarantine` as a safer middle step if needed
 
-**Privacy Note:** Avoid using `ruf=` (forensic reports) in your DMARC record - it can expose private email content and may violate privacy regulations. Use only `rua=` for aggregate reports.                                                                                                                           
+Starting directly at `p=reject` can block legitimate email while SPF/DKIM issues remain; the staged rollout lets you find and fix them before enforcing.
 
-**Status:** Required for all domains
+**Privacy note:** avoid `ruf=` (forensic reports) in your DMARC record — forensic reports can expose private email content and may violate privacy regulations. Use only `rua=` aggregate reports.
 
 ---
 
 ## Certificate Control
 
+Who can mint valid TLS certificates for your domain is a DNS decision too.
+
 ### CAA (Certification Authority Authorization)
 
-**Why It's Important**
-Prevents rogue certificate authorities from issuing certificates for your domain. Without CAA, any CA can issue a cert for your domain.
+**Recommended for all domains serving HTTPS.**
 
-**Implementation Steps**
-- [ ] Add CAA record(s) at your root domain listing which CAs can issue certificates - format varies by DNS provider (tag: issue, value: letsencrypt.org or full format 0 issue "letsencrypt.org")
-- [ ] If using multiple CAs or want flexibility, add multiple CAA records (one per CA)
-- [ ] If using wildcard certificates (*.yourdomain.com), also add issuewild records with the same CA values 
+CAA restricts which certificate authorities may issue certificates for your domain. Without it, any CA in the world can issue one.
 
-**Status:** Recommended for all domains with HTTPS
+- [ ] **Add CAA record(s) at your root domain** naming your CA(s) — e.g. tag `issue`, value `letsencrypt.org` (full format: `0 issue "letsencrypt.org"`; syntax varies by DNS provider)
+- [ ] **Add one record per CA** if you use multiple CAs or want flexibility
+- [ ] **Add matching `issuewild` records** if you use wildcard certificates (`*.yourdomain.com`)
 
 ---
 
 ## Transport Security
 
+Email authentication proves who sent a message; transport security keeps it encrypted on the way.
+
 ### MTA-STS (Mail Transfer Agent Strict Transport Security)
 
-**Why It's Recommended**
-Forces email servers to use encrypted TLS when delivering email to you. Prevents downgrade attacks where an attacker forces email to be sent unencrypted.     
+**Recommended for business domains sending or receiving sensitive email.**
 
-**Implementation Steps**
-- [ ] Add TXT record at _mta-sts.yourdomain.com: v=STSv1; id=20260127 (increment id every time you change the policy - mail servers use this to know when to      
-refetch)
-- [ ] Create subdomain mta-sts.yourdomain.com with valid HTTPS certificate, then add policy file at /.well-known/mta-sts.txt with ALL your MX servers listed:     
+MTA-STS forces sending servers to use encrypted TLS when delivering mail to you, blocking downgrade attacks that would let mail travel unencrypted.
+
+- [ ] **Add a TXT record at `_mta-sts.yourdomain.com`** with `v=STSv1; id=20260127` — increment `id` every time you change the policy, so mail servers know to refetch it
+- [ ] **Serve a policy file** at `https://mta-sts.yourdomain.com/.well-known/mta-sts.txt` (the subdomain needs a valid HTTPS certificate):
+
 ```
 version: STSv1
 mode: testing
-mx: mail1.yourdomain.com                                                                                                                                      
-mx: mail2.yourdomain.com                                                                                                                                      
+mx: mail1.yourdomain.com
+mx: mail2.yourdomain.com
 max_age: 86400
 ```
-- [ ] After testing, change `mode: testing` to `mode: enforce` AND increment the `id` in your TXT record (e.g., `id=20260128`)
 
-**Important:** List ALL MX servers in your policy. Missing even one will cause email delivery failures from that server.
-                                        
-**Status:** Recommended for business domains sending/receiving sensitive email                                                                                                                                                                                                                                                    
+- [ ] **After testing, switch to `mode: enforce`** and increment the `id` in your TXT record (e.g. `id=20260128`)
+
+**Important:** list ALL of your MX servers in the policy — missing even one causes delivery failures from that server.
+
 ---
 
 ## DNS Integrity
 
-**Advanced DNS security features require operational maturity. Only implement these if you have dedicated resources for ongoing maintenance and monitoring.**
+These features provide the strongest guarantees but punish operational mistakes with a fully broken domain. Only adopt them if you have dedicated resources for ongoing maintenance and monitoring.
 
 ### DNSSEC
 
-**Why It's Advanced**
-Cryptographically signs your DNS records so resolvers can verify they haven't been tampered with. This prevents DNS spoofing attacks.                         
+**Required for government and financial institutions; recommended for high-value domains handling sensitive data.**
 
-**Why Not Everyone Needs It**
-DNSSEC is operationally complex. Keys expire and need rotation. If you forget to rotate keys, your entire domain stops resolving. Misconfiguration can break  
-your entire domain. Only implement if you have operational maturity.                
+DNSSEC cryptographically signs your DNS records so resolvers can verify they haven't been tampered with, defeating DNS spoofing. The trade-off is operational: keys expire and must rotate, and a missed rotation or misconfiguration takes your entire domain offline.
 
-**Implementation Steps**
-- [ ] Check if your DNS provider supports DNSSEC (not all do) - if supported, enable it (usually one-click)                                                       
-- [ ] Provider auto-generates DNSKEY and RRSIG records, then provides a DS record for you to add at your domain registrar                                         
-- [ ] Set up monitoring for key expiration (keys typically expire every 30-90 days) with alerts at least 7 days before expiration
-                              
-**Records Involved**
-- **DNSKEY:** Your public key (auto-generated by DNS provider)
-- **RRSIG:** Signatures for each DNS record (auto-generated)
-- **DS:** Hash of your DNSKEY, stored at your registrar (you add this manually)
+- [ ] **Confirm your DNS provider supports DNSSEC** (not all do), then enable it — usually one click
+- [ ] **Add the DS record at your registrar** — the provider auto-generates DNSKEY and RRSIG records and hands you the DS record to place manually
+- [ ] **Monitor key expiration** — keys typically rotate every 30–90 days; alert at least 7 days before expiry
 
-**Status:** Required for government/financial institutions. Recommended for high-value domains handling sensitive data.
-
----
+Records involved: **DNSKEY** (your public key, auto-generated), **RRSIG** (per-record signatures, auto-generated), **DS** (a hash of your DNSKEY, added manually at the registrar).
 
 ### TLSA (DANE)
 
-**Why It's Advanced**
-Binds TLS certificates to DNS records. Provides the strongest email security but requires DNSSEC first.
+**Optional — critical infrastructure or regulatory requirements only (e.g. EU government agencies).**
 
-**Why Not Everyone Needs It**
-TLSA requires DNSSEC to work. If DNSSEC breaks, TLSA breaks. **Every certificate renewal requires immediate TLSA record update** or email delivery fails. Only
-implement if you already have mature DNSSEC operations.               
- 
-**Implementation Steps**
-- [ ] **Must have DNSSEC enabled first**
-- [ ] Generate SHA-256 hash of your mail server's certificate public key (requires OpenSSL)
-- [ ] Add TLSA record at _25._tcp.mail.yourdomain.com with value: 3 1 1 <certificate-hash> (3=match cert, 1=pubkey, 1=SHA-256)
+TLSA binds your mail server's TLS certificate into DNS, providing the strongest email transport security available. It requires working DNSSEC and inherits all of its fragility — and **every certificate renewal requires an immediate TLSA record update** or email delivery fails.
 
-**Status:** Optional. Only for critical infrastructure or when required by regulation (e.g., EU government agencies).
+- [ ] **Enable DNSSEC first** — TLSA does not function without it
+- [ ] **Generate a SHA-256 hash** of your mail server's certificate public key (requires OpenSSL)
+- [ ] **Add a TLSA record at `_25._tcp.mail.yourdomain.com`** with value `3 1 1 <certificate-hash>` (3 = match certificate, 1 = public key, 1 = SHA-256)

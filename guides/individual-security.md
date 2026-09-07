@@ -6,114 +6,126 @@ scope: INDIVIDUAL
 
 <div align="center">
   <h1>Personal Security Checklist</h1>
-  <p><em>A checklist guide for individuals to maximize their OpSec as part of an organization</em></p>
+  <p><em>Baseline OpSec for every member of a Web3 organization</em></p>
 </div>
 
 ---
+
 ## Overview
 
-Your personal security directly impacts your organization's security posture. Compromise of an individual can allow attackers to easily infect other organization members via trusted channels, code repos, and shared files. This checklist serves as a comprehensive list of best practices that all individuals should follow to ensure their personal security is strong to protect themselves and the organizations they are a part of.
+Your personal security posture is part of your organization's attack surface. A compromised individual gives attackers a trusted channel into everyone else — chat messages, code repos, shared files. This checklist is the baseline every member should meet; the linked guides go deeper on each area.
 
 ---
-# Work Devices
-### Device Hardware
-- [ ] Organization-related activities and work must be performed on a dedicated device (e.g. a separate laptop only for work tasks)
-- [ ] Laptops and phones should be obtained through verified supply chains:
-	- Direct from manufacturer
-	- Via a physical trusted retailer
-	- NOT from a third party or reseller
-- [ ] Devices should have biometric login options, secure boot, and support for full disk encryption
-### Device Configuration
-- [ ] Full disk encryption must be enabled on all work devices
-- [ ] All work devices must have basic antivirus software enabled (built-in OS antivirus is acceptable, but must be properly enabled without any rule exceptions)
-- [ ] Inactivity screen locks must be enabled, with a period of no more than 5 minutes before requiring password re-entry
-- [ ] OS accounts for daily usage should not have administrator privileges
-### Device Usage
-- [ ] Personal devices must never be used for work activities or have access to organization accounts
-- [ ] All security software, browsers, and operating systems must be regularly updated as soon as new releases are available that include to security fixes
-- [ ] Biometric authentication and SSO should be used in non-private spaces to prevent password leakage to cameras and onlookers
-- [ ] Privacy screens should be used when working in public spaces to prevent visual eavesdropping
-### Network Security
-- [ ] Home WiFi networks should have recommended security settings:
-	- [ ] A strong password (at least 20 characters)
-	- [ ] Router and modem updated to the latest firmware
-	- [ ] Rotated admin login credentials (not the default for the device)
-	- [ ] Have a separate network for guest devices
-	- [ ] Use WPA3/WPA2 encryption (AES, not TKIP)
-	- [ ] Disable WPS
-	- [ ] Disable remote management
-- [ ] A secure DNS provider should be configured in network settings on your devices (e.g. Cloudflare's [1.1.1.1](https://www.cloudflare.com/learning/dns/what-is-1.1.1.1/))
-- [ ] A trusted VPN profile should be configured for use when on any public Wi-Fi
-- [ ] All work devices must have active network monitoring in place (e.g. [Little Snitch](https://www.obdev.at/products/littlesnitch/), [Lulu](https://objective-see.org/products/lulu.html), or [Glasswire](https://www.glasswire.com/))
-	- [ ] Network monitoring tools must track outbound connections and block all traffic by default, unless explicitly approved
-- [ ] Persistence monitoring should be enabled (e.g. [BlockBlock](https://objective-see.org/products/blockblock.html)) to monitor common persistence locations and alert whenever a persistent component is added
-- [ ] OS network firewalls must be enabled with no rule exceptions
-# Wallets & Transactions
-### Hardware Wallets
-- [ ] Hardware wallets should be obtained through verified supply chains:
-	- Direct from manufacturer
-	- Via a physical trusted retailer
-	- NOT from a third party or reseller
-- [ ] Wallet device authenticity must be cryptographically verifiable upon receipt to ensure firmware integrity (i.e. as part of the initial set up process)
-- [ ] Hardware wallets must have a large screen capable of displaying complete transaction data
-	- [ ] Clear signing technology is recommended, but is not a silver bullet and should not replace thorough transaction scrutiny
-- [ ] Wallets should have secure PIN entry with randomized entry layouts OR biometric login
-	- [ ] PIN entry must have time-based lockouts to prevent brute force attacks
-	- [ ] PINs must be at least 6 digits long
-- [ ] Wallets should be physically secured in a safe or secret hiding place when not in use
-#### Wallet Backups
-- [ ] Seed phrases must be stored on disaster-resistant, physical media. 
-- [ ] Seed phrases must not be stored in plain text - importing them must require a passphrase, additional word, or be scrambled with a random word order; with the secret stored in a password manager
-- [ ] Private keys and seed phrases must be generated on wallet devices and must never be exported (they should never touch another device in any form - no pictures stored or backups in a password manager)
-	- [ ] Alternatively, seed phrases can be sharded (requiring N of M shards to recompose) - e.g. by using Shamir's Secret Sharing algorithm, with each shard recommended to be shared with a trusted guardian (3rd party custodian service, family members, password manager, personal physical media, etc.)
-#### Multi-sig Participation
-- [ ] Multi-sig operations must be performed on devices dedicated only to those transactions and transaction verification tools (i.e. you should have a laptop dedicated only to transacting)
-	 - [ ] Signing devices must be operated on private, authenticated networks or over trusted VPNs
-	 - [ ] Active network monitoring should be in place (e.g. Little Snitch, Lulu, or GlassWire - with default deny on all network requests and only the minimum necessary IPs to execute transactions allowed)
-	 - [ ] Persistence monitoring should be enabled (e.g. BlockBlock) to alert on any persistent component additions
-# Operations
-### Browser Security
-- [ ] Separate browsers should be used for different browsing trust levels:
-	- [ ] One browser for session-based, sensitive activities
-	- [ ] Another browser for opening links and temporary browsing
-	- [ ] Wallet extensions should only be used on a third browser dedicated only to transacting
-- [ ] Review browser extension permissions and minimize to necessary functions only. Consider removing extensions that are overly permissive (e.g. can rewrite page content, read all websites, access to file system, etc.)
-- [ ] Extensions must be obtained only from official stores (Chrome Web Store, Firefox Add-ons, Microsoft Edge Add-ons, etc.) - NEVER from alternative platforms or as user-installed extensions (i.e. manually installed from file or git repo)
-### Secure Communication
-- [ ] Externally verifiable PGP keys should be configured to sign emails so others can verify their authenticity
-	- [ ] Publish your PGP key publicly and ensure your team members have it
-- [ ] End-to-end encrypted channels should be used for confidential communications and coordination of sensitive operations (Signal is recommended)
-- [ ] Files received from outside the organization must only be opened in a secure sandbox or after being sanitized (e.g. via [Dangerzone](https://dangerzone.rocks/), [VirusTotal](https://www.virustotal.com/gui/home/upload), [Google Drive](https://support.google.com/drive/answer/141702), or on a temporary virtual machine)
-- [ ] Internally shared files must be distributed via a dedicated file sharing platform (Google Drive/Docs, Dropbox, Notion, etc.), and never sent as email or chat attachments (to prevent social engineering malware delivery vectors)
-- [ ] Shared links should always be manually navigated to or re-typed (to avoid homograph attacks)
-### Workspace Requirements
-- [ ] Sensitive operations must be performed in a dedicated workspace that is set up to prevent unauthorized visual access to screens and activities, and is isolated from common areas that others could access
-- [ ] Organizational devices and materials must be securely stored when not in use
-- [ ] Privileged operations should never be performed in public spaces
-- [ ] Computers must be locked when unattended
-# Authentication
-### Password Management
-- [ ] All passwords and secrets should be:
-	- [ ] Not reused
-	- [ ] 20-32 characters
-	- [ ] Automatically generated with the full character set (letters, numbers, and symbols)
-	- [ ] A password manager must be used (1Pass or Bitwarden recommended)
-	- [ ] Password manager master passwords should be complex, and at least 20 characters with a mix of phonetic phrases, numbers, and special characters
-		- [ ] [https://xkcd.com/936/](https://xkcd.com/936/)
-	- [ ] Organization password manager accounts should be separate from personal password manager accounts
-### Login Methods
-- [ ] SSO (Single Sign-On - e.g. Log in with Google/Github/Apple) can be used for non-sensitive accounts, but should not be enabled for highly sensitive access (financial, administrative, deployments, infrastructure, etc.)
-- [ ] 2FA must be enforced on all accounts
-	- [ ] FIDO security keys are recommended (e.g. YubiKey), but mobile authenticator apps acceptable
-	- [ ] SMS-based 2FA must never be used unless no other option is available
-	- [ ] 2FA TOPT seeds should not be stored in password managers and should only be kept on a single device
-- [ ] Passkeys are recommended as a primary login method when available
-- [ ] SMS-based account recovery must never be enabled
-### SIM Swap Mitigation
-- [ ] A SIM PIN should be set to mitigate physical theft of SIM cards
-- [ ] Additional number transfer security requirements should be configured through your phone provider:
-	- [ ] **AT&T** - Go to your myAT&T Profile and log in > My Linked Accounts > Manage extra security for your account > turn on Extra security
-	- [ ] **T-Mobile** - Add account [Takeover Protection](https://www.t-mobile.com/support/plans-features/account-takeover-protection) to your account
-	- [ ] **Verizon** - Enable [Number Lock](https://myvpostpay.verizon.com/ui/acct/secure/profile/security/portsecurity). This can be done by phone, through the app, or on [their website](https://myvpostpay.verizon.com/ui/acct/secure/profile/security/portsecurity)
-	- [ ] **Google Fi** - Enable [Number Lock](https://support.google.com/fi/answer/15147412?hl=en#zippy=%2Cturn-on-number-lock)
-- [ ] A Signal account for your phone number should be created (even if not using Signal), to prevent account impersonation via potential SIM swap attacks
+
+## Work Devices
+
+Everything below applies to any device that touches organization accounts, code, or data.
+
+### Device hardware
+
+- [ ] **Use a dedicated work device** — organization-related activity must never happen on personal devices
+- [ ] **Buy through verified supply chains** — direct from the manufacturer or a trusted physical retailer, never a third-party reseller
+- [ ] **Require modern security hardware** — biometric login, secure boot, and full disk encryption support
+
+### Device configuration
+
+- [ ] **Enable full disk encryption** on all work devices
+- [ ] **Enable antivirus** — built-in OS antivirus is acceptable, but it must be properly enabled with no rule exceptions
+- [ ] **Set an inactivity screen lock** of 5 minutes or less before password re-entry is required
+- [ ] **Use non-administrator OS accounts** for daily work
+
+### Device usage
+
+- [ ] **Never give personal devices access to organization accounts**
+- [ ] **Apply security updates promptly** — operating systems, browsers, and security software as soon as releases with security fixes are available
+- [ ] **Use biometrics or SSO in non-private spaces** so cameras and onlookers cannot capture typed passwords
+- [ ] **Use a privacy screen** when working in public spaces
+
+### Network security
+
+- [ ] **Harden your home WiFi**:
+  - [ ] Strong password (at least 20 characters) and rotated (non-default) admin credentials
+  - [ ] Router and modem updated to the latest firmware
+  - [ ] WPA3/WPA2 encryption (AES, not TKIP), with WPS disabled
+  - [ ] Remote management disabled
+  - [ ] A separate network for guest devices
+- [ ] **Use a secure DNS provider** — e.g. Cloudflare's [1.1.1.1](https://www.cloudflare.com/learning/dns/what-is-1.1.1.1/)
+- [ ] **Configure a trusted VPN** and use it on any public WiFi
+- [ ] **Run active network monitoring** — [Little Snitch](https://www.obdev.at/products/littlesnitch/), [LuLu](https://objective-see.org/products/lulu.html), or [GlassWire](https://www.glasswire.com/) — tracking outbound connections and blocking all traffic by default unless explicitly approved
+- [ ] **Run persistence monitoring** — [BlockBlock](https://objective-see.org/products/blockblock.html) alerts whenever anything installs itself to run at startup
+- [ ] **Enable the OS firewall** with no rule exceptions
+
+---
+
+## Wallets & Transactions
+
+For the full organizational picture — platform setup, quorum design, and transaction verification — see the [Multi-Sig Wallet Security Guide](multisig-ideal-setup.md).
+
+### Hardware wallets
+
+- [ ] **Buy through verified supply chains** — direct from the manufacturer or a trusted physical retailer, never a reseller
+- [ ] **Verify device authenticity cryptographically** during initial setup to confirm firmware integrity
+- [ ] **Require a screen large enough to display complete transaction data** — clear signing helps, but it is not a silver bullet and never replaces reading the transaction
+- [ ] **Require secure PIN entry** — randomized layouts or biometric login, PINs of at least 6 digits, and time-based lockouts against brute force
+- [ ] **Store wallets in a safe or hidden location** when not in use
+
+### Wallet backups
+
+- [ ] **Back up seed phrases on disaster-resistant physical media** — never digitally
+- [ ] **Never store a seed phrase in plain text** — importing it must require a passphrase, an additional word, or unscrambling a random word order, with the secret kept in a password manager
+- [ ] **Generate keys on the wallet device and never export them** — no photos, no password-manager backups; they must never touch another device in any form
+- [ ] **Alternatively, shard the seed** (e.g. Shamir's Secret Sharing, N of M shards) with shards held by trusted guardians — a custodian service, family members, separate physical media, or (since one shard alone reveals nothing) a password manager
+
+### Multi-sig participation
+
+- [ ] **Sign only on a dedicated device** used exclusively for transactions and transaction-verification tools
+- [ ] **Sign only on private, authenticated networks** or over a trusted VPN
+- [ ] **Run network and persistence monitoring on signing devices** — default-deny rules allowing only the minimum endpoints transactions require
+
+---
+
+## Operations
+
+Daily habits that keep a compromise from starting — or from spreading once it does.
+
+### Browser security
+
+- [ ] **Separate browsers by trust level** — one for session-based sensitive work, one for opening links and temporary browsing, and a third dedicated solely to wallet extensions and transacting
+- [ ] **Minimize extension permissions** — review regularly and remove anything that can rewrite page content, read all websites, or access the file system without a strong reason
+- [ ] **Install extensions only from official stores** (Chrome Web Store, Firefox Add-ons, etc.) — never sideloaded from a file or repo
+
+### Secure communication
+
+- [ ] **Sign emails with a published, externally verifiable PGP key** so recipients can verify authenticity; make sure teammates have it
+- [ ] **Use end-to-end encrypted channels** (Signal recommended) for confidential communication and coordination of sensitive operations
+- [ ] **Open external files only in a sandbox or after sanitizing** — [Dangerzone](https://dangerzone.rocks/), [VirusTotal](https://www.virustotal.com/gui/home/upload), [Google Drive](https://support.google.com/drive/answer/141702) preview, or a disposable VM
+- [ ] **Share internal files via a dedicated platform** (Google Drive/Docs, Dropbox, Notion, etc.) — never as email or chat attachments, which normalizes the exact delivery vector social-engineering malware uses
+- [ ] **Navigate to shared links manually** — re-type or manually navigate rather than clicking, to defeat homograph lookalikes
+
+### Workspace
+
+- [ ] **Perform sensitive operations in a dedicated workspace** — isolated from common areas and shielded from unauthorized visual access to screens
+- [ ] **Store organizational devices and materials securely** when not in use
+- [ ] **Never perform privileged operations in public spaces**
+- [ ] **Lock computers whenever unattended**
+
+---
+
+## Authentication
+
+Method selection by account sensitivity, recovery hardening, and session hygiene are covered in depth in the [Authentication & MFA Guide](authentication-and-mfa.md).
+
+### Password management
+
+- [ ] **Use a password manager** (1Password or Bitwarden recommended), with organization accounts separate from personal accounts
+- [ ] **Generate every password** — never reused, 20–32 characters, full character set (letters, numbers, symbols)
+- [ ] **Use a strong master password** — at least 20 characters mixing [phonetic phrases](https://xkcd.com/936/), numbers, and special characters
+
+### Login methods
+
+- [ ] **Enforce 2FA on every account** — FIDO security keys (e.g. YubiKey) recommended; mobile authenticator apps acceptable
+- [ ] **Prefer passkeys as the primary login method** where available
+- [ ] **Reserve SSO for non-sensitive accounts** — never for financial, administrative, deployment, or infrastructure access
+- [ ] **Never use SMS 2FA unless no other option exists**, and never enable SMS-based account recovery at all
+- [ ] **Keep TOTP seeds out of password managers** — a single dedicated device only
+- [ ] **Protect your phone number from SIM swaps** — set a SIM PIN and enable carrier port-out protection; see [SIM swap protection](authentication-and-mfa.md#sim-swap-protection) for carrier-specific steps

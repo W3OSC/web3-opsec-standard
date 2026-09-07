@@ -6,98 +6,77 @@ scope: ORGANIZATION
 
 <div align="center">
   <h1>Secure Deployments & Infrastructure Guide</h1>
-  <p><em>Secure CI/CD pipelines and cloud access control management </em></p>
+  <p><em>CI/CD pipelines, just-in-time access, and break-glass response</em></p>
 </div>
 
 ---
 
 ## Overview
 
-When managing cloud servers, hosting infrastructure, and deployment pipelines, it's important to carefully manage permissions to restrict privileged actions from being abused. You also want to be able to respond to critical security and availability events without these restrictions limiting you. Whether you have a dedicated infrastructure engineer or you self manage your servers, you can employ a formal approach to keep your infrastructure secure while allowing you to rapidly respond when needed.
+Deployment pipelines and cloud consoles concentrate the permissions attackers want most: the ability to ship code, change infrastructure, and reach production data. The goal of this guide is a setup where no human holds standing deployment power — routine changes flow through automation and peer-reviewed, time-boxed access grants, while a tightly controlled break-glass path preserves your ability to respond to emergencies in minutes.
+
+For the monitoring, alerting, and runbooks that back these controls, see the [Incident Response Readiness Guide](incident-response-readiness.md).
 
 ---
 
 ## Normal Operations
 
-💡 **Day-to-day infrastructure and cloud operations should be as controlled as possible to prevent and mitigate potential abuse.**
+Day-to-day infrastructure work should be as controlled as possible; the controls below make privileged abuse both difficult and visible.
 
-### Access Control Principles
+### Access control principles
 
-**Automated Actions**
-- [ ] Regular deployment permissions should be confined to only automated service accounts running on locked down cloud compute instances
-- [ ] Permission to perform deployment and infrastructure change operations must not be granted to any humans
-- [ ] If manual actions need to be taken for unique situations, provision access via peer-review JIT access requests or break-glass accounts
-- [ ] All infrastructure should be defined in Infrastructure-As-Code (IaC) definitions (e.g. Terraform) in order to support hands-off infrastructure management
+**Automation first**
 
-**Minimum Permissions**
-- [ ] DevOps operators should have the minimum possible permissions to perform their daily duties
-- [ ] Grant read-only permissions to monitor assets and assess needed changes
-- [ ] Implement least-privilege access across all infrastructure components
-- [ ] High levels of permission should only be granted on a temporary basis with enough time only to complete privileged tasks
+- [ ] **Confine deployment permissions to automated service accounts** running on locked-down cloud compute — no human accounts hold standing deployment or infrastructure-change permissions
+- [ ] **Define all infrastructure as code** (e.g. Terraform) to support hands-off infrastructure management
+- [ ] **Route exceptional manual actions through peer-reviewed JIT requests or break-glass accounts** — never ad-hoc grants
 
-**Ticket-Based Just-In-Time(JIT) Access Control**
-- [ ] **Mandatory Multi-party Approval**: All state-changing operations should require a peer reviewed and approved work order ticket via a system like Jira, Linear, Monday, etc.
-- [ ] **Reviewers**: Tickets should be configured to require at least two approvals from separate reviewers (not the implementer). Reviewers should scrutinize the requested permissions against the work to be done and ensure it is the absolute minimum required
-- [ ] **Temporary Access**: Temporary permissions should be granted to the implementer for the minimum window required to perform the work. Access should be automatically revoked after the window of time for the change has passed
-- [ ] **Scoped Permissions**: Grant only the absolute minimum set of permissions required for the specific changes
+**Minimum permissions**
 
-**JIT Platforms and Setup**
-* AWS:
-	* https://aws.amazon.com/blogs/mt/introducing-just-in-time-node-access-using-aws-systems-manager/
-	* https://aws.amazon.com/blogs/security/temporary-elevated-access-management-with-iam-identity-center/
-* GCP:
-	* https://googlecloudplatform.github.io/jit-groups/
-* Okta:
-	* https://www.okta.com/products/privileged-access/
+- [ ] **Give operators read-only access by default** — enough to monitor assets and assess needed changes
+- [ ] **Apply least privilege across every infrastructure component**
+- [ ] **Grant elevated permissions only temporarily**, with just enough time to complete the privileged task
 
-### Change Management Process
+### Just-in-time (JIT) access
 
-**Testing & Validation**
-- [ ] **Dev/Staging First**: Test all changes in development/staging environments before releasing to production against security invariants
-- [ ] **Post-Implementation Verification**: Approvers should verify changes after implementation where possible (e.g. on-chain contract deployment state matches what was expected)
-- [ ] **Documentation**: Maintain detailed records of all infrastructure changes with the ability to quickly roll back if needed
+- [ ] **Require an approved work-order ticket for every state-changing operation** — via a system like Jira, Linear, or Monday
+- [ ] **Require at least two approvals from reviewers other than the implementer** — reviewers scrutinize the requested permissions against the work to be done and cut them to the absolute minimum
+- [ ] **Grant access for the minimum window required** and revoke it automatically when the window closes
+- [ ] **Scope each grant to the specific change** — never a standing role
 
-**Scheduled Changes**
-- [ ] **Designated Hours**: Schedule tickets for implementation during specific time windows
-- [ ] **Alert System**: Set up monitoring and alerting for any changes that occur outside of those hours
+Platform setup: [AWS JIT node access](https://aws.amazon.com/blogs/mt/introducing-just-in-time-node-access-using-aws-systems-manager/) · [AWS temporary elevated access](https://aws.amazon.com/blogs/security/temporary-elevated-access-management-with-iam-identity-center/) · [GCP JIT Groups](https://googlecloudplatform.github.io/jit-groups/) · [Okta Privileged Access](https://www.okta.com/products/privileged-access/)
+
+### Change management
+
+- [ ] **Test in dev/staging first** — validate every change against security invariants before it reaches production
+- [ ] **Verify after implementation** — approvers confirm the deployed state matches what was approved (e.g. on-chain contract deployment state)
+- [ ] **Document every change** with enough detail to roll back quickly
+- [ ] **Schedule changes into designated windows**, and alert on any change that occurs outside them
 
 ---
 
 ## Emergency Response
 
-💡 **Some changes must be made in response to emergency events. The procedure for typical changes will likely be too restrictive in these cases, requiring the option to use a break-glass account to bypass these restrictions when absolutely needed.**
+Ticket-based approval is too slow for an active incident. A break-glass path bypasses it — deliberately, loudly, and with consequences designed in.
 
-### Break-Glass Account Setup
+### Break-glass account setup
 
-**Account Architecture**
-- [ ] **Individual Accounts**: Each necessary user should have individual break-glass accounts tied to their identity
-- [ ] **Service-Specific**: Each service (cloud infra, GitHub, deployment runners, etc.) requires an individual break-glass account
-- [ ] **No Bundling**: Avoid bundling via SSO or reused credentials. Each account must be isolated from other break-glass capabilities to reduce impact of usage
-- [ ] **Scoped Privileges**: Use elevated permissions but restricted where sensible (e.g., write access to existing assets without full admin privileges)
+- [ ] **One account per person** — tied to an individual identity, never shared
+- [ ] **One account per service** — cloud infrastructure, GitHub, deployment runners each get their own; no SSO bundling or credential reuse, so one account's compromise cannot unlock the rest
+- [ ] **Elevated but bounded privileges** — e.g. write access to existing assets without full admin
+- [ ] **Credentials held in a dedicated password manager vault** behind three factors: password, TOTP code or passkey, and biometric verification
 
-**Access Control**
-- [ ] **Password Manager Vault**: Control access to credentials via password manager vault
-- [ ] **Secure Storage**: Implement secure credential storage and retrieval mechanisms. Triple-factor authentication should be used (password, TOPT code or passkey, and biometric verification)
+### After every use
 
-### Post-Usage Procedures
+- [ ] **Alarm the whole team automatically** the moment break-glass credentials are accessed
+- [ ] **Require a post-mortem write-up** for every use, explicitly checking for abuse
+- [ ] **Rotate credentials and completely re-provision the account** after each use
 
-**Immediate Response**
-- [ ] **Team Alerts**: Usage of account or credential access should trigger an alarm to the whole team
-- [ ] **Post-Mortem Required**: Mandatory post-mortem write-up for any break-glass usage with checks for abuse
-- [ ] **Credential Rotation**: Rotate break-glass account credentials after each use
-- [ ] **Account Re-provisioning**: Completely tear down and re-provision accounts after each usage
+### Guardrails and trade-offs
 
-### Response Controls & Trade-offs
-
-**Automated Triggers**
-- [ ] **Alarm Integration**: Consider requiring automated triggers (e.g., uptime alarms, forced deployments, ongoing hacks) to be alarming for enabling break-glass access where feasible
-- [ ] **Monitoring Integration**: Connect break-glass access to existing monitoring and alerting systems, with their own dedicated channel or at least a high severity that cannot be neglected or suppressed
-
-**Multi-Party Controls**
-- [ ] **Two-Party Authorization**: Require multi-party review when instant response time is not absolutely needed and slight coordination delays could be tolerated 
-- [ ] **Challenge Periods**: Consider implementing access delay periods (e.g., 15-30 minutes) to allow veto by other users
-- [ ] **Escalation Procedures**: Define clear escalation paths for different emergency scenarios. All sensitive manual operations should be well justified
-
-**Incident Response Planning**
-- [ ] **Run-Books**: Establish incident response run-books for common scenarios to enable rapid response and reduce the need for privileged access
-- [ ] **Permission Modeling**: Model required permissions for each break-glass account. The accounts should be minimally permissive while still allowing recovery and response actions (e.g. rolling back to previous compute images, but not allowing new compute images be force deployed)
+- [ ] **Tie break-glass eligibility to real triggers where feasible** — an active alarm (uptime, forced deployment, ongoing attack) should normally precede its use
+- [ ] **Route break-glass alerts to a dedicated, non-suppressible channel** — or at minimum a severity level that cannot be neglected
+- [ ] **Require two-party authorization** when instant response is not absolutely needed and slight coordination delay can be tolerated
+- [ ] **Consider a short challenge period** (15–30 minutes) during which other users can veto access; every sensitive manual operation should be well justified
+- [ ] **Pre-model each account's permissions** — minimally permissive while still enabling recovery (e.g. able to roll back to a previous compute image, but not force-deploy new ones)
+- [ ] **Maintain incident runbooks for common scenarios** so responders rarely need improvised privileged access — see the [Incident Response Readiness Guide](incident-response-readiness.md)

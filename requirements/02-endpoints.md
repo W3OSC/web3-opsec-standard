@@ -15,6 +15,8 @@
 - R-PS-011: Unauthorized Physical Access to Privileged Devices
 - R-PS-012: Visual Surveillance and Shoulder Surfing Attacks
 - R-PS-013: Theft or Tampering of Privileged Devices
+- R-EP-014: Mobile Device Compromise and Mobile Malware
+- R-EP-015: Theft or Loss of Mobile Devices with Privileged Access
 
 ### **Device Management**
 
@@ -106,3 +108,30 @@
 - Privacy screens should be used on all devices to prevent visual eavesdropping when in public spaces
 - Computer screens must be locked when unattended
 - Biometric login and SSO should be used in public spaces to prevent password leakage
+
+### **Mobile Device Security**
+
+**SP-EP-014: Mobile Device Hardening**
+- Mobile devices with access to organization accounts, communications, or authenticator codes must be treated as privileged endpoints
+- Devices must run a version of iOS or Android that still receives vendor security updates, with automatic OS and security updates enabled
+- A passcode of at least 6 digits (alphanumeric for signer and administrative roles) must be set, with biometric unlock used as the day-to-day method so passcodes are rarely exposed in public
+- Lock screens must not display notification content, and access to accessories, wallets, and assistants while locked must be disabled
+- Platform anti-theft protections must be enabled where available (e.g. iOS Stolen Device Protection, Android Theft Detection Lock and Remote Lock)
+- High-risk roles (signers, founders, security and infrastructure staff) should enable platform hardened modes (e.g. iOS Lockdown Mode, Android Advanced Protection)
+- Device backups must be end-to-end encrypted, and the cloud account behind the device (Apple ID / Google Account) must be protected with phishing-resistant MFA
+- Seed phrases, private keys, and their photographs must never be stored on mobile devices
+
+**SP-EP-015: Mobile Application Control**
+- Applications must only be installed from official application stores; sideloading and installation from unknown sources must be disabled
+- Wallet, exchange, and financial applications must be verified against official project documentation (publisher, listing, and website) before installation
+- Remote access and screen-sharing applications must never be installed on devices with organization account or wallet access
+- Accessibility services, device administrator permissions, notification listeners, and third-party keyboards must be reviewed and restricted to explicitly approved applications
+- Application permissions must be reviewed periodically and reduced to the minimum required, with unused applications removed
+- Organization data should be isolated from personal applications using a managed work profile or equivalent container
+
+**SP-EP-016: Mobile Device Loss and Compromise Response**
+- Remote location, lock, and wipe must be enabled on every mobile device with privileged access
+- Members must have a defined path to report a lost, stolen, or suspected-compromised device immediately, at any hour
+- Response to a lost or stolen device must include suspending the SIM/eSIM with the carrier, revoking the device's account sessions, and rotating credentials that the device or an observed passcode could unlock
+- Devices suspected of compromise must be taken out of service rather than remediated in place, with credential rotation performed from a separate known-clean device
+- Mobile devices must be included in onboarding and offboarding processes, including work profile wipe, token revocation, and removal of the number from account recovery paths

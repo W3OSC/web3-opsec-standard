@@ -41,6 +41,16 @@ Everything below applies to any device that touches organization accounts, code,
 - [ ] **Use biometrics or SSO in non-private spaces** so cameras and onlookers cannot capture typed passwords
 - [ ] **Use a privacy screen** when working in public spaces
 
+### Mobile devices
+
+Phones hold authenticator codes, signed-in chat sessions, and the number your accounts fall back to — see the [Mobile Device Security Guide](mobile-device-security.md) for full iOS and Android hardening.
+
+- [ ] **Enable platform anti-theft protection** — iOS Stolen Device Protection, Android Theft Detection Lock and Remote Lock
+- [ ] **Never type your passcode in public view** — use biometrics; an observed passcode plus a snatched phone is a total compromise
+- [ ] **Hide notification previews on the lock screen** so one-time codes and messages are not readable on a locked device
+- [ ] **Install apps only from the official store** — never sideload, never install a "support" remote-access app
+- [ ] **Enable remote location, lock, and wipe**, and keep the Apple ID or Google Account behind the device on phishing-resistant MFA
+
 ### Network security
 
 - [ ] **Harden your home WiFi**:

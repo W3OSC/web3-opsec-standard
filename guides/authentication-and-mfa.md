@@ -129,6 +129,7 @@ Your phone number is a recovery path whether you want it to be or not. Lock it d
   - **Verizon** — enable [Number Lock](https://myvpostpay.verizon.com/ui/acct/secure/profile/security/portsecurity)
   - **Google Fi** — enable [Number Lock](https://support.google.com/fi/answer/15147412?hl=en#zippy=%2Cturn-on-number-lock)
 - [ ] **Register your number on Signal** even if you don't use it, so a future SIM swapper cannot impersonate you there
+- [ ] **Harden the phone itself** — the device holding your codes needs its own controls; see the [Mobile Device Security Guide](mobile-device-security.md)
 
 ### Session management
 

@@ -13,7 +13,25 @@ function cleanUrl(url) {
   return url.replace(/[.,;:!?]+$/, '');
 }
 
+const BLOCKED_HOST_RE =
+  /^(localhost|0\.0\.0\.0|127\.|10\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1$|f[cd][0-9a-f]{2}:)/i;
+
+function isSafeUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
+  const host = parsed.hostname.replace(/^\[|\]$/g, '');
+  return !BLOCKED_HOST_RE.test(host);
+}
+
 async function checkUrl(url) {
+  if (!isSafeUrl(url)) {
+    return { ok: false, status: 0, error: 'blocked-url' };
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {

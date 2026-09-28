@@ -85,7 +85,6 @@ Each item states its **pass** condition, then gives **Console** (the Langfuse we
   - **CLI**:
     - Verify: `curl -s -u $ORG_KEY $LANGFUSE_HOST/api/public/organizations/apiKeys`
     - Expect: `apiKeys` lists only keys whose `note` names a provisioning system. An organization key can create projects, members and keys across the whole organization.
-    - Fix: `curl -s -u $ORG_KEY -X DELETE $LANGFUSE_HOST/api/public/organizations/apiKeys/<api-key-id>`
 - [ ] **Restrict Stored LLM Connections to Approved Endpoints** - pass: every LLM connection's base URL is an approved provider or gateway
   - **Console**:
     - Verify: Project Settings > LLM Connections > each connection's API Base URL is empty (provider default) or an approved gateway
@@ -231,7 +230,7 @@ Each item states its **pass** condition, then gives **Console** (the Langfuse we
 - [ ] **Shorten the Session Lifetime** - pass: `AUTH_SESSION_MAX_AGE` is set to the number of minutes your policy allows
   - **CLI**:
     - Verify: `kubectl exec deployment/langfuse-web -n $NS -- printenv AUTH_SESSION_MAX_AGE`
-    - Expect: the number of minutes your policy allows, not empty. The default session lasts 30 days, so a stolen cookie works for a month.
+    - Expect: the number of minutes your policy allows, not empty. The shipped default is 14 days, so a stolen cookie works for two weeks.
     - Fix: `kubectl set env deployment/langfuse-web -n $NS AUTH_SESSION_MAX_AGE=<minutes>`
 - [ ] **Do Not Enable Account Linking Unless the IdP Verifies Emails** - pass: no `AUTH_<PROVIDER>_ALLOW_ACCOUNT_LINKING` is `true` for a provider that does not verify email addresses
   - **CLI**:

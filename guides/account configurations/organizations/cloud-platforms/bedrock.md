@@ -21,10 +21,10 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - AWS CLI v2 with the `bedrock`, `bedrock-agent`, `bedrock-agent-runtime`, `bedrock-agentcore-control` and `bedrock-runtime` commands - check with `aws --version` and `aws bedrock help`.
 - Confirm which account you are auditing: `aws sts get-caller-identity`
 - A read-only principal is enough for every **Verify** command. Attach the AWS-managed `SecurityAudit` and `ViewOnlyAccess` policies.
-- **Bedrock is regional.** IAM, Organizations and account-level settings are global; model access, invocation logging, guardrails, agents, knowledge bases, custom models and VPC endpoints must be checked in every region where models are enabled. To sweep every region:
+- **Bedrock is regional.** IAM, Organizations and most account-level settings are global; the data-retention mode, model access, invocation logging, guardrails, agents, knowledge bases, custom models and VPC endpoints must be checked in every region where models are enabled. To sweep every region:
   - `for r in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text); do echo "== $r"; AWS_REGION=$r <command>; done`
 - Several **Fix** commands rebuild a resource from its current state with `jq`; install it before you start.
-- Mantle checks call the Mantle REST endpoint with a short-term key exported as `$BEDROCK_API_KEY`.
+- Mantle checks call the Mantle REST endpoint with a short-term key exported as `$BEDROCK_API_KEY`. A short-term key works only in the Region it was generated in, so generate one in each Region you check or fix (in the console, select that Region before generating the key).
 - In a multi-account Organization, run the whole guide in each member account. Organization-wide controls (SCPs, Bedrock policies, the Organization CloudTrail) are checked from the management account.
 
 ---
@@ -132,8 +132,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Delete Long-Term Bedrock API Keys Found in Production** - pass: `list-service-specific-credentials` for `bedrock.amazonaws.com` returns no credentials on production users
   - **Console**:
-    - Verify: IAM > Users > <user> > Security credentials > Amazon Bedrock API keys > the long-term key list is empty for every production user
-    - Fix: IAM > Users > <user> > Security credentials > Amazon Bedrock API keys > select the key > Delete > confirm
+    - Verify: Amazon Bedrock > API keys > Long-term API keys > the list is empty for every production user
+    - Fix: Amazon Bedrock > API keys > Long-term API keys > select the key > Actions > Delete > confirm the deletion
   - **CLI**:
     - Verify: `aws iam list-service-specific-credentials --service-name bedrock.amazonaws.com --all-users`
     - Expect: `ServiceSpecificCredentials` is an empty list. A long-term key is a bearer credential with no MFA, session or source-IP bound to it; one leak is unattributed model access until the key is deleted.
@@ -141,7 +141,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Limit Long-Term API Key Lifetime** - pass: an SCP denies Bedrock key creation when `iam:ServiceSpecificCredentialAgeDays` is over 90 or missing, and every existing key shows an `ExpirationDate`
   - **Console**:
-    - Verify: AWS Organizations > Policies > Service control policies > `CapBedrockLongTermKeyAge` > Content shows both `Deny` statements on `iam:CreateServiceSpecificCredential` and Targets lists the root or OU; then IAM > Users > <user> > Security credentials > Amazon Bedrock API keys > every key shows an expiration date within 90 days of creation
+    - Verify: AWS Organizations > Policies > Service control policies > `CapBedrockLongTermKeyAge` > Content shows both `Deny` statements on `iam:CreateServiceSpecificCredential` and Targets lists the root or OU
     - Fix: AWS Organizations > Policies > Service control policies > Create policy > Policy name `CapBedrockLongTermKeyAge` > JSON editor > paste the two deny statements > Create policy; then select the policy > Targets > Attach > choose the root or OU > Attach policy
   - **CLI**:
     - Verify:
@@ -502,7 +502,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Attach a Custom Endpoint Policy** - pass: every Bedrock endpoint's `PolicyDocument` allows only the approved invoke actions on approved ARNs for `aws:PrincipalOrgID` = your org
   - **Console**:
     - Verify: VPC > Endpoints > <bedrock endpoint> > Policy tab > the document is not the default full-access policy and carries the `aws:PrincipalOrgID` condition with named model ARNs
-    - Fix: VPC > Endpoints > <bedrock endpoint> > Policy > Edit policy > Custom > paste the scoped policy > Save
+    - Fix: VPC > Endpoints > <bedrock endpoint> > Actions > Manage policy > Custom > paste the scoped policy > Save
   - **CLI**:
     - Verify:
       ```bash
@@ -571,8 +571,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Enable Model Invocation Logging** - pass: `get-model-invocation-logging-configuration` returns a `loggingConfig` with an S3 or CloudWatch destination and every data-delivery flag `true`
   - **Console**:
-    - Verify: Amazon Bedrock > Settings > Model invocation logging > the toggle reads `Enabled`, every data type (text, image, embedding, video, audio) is selected, and an S3 or CloudWatch Logs destination is shown
-    - Fix: Amazon Bedrock > Settings > Model invocation logging > turn on Model invocation logging > select all data types > choose `Both S3 and CloudWatch Logs` > enter the bucket, log group and role > Save settings
+    - Verify: Amazon Bedrock > Settings > Model invocation logging > Model invocation logging is selected, Text, Image, Embedding and Video are selected, and an S3 or CloudWatch Logs destination is shown
+    - Fix: Amazon Bedrock > Settings > Model invocation logging > select Model invocation logging > select Text, Image, Embedding and Video > choose `Both Amazon S3 and CloudWatch Logs` > enter the bucket, log group and role > save the settings
   - **CLI**:
     - Verify: `aws bedrock get-model-invocation-logging-configuration`
     - Expect: `loggingConfig` is present with `textDataDeliveryEnabled`, `imageDataDeliveryEnabled` and `embeddingDataDeliveryEnabled` = `true` and a bucket or log group named. Without it there is no record of what was sent to or returned by a model, so prompt-injection or data-leak incidents cannot be reconstructed.
@@ -595,8 +595,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Encrypt the Invocation Log Destination with a Customer-Managed Key** - pass: the log bucket's default encryption is `aws:kms` with your key and the log group reports a `kmsKeyId`
   - **Console**:
-    - Verify: S3 > Buckets > <bucket> > Properties > Default encryption shows `Server-side encryption with AWS KMS keys (SSE-KMS)` and your key ARN; then CloudWatch > Logs > Log groups > <log-group> > the `KMS key ID` field shows your key ARN
-    - Fix: S3 > Buckets > <bucket> > Properties > Default encryption > Edit > SSE-KMS > Choose from your AWS KMS keys > <key> > Save changes; then CloudWatch > Logs > Log groups > <log-group> > Actions > Edit > KMS key ARN > Save
+    - Verify: S3 > Buckets > <bucket> > Properties > Default encryption shows `Server-side encryption with AWS Key Management Service keys (SSE-KMS)` and your key ARN
+    - Fix: S3 > Buckets > <bucket> > Properties > Default encryption > Edit > `Server-side encryption with AWS Key Management Service keys (SSE-KMS)` > Choose from your AWS KMS keys > <key> > Save changes
   - **CLI**:
     - Verify:
       ```bash
@@ -760,8 +760,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Enable the Security Hub AI Security Best Practices Standard** - pass: `get-enabled-standards` lists the `ai-security-best-practices` standard with `StandardsStatus` = `READY`
   - **Console**:
-    - Verify: Security Hub > Standards > `AI security best practices` shows `Enabled`
-    - Fix: Security Hub > Standards > `AI security best practices` > Enable
+    - Verify: Security Hub > Security standards > `AI Security Best Practices` shows a security score rather than `Enable standard`
+    - Fix: Security Hub > Security standards > `AI Security Best Practices` > Enable standard
   - **CLI**:
     - Verify:
       ```bash
@@ -857,15 +857,12 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 ## Data Protection
 
-- [ ] **Set the Account Data-Retention Mode Deliberately on Both Prefixes** - pass: `get-account-data-retention` returns `mode` = `none` (or your documented policy value) and the Mantle endpoint returns the same mode
-  - **Console**:
-    - Verify: Amazon Bedrock > Settings > Data retention > the mode shown matches the documented policy value; then Amazon Bedrock > Mantle > Settings > Data retention > the same value
-    - Fix: Amazon Bedrock > Settings > Data retention > Edit > select the policy mode > Save; then Amazon Bedrock > Mantle > Settings > Data retention > Edit > select the same mode > Save
+- [ ] **Set the Account Data-Retention Mode Deliberately on Both Prefixes** - pass: in every region where models are enabled, `get-account-data-retention` returns `mode` = `none` (or your documented policy value), and wherever that region has a Mantle endpoint, the Mantle endpoint returns the same mode
   - **CLI**:
-    - Verify: `aws bedrock get-account-data-retention`
+    - Verify: `aws bedrock get-account-data-retention --region <region>`
     - Verify: `curl https://bedrock-mantle.<region>.api.aws/v1/data_retention -H "x-api-key: $BEDROCK_API_KEY"`
-    - Expect: both return `"mode": "none"` (or the documented policy value). Left unset, prompts and completions sit in AWS retention storage for the default window on one prefix while the other has been locked down, and the two silently disagree.
-    - Fix: `aws bedrock put-account-data-retention --mode none`
+    - Expect: both return `"mode": "none"` (or the documented policy value) in every region where models are enabled, or the first alone where the Mantle host does not resolve (that region has no Mantle endpoint). A region left at `inherit` falls back to each model's default, and models that retain for abuse detection keep that traffic for up to 30 days.
+    - Fix: `aws bedrock put-account-data-retention --region <region> --mode none`
     - Fix:
       ```bash
       curl -X PUT https://bedrock-mantle.<region>.api.aws/v1/data_retention \
@@ -883,7 +880,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
         --query 'Policies[].[Name,Id]' --output table
       ```
     - Verify: `aws organizations describe-policy --policy-id <scp-id> --query 'Policy.Content' --output text`
-    - Expect: `LockBedrockDataRetentionMode` is listed for the target and its content conditions every statement on `StringNotEquals` `DataRetentionMode` = `none`. Without the SCP any account administrator can flip retention back on with one API call.
+    - Expect: `LockBedrockDataRetentionMode` is listed for the target and its content conditions every statement on `StringNotEquals` `DataRetentionMode` = `none`. Without the SCP any account administrator can flip retention back on with one API call; the management account is outside every SCP and needs the same deny as an IAM policy.
     - Fix:
       ```bash
       aws organizations create-policy --type SERVICE_CONTROL_POLICY --name LockBedrockDataRetentionMode \
@@ -1062,7 +1059,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Encrypt Guardrails with a Customer-Managed Key** - pass: `get-guardrail` reports `kmsKeyArn` = your KMS key
   - **Console**:
     - Verify: Amazon Bedrock > Guardrails > <guardrail> > Overview > KMS key shows your key ARN rather than `AWS owned key`
-    - Fix: Amazon Bedrock > Guardrails > <guardrail> > Working draft > Edit > KMS key selection > Customize encryption settings > choose your key > Save and exit
+    - Fix: Amazon Bedrock > Guardrails > <guardrail> > Guardrail overview > Edit > KMS key selection > Customize encryption settings (advanced) > choose your key > Save and exit
   - **CLI**:
     - Verify: `aws bedrock get-guardrail --guardrail-identifier <id> --guardrail-version <version> --query 'kmsKeyArn'`
     - Expect: your key ARN, not `null`. Guardrail definitions include denied-topic examples and regexes that describe exactly what the business wants hidden; a customer key gates who can read them.
@@ -1119,8 +1116,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Enforce an Account-Level Guardrail** - pass: `list-enforced-guardrails-configuration` returns your guardrail ARN and version
   - **Console**:
-    - Verify: Amazon Bedrock > Guardrails > Enforced guardrails > the account-level configuration lists your guardrail and a numbered version
-    - Fix: Amazon Bedrock > Guardrails > Enforced guardrails > Configure > select the guardrail and version > Save
+    - Verify: Amazon Bedrock > Guardrails > Account enforced guardrail configuration lists your guardrail and a numbered version
+    - Fix: Amazon Bedrock > Guardrails > Account-level enforcement configurations > Add > select the guardrail and version > Submit
   - **CLI**:
     - Verify: `aws bedrock list-enforced-guardrails-configuration`
     - Expect: `guardrailInferenceConfigs` contains `<guardrail-arn>` with your version. Without an enforced guardrail, any principal whose IAM policy lacks the guardrail condition invokes models unfiltered.
@@ -1132,8 +1129,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Enforce an Organization-Level Guardrail** - pass: the `BEDROCK_POLICY` type is enabled on the root and a Bedrock policy naming your guardrail is attached to the root or OU
   - **Console**:
-    - Verify: AWS Organizations > Policies > Bedrock policies reads `Enabled` and `EnforceOrganizationGuardrail` is listed with the root or OU under Targets
-    - Fix: AWS Organizations > Policies > Bedrock policies > Enable Bedrock policies; then Create policy > Policy name `EnforceOrganizationGuardrail` > JSON editor > paste the guardrail_inference document > Create policy; then select the policy > Targets > Attach > choose the root or OU > Attach policy
+    - Verify: AWS Organizations > Policies > Amazon Bedrock policies reads `Enabled` and `EnforceOrganizationGuardrail` is listed with the root or OU under Targets
+    - Fix: AWS Organizations > Policies > Amazon Bedrock policies > Enable Amazon Bedrock policies; then Create policy > Policy name `EnforceOrganizationGuardrail` > enter the guardrail ARN and version > save the policy; then select the policy > Targets > Attach > choose the root or OU > Attach policy
   - **CLI**:
     - Verify: `aws organizations list-roots --query 'Roots[].PolicyTypes'`
     - Verify: `aws organizations list-policies --filter BEDROCK_POLICY --query 'Policies[].[Name,Id]'`
@@ -1165,7 +1162,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Scope the Guardrail Resource-Based Policy to Your Organization** - pass: `get-resource-policy` for the guardrail returns a policy conditioned on `aws:PrincipalOrgID` = your org ID
   - **Console**:
     - Verify: Amazon Bedrock > Guardrails > <guardrail> > Resource-based policy > the statement carries `StringEquals aws:PrincipalOrgID` = your org ID and no unconditioned `"Principal": "*"`
-    - Fix: Amazon Bedrock > Guardrails > <guardrail> > Resource-based policy > Edit > paste the org-scoped policy > Save
+    - Fix: Amazon Bedrock > Guardrails > <guardrail> > Resource-based policy > Add > paste the org-scoped policy > Save
   - **CLI**:
     - Verify: `aws bedrock get-resource-policy --resource-arn <guardrail-arn> --query 'resourcePolicy'`
     - Expect: the policy allows `bedrock:ApplyGuardrail` and `bedrock:GetGuardrail` only with `aws:PrincipalOrgID` = `<org-id>`. A resource policy shared without the org condition lets any AWS account apply or read the guardrail.
@@ -1185,8 +1182,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Scope the Guardrail-Profile Resource-Based Policy to Your Organization for Cross-Region Inference** - pass: `get-resource-policy` for the guardrail profile returns a policy conditioned on `aws:PrincipalOrgID` = your org ID
   - **Console**:
-    - Verify: Amazon Bedrock > Guardrails > Guardrail profiles > <profile> > Resource-based policy > the statement carries `StringEquals aws:PrincipalOrgID` = your org ID
-    - Fix: Amazon Bedrock > Guardrails > Guardrail profiles > <profile> > Resource-based policy > Edit > paste the org-scoped policy > Save
+    - Verify: Amazon Bedrock > Guardrails > System-defined guardrail profiles > <profile> > Resource-based policy > the statement carries `StringEquals aws:PrincipalOrgID` = your org ID
+    - Fix: Amazon Bedrock > Guardrails > System-defined guardrail profiles > <profile> > Resource-based policy > Add > paste the org-scoped policy > Save
   - **CLI**:
     - Verify: `aws bedrock get-resource-policy --resource-arn <guardrail-profile-arn> --query 'resourcePolicy'`
     - Expect: the policy allows `bedrock:ApplyGuardrail` only with `aws:PrincipalOrgID` = `<org-id>`. Cross-region guardrail profiles are shared resources; without the org condition any account can route its traffic through your profile.
@@ -1295,8 +1292,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Enable Knowledge Base Ingestion Logging** - pass: a vended-log delivery source for the knowledge base ARN exists and is linked to a CloudWatch Logs destination
   - **Console**:
-    - Verify: Amazon Bedrock > Knowledge Bases > <knowledge-base> > Log deliveries > a delivery to CloudWatch Logs (or S3 / Firehose) is listed with status `Active`
-    - Fix: Amazon Bedrock > Knowledge Bases > <knowledge-base> > Log deliveries > Add delivery > CloudWatch Logs > <log-group> > Add
+    - Verify: Amazon Bedrock > Knowledge bases > <knowledge-base> > the log delivery shows status `Delivery active`
+    - Fix: Amazon Bedrock > Knowledge bases > <knowledge-base> > Edit > add a log delivery > Logging destination `CloudWatch Logs` > Log group name <log-group> > save
   - **CLI**:
     - Verify:
       ```bash
@@ -1321,8 +1318,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Set the OpenSearch Serverless Network Policy to Private with Bedrock as the Source Service** - pass: the collection's network policy has `AllowFromPublic` = `false` and `SourceServices` = `["bedrock.amazonaws.com"]`
   - **Console**:
-    - Verify: Amazon OpenSearch Service > Serverless > Security > Network policies > <policy> > Access type reads `Private` and the AWS service private access list shows `bedrock.amazonaws.com`
-    - Fix: Amazon OpenSearch Service > Serverless > Security > Network policies > <policy> > Edit > Access type `Private (recommended)` > AWS service private access > add `bedrock.amazonaws.com` > Update
+    - Verify: Amazon OpenSearch Service > Serverless > Network policies > <policy> > Access type reads `Private` and the AWS service private access list shows `bedrock.amazonaws.com`
+    - Fix: Amazon OpenSearch Service > Serverless > Network policies > <policy> > Edit > Access type `Private` > AWS service private access > add `bedrock.amazonaws.com` > Save
   - **CLI**:
     - Verify:
       ```bash
@@ -1363,9 +1360,6 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
       ```
 
 - [ ] **Run Batch Inference Jobs Inside a VPC** - pass: every batch inference job reports a `vpcConfig` with your subnets and security group
-  - **Console**:
-    - Verify: Amazon Bedrock > Batch inference > <job> > VPC settings show the subnets and security group rather than `Not configured`
-    - Fix: Amazon Bedrock > Batch inference > Create batch inference job > VPC settings > choose the VPC, subnets and security group > Create batch inference job
   - **CLI**:
     - Verify: `aws bedrock list-model-invocation-jobs --query 'invocationJobSummaries[*].[jobArn,vpcConfig]'`
     - Expect: every row has a `vpcConfig` object, not `null`. Batch jobs move whole datasets of prompts in and out of S3; without a VPC that traffic and its access path are unbounded.
@@ -1552,7 +1546,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
     - Fix: Amazon Bedrock > Agents > <agent> > Edit in Agent Builder > Additional settings > Idle session timeout > set the value > Save and exit > Prepare
   - **CLI**:
     - Verify: `aws bedrock-agent get-agent --agent-id <id> --query 'agent.idleSessionTTLInSeconds'`
-    - Expect: a number at or below the policy value (the default is `600`). A long timeout keeps conversation state, including retrieved documents and tool outputs, resumable by anyone who obtains the session ID.
+    - Expect: a number at or below the policy value (the default is `1800`, 30 minutes). A long timeout keeps conversation state, including retrieved documents and tool outputs, resumable by anyone who obtains the session ID.
     - Fix:
       ```bash
       aws bedrock-agent update-agent --cli-input-json "$(aws bedrock-agent get-agent --agent-id <id> --query agent --output json | jq --arg ttl <seconds> '
@@ -1564,7 +1558,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Grant the Action-Group Lambda Invoke Permission to Its Agent Only** - pass: the function's resource policy statement for `bedrock.amazonaws.com` carries `aws:SourceAccount` and `aws:SourceArn` = the agent ARN
   - **Console**:
     - Verify: Lambda > Functions > <function> > Configuration > Permissions > Resource-based policy statements > `AllowBedrockAgent` > Conditions show `SourceAccount` = your account and `SourceArn` = `arn:aws:bedrock:<region>:<account>:agent/<id>`
-    - Fix: Lambda > Functions > <function> > Configuration > Permissions > Resource-based policy statements > Add permissions > AWS service > Service `Other` > Statement ID `AllowBedrockAgent` > Principal `bedrock.amazonaws.com` > Source ARN the agent ARN > Action `lambda:InvokeFunction` > Save
+    - Fix: Lambda > Functions > <function> > Configuration > Permissions > Resource-based policy statements > Edit > add the `bedrock.amazonaws.com` statement (Sid `AllowBedrockAgent`) with `aws:SourceAccount` = your account and `aws:SourceArn` = the agent ARN > Save
   - **CLI**:
     - Verify:
       ```bash
@@ -1581,8 +1575,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Enable the Pre-Processing Step** - pass: the `PRE_PROCESSING` prompt configuration reports `promptState` = `ENABLED`
   - **Console**:
-    - Verify: Amazon Bedrock > Agents > <agent> > Edit in Agent Builder > Advanced prompts > Pre-processing > the `Activate pre-processing template` toggle is on
-    - Fix: Amazon Bedrock > Agents > <agent> > Edit in Agent Builder > Advanced prompts > Pre-processing > turn on `Activate pre-processing template` > Save and exit > Prepare
+    - Verify: Amazon Bedrock > Agents > <agent> > Working draft > Orchestration strategy > Edit > Pre-processing > `Activate template` is on
+    - Fix: Amazon Bedrock > Agents > <agent> > Working draft > Orchestration strategy > Edit > Pre-processing > turn on `Activate template` > Save and exit > Prepare
   - **CLI**:
     - Verify:
       ```bash
@@ -1703,8 +1697,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Limit Agent Memory Retention** - pass: on every agent with memory enabled, `memoryConfiguration.storageDays` is at or below your policy value
   - **Console**:
-    - Verify: Amazon Bedrock > Agents > <agent> > Memory > Memory retention (days) reads a value at or below the policy value, or memory is disabled
-    - Fix: Amazon Bedrock > Agents > <agent> > Edit in Agent Builder > Memory > Memory retention > set the days > Save and exit > Prepare
+    - Verify: Amazon Bedrock > Agents > <agent> > Edit in Agent Builder > Memory > Memory duration reads a value at or below the policy value, or Enable session summarization is not `Enabled`
+    - Fix: Amazon Bedrock > Agents > <agent> > Edit in Agent Builder > Memory > Memory duration > enter the days > Save > Prepare
   - **CLI**:
     - Verify: `aws bedrock-agent get-agent --agent-id <id> --query 'agent.memoryConfiguration.[enabledMemoryTypes,storageDays]'`
     - Expect: `storageDays` at or below the policy value whenever `enabledMemoryTypes` is non-empty. Long-term memory stores summaries of every past session per user; the longer it lives, the more a leaked memory ID reveals.
@@ -1719,7 +1713,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Grant the Custom Orchestration Lambda Invoke Permission to Its Agent Only** - pass: the orchestration function's resource policy allows `bedrock.amazonaws.com` only with `aws:SourceArn` = the agent ARN
   - **Console**:
     - Verify: Amazon Bedrock > Agents > <agent> > Orchestration strategy shows the custom orchestration Lambda; then Lambda > Functions > <orchestration-function> > Configuration > Permissions > Resource-based policy statements > `AllowBedrockAgentOrchestration` > Conditions show `SourceAccount` = your account and `SourceArn` = the agent ARN
-    - Fix: Lambda > Functions > <orchestration-function> > Configuration > Permissions > Resource-based policy statements > Add permissions > AWS service > Service `Other` > Statement ID `AllowBedrockAgentOrchestration` > Principal `bedrock.amazonaws.com` > Source ARN the agent ARN > Action `lambda:InvokeFunction` > Save
+    - Fix: Lambda > Functions > <orchestration-function> > Configuration > Permissions > Resource-based policy statements > Edit > add the `bedrock.amazonaws.com` statement (Sid `AllowBedrockAgentOrchestration`) with `aws:SourceAccount` = your account and `aws:SourceArn` = the agent ARN > Save
   - **CLI**:
     - Verify: `aws bedrock-agent get-agent --agent-id <id> --query 'agent.[orchestrationType,customOrchestration.executor.lambda]'`
     - Verify:
@@ -1795,8 +1789,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Set AgentCore Runtimes to VPC Network Mode** - pass: every agent runtime reports `networkConfiguration.networkMode` = `VPC`
   - **Console**:
-    - Verify: Amazon Bedrock AgentCore > Agent Runtime > <runtime> > Network configuration reads `VPC` with subnets and a security group rather than `Public`
-    - Fix: Amazon Bedrock AgentCore > Agent Runtime > <runtime> > Edit > Network configuration > `VPC` > choose the subnets and security group > Save
+    - Verify: Amazon Bedrock AgentCore > Runtime > <runtime> > Network configuration reads `VPC` with subnets and a security group rather than `Public`
+    - Fix: Amazon Bedrock AgentCore > Runtime > <runtime> > Edit > Network configuration > `VPC` > choose the subnets and security group > Save
   - **CLI**:
     - Verify: `aws bedrock-agentcore-control list-agent-runtimes --query 'agentRuntimes[].agentRuntimeId'`
     - Verify: `aws bedrock-agentcore-control get-agent-runtime --agent-runtime-id <id> --query 'networkConfiguration.networkMode'`
@@ -1811,8 +1805,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Set AWS_IAM or CUSTOM_JWT Inbound Authorization on Every AgentCore Gateway** - pass: every gateway reports `authorizerType` = `AWS_IAM` or `CUSTOM_JWT`, never `NONE`
   - **Console**:
-    - Verify: Amazon Bedrock AgentCore > Gateways > <gateway> > Inbound authorization reads `AWS IAM` or `Custom JWT`
-    - Fix: Amazon Bedrock AgentCore > Gateways > <gateway> > Edit > Inbound authorization > `AWS IAM` (or `Custom JWT` with the issuer and audience) > Save
+    - Verify: Amazon Bedrock AgentCore > Gateways > <gateway> > Inbound Auth configurations shows an identity provider configuration (Discovery URL, Allowed audiences, Allowed clients)
+    - Fix: Amazon Bedrock AgentCore > Gateways > Create gateway > Inbound Auth configurations > Use existing identity provider configurations > Discovery URL, Allowed audiences, Allowed clients > Create gateway
   - **CLI**:
     - Verify: `aws bedrock-agentcore-control list-gateways --query 'items[].gatewayId'`
     - Verify: `aws bedrock-agentcore-control get-gateway --gateway-identifier <id> --query '[authorizerType,authorizerConfiguration]'`
@@ -1828,7 +1822,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Encrypt AgentCore Memory and Gateways with Customer-Managed Keys** - pass: every memory reports `encryptionKeyArn` and every gateway reports `kmsKeyArn` = your KMS key
   - **Console**:
     - Verify: Amazon Bedrock AgentCore > Memory > <memory> > Encryption shows your key ARN; then Amazon Bedrock AgentCore > Gateways > <gateway> > Encryption shows your key ARN
-    - Fix: Amazon Bedrock AgentCore > Memory > Create memory > Encryption > Customize encryption settings > choose your key > Create (memory keys are set at creation); then Amazon Bedrock AgentCore > Gateways > <gateway> > Edit > Encryption > choose your key > Save
+    - Fix: Amazon Bedrock AgentCore > Memory > Create memory > Additional configurations > KMS key > Customize encryption settings (advanced) > choose your key > Create memory (memory keys are set at creation); then Amazon Bedrock AgentCore > Gateways > Create gateway > KMS key > Customize encryption settings (advanced) > choose your key > Create gateway
   - **CLI**:
     - Verify: `aws bedrock-agentcore-control get-memory --memory-id <id> --query 'memory.encryptionKeyArn'`
     - Verify: `aws bedrock-agentcore-control get-gateway --gateway-identifier <id> --query 'kmsKeyArn'`
@@ -1848,7 +1842,7 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 - [ ] **Create Custom Browsers and Code Interpreters in VPC Network Mode, with Browser Session Recording** - pass: every custom browser and code interpreter reports `networkMode` = `VPC`, and every browser reports `recording.enabled` = `true`
   - **Console**:
     - Verify: Amazon Bedrock AgentCore > Built-in tools > Browser > <browser> > Network mode reads `VPC` and Session recording reads `Enabled`; then Built-in tools > Code Interpreter > <interpreter> > Network mode reads `VPC`
-    - Fix: Amazon Bedrock AgentCore > Built-in tools > Browser > Create browser > Network mode `VPC` > subnets and security group > Session recording `Enabled` > S3 bucket and prefix > Create; then Code Interpreter > Create code interpreter > Network mode `VPC` > subnets and security group > Create (network mode is set at creation, so recreate and delete the old tool)
+    - Fix: Amazon Bedrock AgentCore > Built-in tools > Create browser tool > Network settings > `VPC` > subnets and security group > Session recording > enable recording to an S3 bucket and prefix > Create; then Built-in tools > Code Interpreter > Create Code Interpreter > Network configuration > `VPC` > subnets and security group > Create (network mode is set at creation, so recreate and delete the old tool)
   - **CLI**:
     - Verify: `aws bedrock-agentcore-control get-browser --browser-id <id> --query '[networkConfiguration.networkMode,recording.enabled]'`
     - Verify: `aws bedrock-agentcore-control get-code-interpreter --code-interpreter-id <id> --query 'networkConfiguration.networkMode'`
@@ -1867,8 +1861,8 @@ Each item states its **pass** condition, then gives **Console** (the AWS Managem
 
 - [ ] **Require MMDSv2 on Every Runtime and Deny User-Id Delegation Where Unneeded** - pass: every runtime reports `metadataConfiguration.requireMMDSV2` = `true`, and `bedrock-agentcore:InvokeAgentRuntimeForUser` is `explicitDeny` for caller roles that do not need delegation
   - **Console**:
-    - Verify: Amazon Bedrock AgentCore > Agent Runtime > <runtime> > Metadata configuration reads `Require MMDSv2`; then IAM > Roles > <caller-role> > Permissions > `DenyAgentCoreUserIdDelegation` > JSON > a `Deny` on `bedrock-agentcore:InvokeAgentRuntimeForUser`
-    - Fix: Amazon Bedrock AgentCore > Agent Runtime > <runtime> > Edit > Metadata configuration > Require MMDSv2 > Save; then IAM > Roles > <caller-role> > Permissions > Add permissions > Create inline policy > JSON > paste the deny statement > Next > Policy name `DenyAgentCoreUserIdDelegation` > Create policy
+    - Verify: IAM > Roles > <caller-role> > Permissions > `DenyAgentCoreUserIdDelegation` > JSON > a `Deny` on `bedrock-agentcore:InvokeAgentRuntimeForUser`
+    - Fix: IAM > Roles > <caller-role> > Permissions > Add permissions > Create inline policy > JSON > paste the deny statement > Next > Policy name `DenyAgentCoreUserIdDelegation` > Create policy
   - **CLI**:
     - Verify: `aws bedrock-agentcore-control get-agent-runtime --agent-runtime-id <id> --query 'metadataConfiguration.requireMMDSV2'`
     - Verify:

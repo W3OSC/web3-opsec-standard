@@ -24,6 +24,12 @@
 - R-AI-020: Retrieval Corpus Exposure and Poisoning
 - R-AI-021: Managed Agent Runtime Credential Exposure
 - R-AI-022: Model-Initiated Retrieval as an Exfiltration Channel
+- R-AI-023: Unauthenticated Self-Hosted Inference Endpoints
+- R-AI-024: Untrusted Model Artifacts in the Serving Process
+- R-AI-025: Unbrokered Model Access Through Shared Provider Keys
+- R-AI-026: Unbounded Inference Consumption
+- R-AI-027: Provider-Side Prompt Retention Outside Organization-Held Keys
+- R-AI-028: Silent Model Version Drift
 
 ### **Agent Control**
 
@@ -204,3 +210,66 @@
 - Where enabled, retrieval must be restricted to approved Regions and captured as audit-trail data events, because a denied fetch is otherwise invisible to the caller
 - Retrieval scope must be assessed on what the model can fetch, any URL it produces, not on what the caller supplies, consistent with SP-AI-003
 - A managed policy whose name says read-only must not be recorded as restricting retrieval
+
+### **Self-Hosted Inference**
+
+**SP-AI-023: Inference Endpoint Exposure**
+- Self-hosted inference servers must bind a loopback or private interface and must not be reachable from outside the segment that serves the calling application
+- Every inference endpoint must sit behind a reverse proxy that forwards only authenticated inference paths; the servers in common use leave management endpoints open
+- Cross-origin access to an inference endpoint must be restricted to named origins; a wildcard origin must not be configured on servers or workstations
+- Development, debugging, runtime-adapter and demo-tool endpoints must be absent from production servers, and debug request-body dumps must be off
+- Inter-node, cache-transfer and internal RPC traffic must stay on an isolated segment, with a host firewall admitting only that segment, administrative access and the API port
+- Per-request fan-out and media size limits must be set on every server that accepts untrusted callers
+- The serving namespace must deny egress by default with named allows, admit ingress from the gateway only, and mount no API credentials
+- A passthrough that forwards prompts to a third-party cloud must be disabled on servers and workstations until the organization approves that service
+- Servers must run a patched release, re-checked against the public advisory databases on a schedule; an advisory with no fixed release must have a recorded mitigation
+- Every server must run under explicit load, concurrency and queue ceilings, and every serving pod under memory and accelerator limits
+- Accelerator nodes must be reserved for the serving workload
+- Inference traffic must be encrypted in transit at the proxy or at the listener
+- Server extensions must be loaded only by explicit allowlist
+- Vendor telemetry must be disabled on every server
+- A server-side API key that guards only some path prefixes must not be recorded as authentication for the endpoint
+
+**SP-AI-024: Model Artifact Provenance and Format Policy**
+- Servers and workstations must load models by full name from an organization-controlled registry or mirror, pinned to an immutable identifier where the server supports one
+- Weight formats that can execute code on load must be denied at the server configuration; only formats that cannot execute code may be loaded
+- Remote-code execution options in model loaders must be disabled on production servers
+- Production servers must not pull artifacts from public hubs at runtime; the cache must be pre-populated and a loader with an offline mode run offline
+- The model store and every loader cache directory must be writable only by the service account
+- Server-side reads of local files and fetches of remote media must be disabled or restricted to named domains
+- A vulnerability scan of an artifact must not be recorded as the gate; the format, revision and source controls are the gate
+
+### **Model Access Governance**
+
+**SP-AI-025: Gateway-Mediated Model Access**
+- Consumers without a provider identity must reach models through a gateway the organization operates, and provider credentials must be held by the gateway alone
+- Each consumer must hold its own gateway credential carrying a model allowlist, spend ceiling, rate limits and expiry; the root credential must not reach applications
+- The gateway must check every model request against the consumer's allowlist, and a consumer must not be able to change its own entitlements
+- The root credential must be set before the gateway is reachable; a gateway started without one may authorize every request it receives
+- The root credential and the key that encrypts stored provider credentials must come from a secret manager and be unique per environment, consistent with SP-AI-013
+- Management routes and the administrative interface must admit administrators only, the interface through single sign-on alone, and both must be absent from the consumer-facing listener
+- Direct routes from consumer networks to provider endpoints must be denied, so that the gateway is the only egress for model traffic, consistent with SP-AI-016
+- Every request must be attributed in the usage record to the consumer credential and end user, so that spend and abuse trace to an owner
+- A consumer credential that admits every model, or lacks a ceiling or an expiry, must not be recorded as gateway-mediated access
+
+**SP-AI-026: Inference Consumption Ceilings**
+- Every consumer identity must carry a hard ceiling on spend or tokens that stops requests at the cap and resets on a fixed period
+- Request and token rate limits must be set per consumer below the provider quota, so that one consumer cannot exhaust the allocation others share
+- Where the platform allows a quota decrease, the provider-side quota must be lowered to the approved ceiling, so that the cap holds without the gateway
+- Consumption must be alerted to the owning team at thresholds below the ceiling, so that the cap is reached deliberately rather than discovered
+- Ceilings must be set by an administrator role; a consumer or team administrator must not be able to raise its own ceiling
+- A billing budget that only notifies must not be recorded as a ceiling; a budget stops consumption only where it triggers an enforcing action
+
+**SP-AI-027: Provider Data-Use Governance**
+- For every provider in use, the organization must record whether prompts and outputs are retained, reviewed by people or shared, and for how long
+- Where the data class requires it, the provider's opt-out from abuse-monitoring retention or human review must be requested and the approval held as a record
+- Accepting a provider addendum that adds logging or sharing must be limited to named roles, and models it covers must stay denied until acceptance
+- Prompt copies the provider keeps for abuse review must be treated as outside the organization's key boundary and listed in the data inventory
+- Where the provider's opt-out removes its review, the organization's own safeguards and detection must be enforced on that path first, consistent with SP-AI-018 and SP-AI-019
+- A provider's statement that prompts are not used for training must not be recorded as zero retention; abuse review, grounding and caching keep copies
+
+**SP-AI-028: Model Version and Lifecycle Control**
+- Every deployment must pin an approved model version, and automatic upgrade to a version the catalogue has not approved must be disabled
+- Preview and pre-release models must be denied for production workloads by policy, because the provider may change or retire them on short notice
+- Retirement dates for every catalogued model must be tracked and the replacement tested before that date, so that a forced upgrade never lands untested
+- A deployment that follows the provider's default version must not be recorded as pinned; the provider changes or retires it on its own schedule

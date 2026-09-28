@@ -25,7 +25,7 @@ Each item states its **pass** condition, then gives **Console** (the Google Clou
   - `gcloud config set project <project-id>`
 - **Most checks are per-project.** To sweep every project you can see, wrap the command:
   - `for p in $(gcloud projects list --format="value(projectId)"); do echo "== $p"; <command> --project="$p"; done`
-- Organization-level items need the organization ID: `export ORG_ID=$(gcloud organizations list --format="value(ID)" | head -1)`
+- Organization-level items need the organization ID: `export ORG_ID=$(gcloud organizations list --format="value(name.segment(1))" | head -1)`
 - A read-only principal is enough for every CLI **Verify** command: grant `roles/viewer` plus `roles/iam.securityReviewer` at the organization level.
 - Identity items covering user accounts and 2-Step Verification are enforced in the **Google Workspace / Cloud Identity** admin console (admin.google.com), not in `gcloud` - those items carry a Console block only.
 
@@ -256,7 +256,7 @@ Each item states its **pass** condition, then gives **Console** (the Google Clou
     - Expect: a perimeter exists and lists `storage.googleapis.com` in `restrictedServices`. IAM alone cannot stop a valid credential being used from outside your network; a perimeter is the control that blocks exfiltration by a credential that is genuinely authorised.
     - Fix:
       ```bash
-      gcloud access-context-manager perimeters dry-run create <name> --perimeter-title=<title> --perimeter-type=regular --resources=projects/<number> --restricted-services=storage.googleapis.com --policy=<policy-id>
+      gcloud access-context-manager perimeters dry-run create <name> --perimeter-title=<title> --perimeter-type=regular --perimeter-resources=projects/<number> --perimeter-restricted-services=storage.googleapis.com --policy=<policy-id>
       ```
     - Fix: `gcloud access-context-manager perimeters dry-run enforce <name> --policy=<policy-id>`
 
